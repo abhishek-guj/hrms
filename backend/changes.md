@@ -1,0 +1,4 @@
+- Removed Permssoins table as it would make it police based access control.
+- changed userid in emplyee table -> employeeId in users table.
+- moved role from employee table to user table. as roles are used for auth, we need it in users
+- 

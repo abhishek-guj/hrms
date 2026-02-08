@@ -16,7 +16,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(NoResourceFoundException ex) {
         ApiResponse<Void> errorResponse = ApiResponse.createApiResponse(
-                HttpStatus.NOT_FOUND,
                 ex.getMessage(),
                 null,
                 null
@@ -28,13 +27,11 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleBaseException(Exception ex){
+    public ResponseEntity<ApiResponse<Void>> handleBaseException(Exception ex) {
         ApiResponse<Void> errorResponse = ApiResponse.createApiResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "An Error Occured",
-                null,
-                null
+                "An Error Occured", null,
+                ex.getMessage()
         );
-        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }

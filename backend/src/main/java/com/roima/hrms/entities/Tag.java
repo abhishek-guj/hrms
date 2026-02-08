@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -17,9 +20,9 @@ public class Tag {
     private Long id;
 
     @Size(max = 255)
-    @Nationalized
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-
+    @OneToMany(mappedBy = "tag")
+    private Set<PostTag> postTags = new HashSet<>();
 }

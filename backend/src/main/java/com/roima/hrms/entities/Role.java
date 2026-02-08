@@ -22,9 +22,9 @@ public class Role {
     @Column(name = "pk_role_id", nullable = false)
     private Long id;
 
-    @Size(max = 255)
     @NotNull
-    @Column(name = "role_name", nullable = false)
+    @Enumerated(EnumType.STRING) // specifys to store enum as string not index in db
+    @Column(name = "role_name")
     private RoleEnum role;
 
     @CreationTimestamp

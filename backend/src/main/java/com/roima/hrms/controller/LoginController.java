@@ -7,13 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth/log-in")
+@RequestMapping("/api/v1/auth1/log-in")
 public class LoginController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<String>> Login(){
         ApiResponse<String> response = ApiResponse.createApiResponse(
-                HttpStatus.OK,
                 "Logged in.......",
                 null,
                 null);

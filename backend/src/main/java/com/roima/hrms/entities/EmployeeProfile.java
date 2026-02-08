@@ -13,62 +13,57 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "employee_profile", schema = "office")
+@Table(name = "employee_profiles", schema = "office")
 public class EmployeeProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk_employee_id", nullable = false)
     private Long id;
 
-    @Column(name = "fk_user_id")
-    private Long fkUserId;
+    @OneToOne(mappedBy = "employeeProfile", fetch = FetchType.LAZY)
+    private User user;
 
-    @Column(name = "fk_role_id")
-    private Long fkRoleId;
-
-    @Column(name = "department_id")
+    @Column(name = "department_id", nullable = false)
     private Long departmentId;
 
-    @Column(name = "fk_manager_id")
+    @Column(name = "fk_manager_id", nullable = false)
     private Long fkManagerId;
 
     @Size(max = 255)
     @NotNull
-    @Nationalized
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Size(max = 255)
     @NotNull
-    @Nationalized
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "birth_date")
+    @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "contact_number")
+    @Column(name = "contact_number", nullable = false)
     private Integer contactNumber;
 
-    @Column(name = "joining_date")
+    @Column(name = "joining_date", nullable = false)
     private LocalDate joiningDate;
 
-    @Column(name = "created_on")
+    @Column(name = "created_on", nullable = false)
     private Instant createdOn;
 
-    @Column(name = "updated_on")
+    @Column(name = "updated_on", nullable = false)
     private Instant updatedOn;
 
-    @Column(name = "created_by")
+    @Column(name = "created_by", nullable = false)
     private Long createdBy;
 
-    @Column(name = "updated_by")
+    @Column(name = "updated_by", nullable = false)
     private Long updatedBy;
 
-    @Column(name = "deleted_by")
+    @Column(name = "deleted_by", nullable = false)
     private Long deletedBy;
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
 
