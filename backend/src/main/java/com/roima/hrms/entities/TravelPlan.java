@@ -2,16 +2,22 @@ package com.roima.hrms.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Nationalized;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "travel_plans", schema = "travel")
 public class TravelPlan {
@@ -20,53 +26,54 @@ public class TravelPlan {
     @Column(name = "pk_travel_plan_id", nullable = false)
     private Long id;
 
-    @Column(name = "fk_travel_type")
-    private Long fkTravelType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "travel_type_id", nullable = false)
+    private TravelType travelType;
 
     @Column(name = "start_date")
-    private LocalDate startDate;
+    private Date startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;
+    private Date endDate;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "destination_city")
     private String destinationCity;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "destination_state")
     private String destinationState;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "destination_country")
     private String destinationCountry;
 
     @Column(name = "last_date_of_expense_submission")
-    private Instant lastDateOfExpenseSubmission;
+    private Date lastDateOfExpenseSubmission;
 
     @Column(name = "max_amount_per_day", precision = 18)
     private BigDecimal maxAmountPerDay;
 
+    @CreationTimestamp
     @Column(name = "created_on")
     private Instant createdOn;
 
+    @UpdateTimestamp
     @Column(name = "updated_on")
     private Instant updatedOn;
 
-    @Column(name = "created_by")
-    private Long createdBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "created_by")
+    private EmployeeProfile createdBy;
 
-    @Column(name = "updated_by")
-    private Long updatedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "updated_by")
+    private EmployeeProfile updatedBy;
 
-    @Column(name = "deleted_by")
-    private Long deletedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "deleted_by")
+    private EmployeeProfile deletedBy;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
-
-
 }

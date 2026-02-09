@@ -59,9 +59,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             userEmail = jwtUtil.extractEmail(jwt);
             com.roima.hrms.entities.User users = userRepository.findByEmail(userEmail).orElseThrow();
+            var role  =  users.getRole().getRole().name();
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (jwtUtil.validateToken(jwt)) {
-                    var userDetails = new User(userEmail, "", List.of(new SimpleGrantedAuthority("ROLE_" + users.getRole().getRole().name())));
+                    var userDetails = new User(userEmail, "", List.of(new SimpleGrantedAuthority("ROLE_" + role )));
                     var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);

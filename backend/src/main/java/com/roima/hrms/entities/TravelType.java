@@ -2,12 +2,17 @@ package com.roima.hrms.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "travel_types", schema = "travel")
 public class TravelType {
@@ -17,9 +22,10 @@ public class TravelType {
     private Long id;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "name")
     private String name;
 
+    @OneToMany(mappedBy = "travelType")
+    private Set<TravelPlan> travelPlans = new HashSet<>();
 
 }

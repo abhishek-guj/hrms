@@ -35,7 +35,7 @@ public class User {
     @JoinColumn(name = "employee_profile_id", unique = true)
     private EmployeeProfile employeeProfile;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
