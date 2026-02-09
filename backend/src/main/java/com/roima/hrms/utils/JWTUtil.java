@@ -42,10 +42,10 @@ public class JWTUtil {
         claims.put("role", user.getRole().getRole().name());
 
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .setClaims(claims)
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
                 .setIssuedAt(new Date())
-                .setClaims(claims)
+                .setSubject(user.getEmail())
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -54,10 +54,11 @@ public class JWTUtil {
         // parsing jwt
         // - build parser
         // - body - subject
+
         return Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
-                .parseClaimsJwt(jwt)
+                .parseClaimsJws(jwt)
                 .getBody()
                 .getSubject();
     }
@@ -67,7 +68,7 @@ public class JWTUtil {
             Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
                     .build()
-                    .parseClaimsJwt(token);
+                    .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;

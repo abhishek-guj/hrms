@@ -1,6 +1,7 @@
 package com.roima.hrms.filters;
 
 import com.roima.hrms.exceptions.AuthorizationHeaderMissing;
+import com.roima.hrms.repository.UserRepository;
 import com.roima.hrms.utils.JWTUtil;
 import org.apache.commons.lang3.StringUtils;
 import jakarta.servlet.FilterChain;
@@ -27,10 +28,12 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
-    public JwtAuthenticationFilter(JWTUtil jwtUtil, UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JWTUtil jwtUtil, UserDetailsService userDetailsService, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -40,6 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
+        if (requestUri.equals("/api/v1/auth/login") || requestUri.equals("/api/v1/auth/signup")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -47,15 +55,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // remove Bearer
         jwt = authHeader.substring(7);
 
+
         try {
             userEmail = jwtUtil.extractEmail(jwt);
+            com.roima.hrms.entities.User users = userRepository.findByEmail(userEmail).orElseThrow();
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (jwtUtil.validateToken(jwt)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userEmail, null,
-                            List.of(new SimpleGrantedAuthority("ROLE_USER")));
-
-
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    var userDetails = new User(userEmail, "", List.of(new SimpleGrantedAuthority("ROLE_" + users.getRole().getRole().name())));
+                    var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
         } catch (Exception e) {

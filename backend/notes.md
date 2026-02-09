@@ -81,5 +81,7 @@ private Role role;
 ```java
 return ResponseEntity.status().body(new ApiResponse<>(msg:"msg",data:null,meta_data:null));
 ```
+---
 
-
+while setting authorities, it must be of format "ROLE_<rolename>"
+and to authorize we add .hasRole("<rolename>") in security config,
