@@ -33,15 +33,22 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         if (userRepository.existsByEmail(adminEmail)) {
             return;
         }
-
         Role adminRole = roleRepository.findByRole(RoleEnum.Admin).orElseThrow(() -> new RuntimeException("Role Not Found!"));
-
-
-
         User admin = new User();
         admin.setRole(adminRole);
-        admin.setEmail("abhi@exp.com");
+        admin.setEmail(adminEmail);
         admin.setPasswordHash(PasswordUtil.hashPassword("1234"));
         userRepository.save(admin);
+
+        String employeeEmail = "emp@exp.com";
+        if (userRepository.existsByEmail(employeeEmail)) {
+            return;
+        }
+        Role empRole = roleRepository.findByRole(RoleEnum.Employee).orElseThrow(() -> new RuntimeException("Role Not Found!"));
+        User emp = new User();
+        emp.setRole(empRole);
+        emp.setEmail(employeeEmail);
+        emp.setPasswordHash(PasswordUtil.hashPassword("1234"));
+        userRepository.save(emp);
     }
 }

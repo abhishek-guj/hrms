@@ -30,24 +30,48 @@ public class JWTUtil {
     private String SECRET;
 
 
-    private Key getSecretKey(){
+    private Key getSecretKey() {
         return new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
     }
 
 
-    public String generateToken(User user){
+
+    public String generateToken(User user) {
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles",user.getRole().getRole().name());
+        claims.put("role", user.getRole().getRole().name());
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*15))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
                 .setIssuedAt(new Date())
                 .setClaims(claims)
-                .signWith(getSecretKey(),SignatureAlgorithm.HS256)
+                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
 
+    public String extractEmail(String jwt) {
+        // parsing jwt
+        // - build parser
+        // - body - subject
+        return Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJwt(jwt)
+                .getBody()
+                .getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSecretKey())
+                    .build()
+                    .parseClaimsJwt(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
