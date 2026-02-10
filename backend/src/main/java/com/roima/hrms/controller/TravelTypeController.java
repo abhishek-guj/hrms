@@ -6,6 +6,7 @@ import com.roima.hrms.dtos.res.TravelTypeDto;
 import com.roima.hrms.entities.TravelType;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.TravelTypeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/travel-types")
+@Tag(name="Travel Type")
 public class TravelTypeController {
 
     private final TravelTypeService travelTypeService;

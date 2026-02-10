@@ -5,6 +5,7 @@ import com.roima.hrms.dtos.req.ExpenseTypeRequestDto;
 import com.roima.hrms.dtos.res.ExpenseTypeDto;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.ExpenseTypeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/expense-types")
+@Tag(name="Travel Expense")
 public class ExpenseTypeController {
 
     private final ExpenseTypeService expenseTypeService;

@@ -1,4 +1,4 @@
-package com.roima.hrms.mapper;
+package com.roima.hrms.mapper.travel;
 
 import com.roima.hrms.dtos.res.ExpenseTypeDto;
 import com.roima.hrms.entities.ExpenseType;

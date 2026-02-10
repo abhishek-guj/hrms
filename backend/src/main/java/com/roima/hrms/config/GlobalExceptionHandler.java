@@ -2,13 +2,13 @@ package com.roima.hrms.config;
 
 
 import com.roima.hrms.exceptions.AuthorizationHeaderMissing;
-import com.roima.hrms.exceptions.TravelTypeNotFoundException;
 import com.roima.hrms.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
@@ -50,6 +50,17 @@ public class GlobalExceptionHandler {
         ApiResponse apiError = ApiResponse.createApiResponse(
                 "Validation error",
                 errors,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException ex) {
+        ApiResponse apiError = ApiResponse.createApiResponse(
+                "Validation error",
+                ex.getMessage(),
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);

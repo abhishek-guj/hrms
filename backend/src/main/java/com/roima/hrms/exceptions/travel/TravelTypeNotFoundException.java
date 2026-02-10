@@ -1,4 +1,4 @@
-package com.roima.hrms.exceptions;
+package com.roima.hrms.exceptions.travel;
 
 public class TravelTypeNotFoundException extends RuntimeException {
 
