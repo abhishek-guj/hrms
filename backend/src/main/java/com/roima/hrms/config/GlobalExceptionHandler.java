@@ -1,6 +1,7 @@
 package com.roima.hrms.config;
 
 
+import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.exceptions.AuthorizationHeaderMissing;
 import com.roima.hrms.response.ApiResponse;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthorizationHeaderMissing.class)
     ResponseEntity<ApiResponse<Void>> handleAuthorizationHeaderMissing(AuthorizationHeaderMissing ex) {
         ApiResponse<Void> errorResponse = ApiResponse.createApiResponse(
+                ApiResponseType.UNAUTHORIZED,
                 ex.getMessage(),
                 null,
                 null
@@ -31,6 +33,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(NoResourceFoundException ex) {
         ApiResponse<Void> errorResponse = ApiResponse.createApiResponse(
+                ApiResponseType.ERROR,
                 ex.getMessage(),
                 null,
                 null
@@ -48,9 +51,10 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage()));
 
         ApiResponse apiError = ApiResponse.createApiResponse(
-                "Validation error",
-                errors,
-                LocalDateTime.now()
+                ApiResponseType.ERROR,
+                errors.toString(),
+                null,
+                null
         );
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
@@ -59,9 +63,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException ex) {
         ApiResponse apiError = ApiResponse.createApiResponse(
-                "Validation error",
-                ex.getMessage(),
-                LocalDateTime.now()
+                ApiResponseType.ERROR,
+                "IDENTIFIER not provided OR provided wrong!",
+                null,
+                null
         );
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
@@ -69,8 +74,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleBaseException(Exception ex) {
         ApiResponse<Void> errorResponse = ApiResponse.createApiResponse(
-                "An Error Occured", null,
-                ex.getMessage()
+                ApiResponseType.ERROR,
+                ex.getMessage(),
+                null,
+                LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }

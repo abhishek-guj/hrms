@@ -1,6 +1,7 @@
 package com.roima.hrms.controller;
 
 import com.roima.hrms.dtos.LoginReqDto;
+import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,9 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginReqDto dto) {
         try {
             String token = authService.login(dto.email, dto.password);
-            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>("logged in...!", token, null));
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.createApiResponse(ApiResponseType.SUCCESS,"logged in...!", token, null));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>("Login Failed", ex.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.createApiResponse(ApiResponseType.ERROR,"Login Failed", ex.getMessage(), null));
         }
     }
 }
