@@ -85,3 +85,8 @@ return ResponseEntity.status().body(new ApiResponse<>(msg:"msg",data:null,meta_d
 
 while setting authorities, it must be of format "ROLE_<rolename>"
 and to authorize we add .hasRole("<rolename>") in security config,
+
+---
+
+## Logging format
+![img.png](img.png)
