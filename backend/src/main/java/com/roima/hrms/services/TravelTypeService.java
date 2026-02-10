@@ -28,24 +28,24 @@ public class TravelTypeService {
     }
 
     public TravelTypeDto createTravelType(TravelTypeRequestDto dto){
-        TravelType t = TravelType.builder().name(dto.getName()).build();
-        travelTypeRepository.save(t);
-        return travelTypeMapper.toTravelTypeDto(t);
+        TravelType tt = TravelType.builder().name(dto.getName()).build();
+        travelTypeRepository.save(tt);
+        return travelTypeMapper.toTravelTypeDto(tt);
     }
 
     public TravelTypeDto getById(Long id){
-        TravelType t = travelTypeRepository.findById(id).orElseThrow(()->new TravelTypeNotFoundException());
-        return travelTypeMapper.toTravelTypeDto(t);
+        TravelType tt = travelTypeRepository.findById(id).orElseThrow(TravelTypeNotFoundException::new);
+        return travelTypeMapper.toTravelTypeDto(tt);
     }
 
     public void deleteTravelType(Long id){
-        travelTypeRepository.deleteById(id);
-        return;
-
+        TravelType tt = travelTypeRepository.findById(id).orElseThrow(TravelTypeNotFoundException::new);
+        travelTypeRepository.delete(tt);
     }
     public TravelTypeDto updateTravelType(Long id, TravelTypeRequestDto dto){
-        TravelType t = travelTypeRepository.findById(id).orElseThrow(()-> new TravelTypeNotFoundException());
-        t.setName(dto.getName());
-        return travelTypeMapper.toTravelTypeDto(t);
+        TravelType tt = travelTypeRepository.findById(id).orElseThrow(TravelTypeNotFoundException::new);
+        tt.setName(dto.getName());
+        travelTypeRepository.save(tt);
+        return travelTypeMapper.toTravelTypeDto(tt);
     }
 }
