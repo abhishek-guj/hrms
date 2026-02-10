@@ -31,14 +31,14 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
     public void loadTravels() {
 
         TravelType travelType = new TravelType();
-        if (travelTypeRepository.count() == 0) {
+//        if (travelTypeRepository.count() == 0) {
             travelType.setId(1L);
             travelType.setName("Business");
             travelTypeRepository.save(travelType);
-        }
+//        }
 
 
-        if (travelPlanRepository.count() == 0) {
+//        if (travelPlanRepository.count() == 0) {
             TravelPlan travelPlan1 = TravelPlan.builder()
                     .name("Travel 1")
                     .travelType(travelType)
@@ -64,6 +64,6 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
                     .maxAmountPerDay(BigDecimal.valueOf(2000))
                     .build();
             travelPlanRepository.save(travelPlan2);
-        }
+//        }
     }
 }
