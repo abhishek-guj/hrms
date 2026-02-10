@@ -1,7 +1,5 @@
-package com.roima.hrms.seeder;
+package com.roima.hrms.seeder.travel;
 
-import com.roima.hrms.entities.TravelDocumentType;
-import com.roima.hrms.entities.TravelPlan;
 import com.roima.hrms.entities.TravelDocumentType;
 import com.roima.hrms.repository.TravelPlanRepository;
 import com.roima.hrms.repository.TravelDocumentTypeRepository;
@@ -9,9 +7,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Date;
 
 @Component
 public class TravelDocumentSeeder implements ApplicationListener<ContextRefreshedEvent> {
@@ -31,16 +27,18 @@ public class TravelDocumentSeeder implements ApplicationListener<ContextRefreshe
 
     public void loadTravels() {
 
-        TravelDocumentType flightTicket = new TravelDocumentType();
-        flightTicket.setName("Flight Tickets");
-        TravelDocumentType trainTicket = new TravelDocumentType();
-        trainTicket.setName("Train Tickets");
-        TravelDocumentType visaLetter = new TravelDocumentType();
-        visaLetter.setName("Visa Letter");
-        TravelDocumentType policy = new TravelDocumentType();
-        policy.setName("Policy");
+        if (travelDocumentTypeRepository.count() == 0) {
+            TravelDocumentType flightTicket = new TravelDocumentType();
+            flightTicket.setName("Flight Tickets");
+            TravelDocumentType trainTicket = new TravelDocumentType();
+            trainTicket.setName("Train Tickets");
+            TravelDocumentType visaLetter = new TravelDocumentType();
+            visaLetter.setName("Visa Letter");
+            TravelDocumentType policy = new TravelDocumentType();
+            policy.setName("Policy");
 
-        travelDocumentTypeRepository.saveAll(Arrays.asList(flightTicket, trainTicket, visaLetter, policy));
+            travelDocumentTypeRepository.saveAll(Arrays.asList(flightTicket, trainTicket, visaLetter, policy));
+        }
 
     }
 }

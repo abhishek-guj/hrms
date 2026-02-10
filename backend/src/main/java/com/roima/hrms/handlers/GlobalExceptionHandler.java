@@ -1,4 +1,4 @@
-package com.roima.hrms.config;
+package com.roima.hrms.handlers;
 
 
 import com.roima.hrms.enums.ApiResponseType;
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
                 ApiResponseType.ERROR,
                 ex.getMessage(),
                 null,
-                LocalDateTime.now()
+                null
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }

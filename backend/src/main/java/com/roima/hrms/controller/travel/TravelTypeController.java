@@ -1,9 +1,8 @@
-package com.roima.hrms.controller;
+package com.roima.hrms.controller.travel;
 
 
 import com.roima.hrms.dtos.req.TravelTypeRequestDto;
 import com.roima.hrms.dtos.res.TravelTypeDto;
-import com.roima.hrms.entities.TravelType;
 import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.TravelTypeService;

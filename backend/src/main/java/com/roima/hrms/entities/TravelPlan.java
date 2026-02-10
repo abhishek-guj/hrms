@@ -26,15 +26,20 @@ public class TravelPlan {
     @Column(name = "pk_travel_plan_id", nullable = false)
     private Long id;
 
+    @Size(max=255)
+    @Column(name="travel_name")
+    private String name;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travel_type_id", nullable = false)
     private TravelType travelType;
 
+
     @Column(name = "start_date")
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Size(max = 255)
     @Column(name = "destination_city")
@@ -49,7 +54,7 @@ public class TravelPlan {
     private String destinationCountry;
 
     @Column(name = "last_date_of_expense_submission")
-    private Date lastDateOfExpenseSubmission;
+    private LocalDate lastDateOfExpenseSubmission;
 
     @Column(name = "max_amount_per_day", precision = 18)
     private BigDecimal maxAmountPerDay;
@@ -75,5 +80,5 @@ public class TravelPlan {
     private EmployeeProfile deletedBy;
 
     @Column(name = "is_deleted")
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 }

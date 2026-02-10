@@ -26,7 +26,7 @@ public class TravelTypeMapper {
         return modelMapper.map(travelType, TravelTypeDto.class);
     }
 
-    public List<TravelTypeDto> travelTypeDtoList(List<TravelType> travelTypeList){
+    public List<TravelTypeDto> toTravelTypeDtoList(List<TravelType> travelTypeList){
         return travelTypeList.stream().map(this::toTravelTypeDto).collect(Collectors.toList());
     }
 }

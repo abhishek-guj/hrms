@@ -24,7 +24,7 @@ public class TravelTypeService {
 
     public List<TravelTypeDto> getAllTravelTypes(){
         List<TravelType> travelTypes = travelTypeRepository.findAll();
-        return travelTypeMapper.travelTypeDtoList(travelTypes);
+        return travelTypeMapper.toTravelTypeDtoList(travelTypes);
     }
 
     public TravelTypeDto createTravelType(TravelTypeRequestDto dto){

@@ -26,7 +26,7 @@ public class ExpenseTypeMapper {
         return modelMapper.map(expenseType, ExpenseTypeDto.class);
     }
 
-    public List<ExpenseTypeDto> expenseTypeDtoList(List<ExpenseType> expenseTypeList){
+    public List<ExpenseTypeDto> toExpenseTypeDtoList(List<ExpenseType> expenseTypeList){
         return expenseTypeList.stream().map(this::toExpenseTypeDto).collect(Collectors.toList());
     }
 }

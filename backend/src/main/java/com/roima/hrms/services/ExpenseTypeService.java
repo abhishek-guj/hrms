@@ -24,7 +24,7 @@ public class ExpenseTypeService {
 
     public List<ExpenseTypeDto> getAllExpenseTypes(){
         List<ExpenseType> expenseTypes = expenseTypeRepository.findAll();
-        return expenseTypeMapper.expenseTypeDtoList(expenseTypes);
+        return expenseTypeMapper.toExpenseTypeDtoList(expenseTypes);
     }
 
     public ExpenseTypeDto createExpenseType(ExpenseTypeRequestDto dto){

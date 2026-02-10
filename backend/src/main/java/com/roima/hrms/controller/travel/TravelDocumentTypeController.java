@@ -1,4 +1,4 @@
-package com.roima.hrms.controller;
+package com.roima.hrms.controller.travel;
 
 
 import com.roima.hrms.dtos.req.TravelDocumentTypeRequestDto;
