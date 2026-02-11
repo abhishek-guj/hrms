@@ -20,11 +20,14 @@ public class TravelExpense {
     @Column(name = "pk_travel_expense_id", nullable = false)
     private Long id;
 
-    @Column(name = "travel_id")
-    private Long travelId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "travel_plan_id", nullable = false, foreignKey = @ForeignKey(name = "fk_travel_plan_expense_id"))
+    private TravelPlan travelPlan;
 
-    @Column(name = "employee_id")
-    private Long employeeId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_porfile_id", nullable = false)
+    private EmployeeProfile employeeProfile;
 
     @Column(name = "submit_status")
     private Boolean submitStatus;
@@ -32,8 +35,9 @@ public class TravelExpense {
     @Column(name = "expense_upload_date")
     private Instant expenseUploadDate;
 
-    @Column(name = "expense_type")
-    private Long expenseType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "expense_type_id", nullable = false)
+    private ExpenseType expenseType;
 
     @Column(name = "expense_amount", precision = 18)
     private BigDecimal expenseAmount;
@@ -43,12 +47,10 @@ public class TravelExpense {
 
     @Size(max = 255)
     @NotNull
-    @Nationalized
     @Column(name = "status", nullable = false)
     private String status;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "remark")
     private String remark;
 

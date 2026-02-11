@@ -30,40 +30,43 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
 
     public void loadTravels() {
 
-        TravelType travelType = new TravelType();
 //        if (travelTypeRepository.count() == 0) {
-            travelType.setId(1L);
-            travelType.setName("Business");
-            travelTypeRepository.save(travelType);
+        TravelType travelType1 = new TravelType();
+        travelType1.setName("Business");
+        travelTypeRepository.save(travelType1);
+
+        TravelType travelType2 = new TravelType();
+        travelType2.setName("OffSite");
+        travelTypeRepository.save(travelType2);
 //        }
 
 
 //        if (travelPlanRepository.count() == 0) {
-            TravelPlan travelPlan1 = TravelPlan.builder()
-                    .name("Travel 1")
-                    .travelType(travelType)
-                    .startDate(LocalDate.parse("2026-02-15"))
-                    .endDate(LocalDate.parse("2026-02-23"))
-                    .destinationCity("Mumbai")
-                    .destinationState("Maharashtra")
-                    .destinationCountry("India")
-                    .lastDateOfExpenseSubmission(LocalDate.parse("2026-02-28"))
-                    .maxAmountPerDay(BigDecimal.valueOf(2000))
-                    .build();
-            travelPlanRepository.save(travelPlan1);
+        TravelPlan travelPlan1 = TravelPlan.builder()
+                .purpose("Travel 1")
+                .travelType(travelType1)
+                .startDate(LocalDate.parse("2026-02-15"))
+                .endDate(LocalDate.parse("2026-02-23"))
+                .destinationCity("Mumbai")
+                .destinationState("Maharashtra")
+                .destinationCountry("India")
+                .lastDateOfExpenseSubmission(LocalDate.parse("2026-02-28"))
+                .maxAmountPerDay(BigDecimal.valueOf(2000))
+                .build();
+        travelPlanRepository.save(travelPlan1);
 
-            TravelPlan travelPlan2 = TravelPlan.builder()
-                    .name("Travel 2")
-                    .travelType(travelType)
-                    .startDate(LocalDate.parse("2026-02-15"))
-                    .endDate(LocalDate.parse("2026-02-20"))
-                    .destinationCity("Benglore")
-                    .destinationState("Karnataka")
-                    .destinationCountry("India")
-                    .lastDateOfExpenseSubmission(LocalDate.parse("2026-02-25"))
-                    .maxAmountPerDay(BigDecimal.valueOf(2000))
-                    .build();
-            travelPlanRepository.save(travelPlan2);
+        TravelPlan travelPlan2 = TravelPlan.builder()
+                .purpose("Travel 2")
+                .travelType(travelType2)
+                .startDate(LocalDate.parse("2026-02-15"))
+                .endDate(LocalDate.parse("2026-02-20"))
+                .destinationCity("Benglore")
+                .destinationState("Karnataka")
+                .destinationCountry("India")
+                .lastDateOfExpenseSubmission(LocalDate.parse("2026-02-25"))
+                .maxAmountPerDay(BigDecimal.valueOf(2000))
+                .build();
+        travelPlanRepository.save(travelPlan2);
 //        }
     }
 }

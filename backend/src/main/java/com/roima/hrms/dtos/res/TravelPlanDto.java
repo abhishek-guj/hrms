@@ -21,7 +21,7 @@ import java.time.LocalDate;
 @Setter
 public class TravelPlanDto {
     private Long id;
-    private String name;
+    private String purpose;
     private TravelTypeDto travelType;
     private LocalDate startDate;
     private LocalDate endDate;

@@ -1,21 +1,18 @@
-package com.roima.hrms.dtos.req;
+package com.roima.hrms.dtos.res;
 
 
-import com.roima.hrms.entities.EmployeeProfile;
-import com.roima.hrms.entities.TravelType;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
 @Setter
-public class TravelPlanRequestDto {
-    private String purpose;
-    private Long travelTypeId;
+public class TravelExpenseDto {
+    private Long id;
+    private String name;
+    private ExpenseTypeDto travelType;
     private LocalDate startDate;
     private LocalDate endDate;
     private String destinationCity;

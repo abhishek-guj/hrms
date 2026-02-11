@@ -21,5 +21,4 @@ public class ExpenseType {
     @Size(max = 255)
     @Column(name = "expense_type")
     private String name;
-
 }

@@ -27,8 +27,8 @@ public class TravelPlan {
     private Long id;
 
     @Size(max=255)
-    @Column(name="travel_name")
-    private String name;
+    @Column(name="travel_purpose")
+    private String purpose;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travel_type_id", nullable = false)

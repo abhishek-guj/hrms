@@ -30,6 +30,18 @@ public class TravelPlanMapper {
         return modelMapper.map(dto,TravelPlan.class);
     }
 
+    public TravelPlan updateEntity(TravelPlan travelPlan, TravelPlanRequestDto travelPlanDto){
+        travelPlan.setPurpose(travelPlanDto.getPurpose());
+        travelPlan.setStartDate(travelPlanDto.getStartDate());
+        travelPlan.setEndDate(travelPlanDto.getEndDate());
+        travelPlan.setDestinationCity(travelPlanDto.getDestinationCity());
+        travelPlan.setDestinationState(travelPlanDto.getDestinationState());
+        travelPlan.setDestinationCountry(travelPlanDto.getDestinationCountry());
+        travelPlan.setLastDateOfExpenseSubmission(travelPlanDto.getLastDateOfExpenseSubmission());
+        travelPlan.setMaxAmountPerDay(travelPlanDto.getMaxAmountPerDay());
+        return travelPlan;
+    }
+
     public TravelPlanDto toTravelPlanDto(TravelPlan travelPlan){
         return modelMapper.map(travelPlan, TravelPlanDto.class);
     }

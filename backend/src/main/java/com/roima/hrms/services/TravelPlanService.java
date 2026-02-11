@@ -34,6 +34,7 @@ public class TravelPlanService {
         List<TravelPlan> travelPlans = travelPlanRepository.findAll();
         return travelPlanMapper.toTravelPlanDtoList(travelPlans);
     }
+
     public TravelPlanDto getById(Long id) {
         TravelPlan tp = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
         return travelPlanMapper.toTravelPlanDto(tp);
@@ -60,24 +61,18 @@ public class TravelPlanService {
 
     public TravelPlanDto updateTravelPlan(Long id, TravelPlanRequestDto dto) {
 
-        if(!travelPlanRepository.existsById(id)){
-            throw new TravelPlanNotFoundException();
-        }
-        if(!travelTypeRepository.existsById(dto.getTravelTypeId())){
-            throw new TravelTypeNotFoundException();
-        }
+        TravelPlan travelPlan = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
 
-        // setting values of travelplan dto to travelplan enitity directly
-        TravelPlan tp = travelPlanMapper.toEntity(dto);
         TravelType travelType = travelTypeRepository.findById(dto.getTravelTypeId()).orElseThrow(TravelTypeNotFoundException::new);
 
-        // reset id to asked id
-        tp.setId(id);
-        // reset travel type in case: it was updated
-        tp.setTravelType(travelType);
+        // setting values of travelplan dto to travelplan enitity directly
+        travelPlan.setTravelType(travelType);
 
-        travelPlanRepository.save(tp);
-        return travelPlanMapper.toTravelPlanDto(tp);
+        TravelPlan updatedEntity = travelPlanMapper.updateEntity(travelPlan, dto);
+
+        travelPlanRepository.save(updatedEntity);
+
+        return travelPlanMapper.toTravelPlanDto(updatedEntity);
     }
 
     public void deleteTravelPlan(Long id) {
