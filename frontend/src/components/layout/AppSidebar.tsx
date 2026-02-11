@@ -12,6 +12,11 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useAppSelector } from "../../store/hooks";
+import { selectIsAuthenticated } from "../../store/auth/auth.selector";
+import { Button } from "../ui/button";
+import { useDispatch } from "react-redux";
+import { authActions } from "../../store/auth/auth.slice";
 
 // This is sample data.
 const data = {
@@ -77,6 +82,17 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // tmp code to check redux for auth
+  console.log("auth", useAppSelector(selectIsAuthenticated));
+
+  const dispatch = useDispatch();
+
+  const handleAuth = () => {
+    dispatch(authActions.authenticate());
+  };
+
+  // tmp code to check redux for auth
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -88,6 +104,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
+        <Button variant={"destructive"} onClick={handleAuth}>
+          Auth
+        </Button>
         {data.navMain.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>

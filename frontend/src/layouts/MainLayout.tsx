@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { AppSidebar } from "../components/layout/AppSidebar";
+import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
   return (
@@ -43,14 +44,7 @@ const MainLayout = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-red-100 aspect-video rounded-xl" />
-            <div className="bg-green-100 aspect-video rounded-xl" />
-            <div className="bg-blue-100 aspect-video rounded-xl" />
-          </div>
-          <div className="bg-neutral-200 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-        </div>
+        <Outlet />
       </SidebarInset>
       {/* </div> */}
     </SidebarProvider>
