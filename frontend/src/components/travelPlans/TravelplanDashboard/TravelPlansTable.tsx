@@ -15,10 +15,9 @@ import DataTableHeader from "./Shared/DataTableHeader";
 import DataTableBody from "./Shared/DataTableBody";
 import DataTableFooter from "./Shared/DataTableFooter";
 
-import {
-	TravelPlanTableColumns,
-	TravelPlanTableData,
-} from "./TravelPlansTabelStructure";
+import { TravelPlanTableColumns } from "./TravelPlansTabelStructure";
+import { useTravelPlans } from "../queries/travelPlans.queries";
+import type { DataTabelItem } from "../types/TravelPlan.types";
 
 const TravelPlansTable = () => {
 	// states
@@ -27,9 +26,12 @@ const TravelPlansTable = () => {
 	const [globalFilter, setGlobalFilter] = useState("");
 	// states
 
+	const { data, isLoading, error } = useTravelPlans();
+
 	// defining react table
+
 	const table = useReactTable({
-		data: TravelPlanTableData,
+		data: data ? data : [],
 		columns: TravelPlanTableColumns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -63,8 +65,8 @@ const TravelPlansTable = () => {
 				setGlobalFilter={setGlobalFilter}
 			/>
 
-			<div className="rounded-lg border p-0.5">
-				<Table>
+			<div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
+				<Table className="w-full">
 					<DataTableHeader table={table} />
 					<DataTableBody table={table} columns={TravelPlanTableColumns} />
 				</Table>

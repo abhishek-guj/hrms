@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import { TravelPlanSectionCards } from "../../components/travelPlans/TravelplanDashboard/TravelPlanSectionCards";
 import TravelPlansTable from "../../components/travelPlans/TravelplanDashboard/TravelPlansTable";
 
@@ -13,6 +14,7 @@ const TravelPlanPage = () => {
 				{/* USE THIS TABLE BLOCK */}
 				<TravelPlansTable />
 			</div>
+			<Outlet />
 		</div>
 	);
 };

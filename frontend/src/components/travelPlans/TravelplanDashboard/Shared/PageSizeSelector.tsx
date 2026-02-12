@@ -16,7 +16,7 @@ const PageSizeSelector = ({ table }) => {
 				<SelectValue />
 			</SelectTrigger>
 			<SelectContent>
-				{[5, 10, 20].map((size) => (
+				{[3, 5, 10, 20].map((size) => (
 					<SelectItem key={size} value={String(size)}>
 						{size}
 					</SelectItem>

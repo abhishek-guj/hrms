@@ -60,13 +60,55 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
                 .travelType(travelType2)
                 .startDate(LocalDate.parse("2026-02-15"))
                 .endDate(LocalDate.parse("2026-02-20"))
-                .destinationCity("Benglore")
+                .destinationCity("Banglore")
                 .destinationState("Karnataka")
                 .destinationCountry("India")
                 .lastDateOfExpenseSubmission(LocalDate.parse("2026-02-25"))
                 .maxAmountPerDay(BigDecimal.valueOf(2000))
                 .build();
         travelPlanRepository.save(travelPlan2);
+
+        TravelPlan travelPlan3 = TravelPlan.builder()
+                .purpose("Travel 3")
+                .travelType(travelType1)
+                .startDate(LocalDate.parse("2026-02-26"))
+                .endDate(LocalDate.parse("2026-02-26"))
+                .destinationCity("Gandhinagar")
+                .destinationState("Gujarat")
+                .destinationCountry("India")
+                .lastDateOfExpenseSubmission(LocalDate.parse("2026-03-06"))
+                .maxAmountPerDay(BigDecimal.valueOf(1000))
+                .build();
+        travelPlanRepository.save(travelPlan3);
+
+        TravelPlan travelPlan4 = TravelPlan.builder()
+                .purpose("Travel 4")
+                .travelType(travelType2)
+                .startDate(LocalDate.parse("2026-03-01"))
+                .endDate(LocalDate.parse("2026-03-10"))
+                .destinationCity("New York")
+                .destinationState("New York")
+                .destinationCountry("USA")
+                .lastDateOfExpenseSubmission(LocalDate.parse("2026-03-20"))
+                .maxAmountPerDay(BigDecimal.valueOf(6000))
+                .build();
+        travelPlanRepository.save(travelPlan4);
+
+        TravelPlan travelPlan5 = TravelPlan.builder()
+                .purpose("Site visit to warehouse")
+                .travelType(travelType1)
+                .startDate(LocalDate.parse("2025-06-01"))
+                .endDate(LocalDate.parse("2025-06-03"))
+                .destinationCity("Stockholm")
+                .destinationState("Stockholm County")
+                .destinationCountry("Sweden")
+                .lastDateOfExpenseSubmission(LocalDate.parse("2025-06-20"))
+                .maxAmountPerDay(BigDecimal.valueOf(11000))
+                .build();
+
+        travelPlanRepository.save(travelPlan5);
+
+
 //        }
     }
 }

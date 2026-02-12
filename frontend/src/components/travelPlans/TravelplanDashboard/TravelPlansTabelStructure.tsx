@@ -3,6 +3,7 @@ import type { DataTabelItem, DataTableStatus } from "../types/TravelPlan.types";
 import { Button } from "../../ui/button";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import DataTableBadge from "./Shared/DataTableBadge";
+import { Link, useNavigate } from "react-router-dom";
 
 export const DataTableStatusConfig: Record<
 	DataTableStatus,
@@ -28,21 +29,67 @@ export const DataTableStatusConfig: Record<
 		className:
 			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
 	},
+	undefined: {
+		label: "Cancelled",
+		className:
+			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
+	},
 };
 
 //  define structure of each column,
 //  in cell it defines, what should be displayed in there.
+
+// {
+//     "id": 1,
+//     "purpose": "Travel 1",
+//     "travelType": {
+//         "id": 1,
+//         "name": "Business"
+//     },
+//     "startDate": "2026-02-15",
+//     "endDate": "2026-02-23",
+//     "destinationCity": "Mumbai",
+//     "destinationState": "Maharashtra",
+//     "destinationCountry": "India",
+//     "lastDateOfExpenseSubmission": "2026-02-28",
+//     "maxAmountPerDay": 2000
+// }
+
 export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
 	{
-		accessorKey: "name",
-		header: "Name",
+		accessorKey: "id",
+		header: "Travel Id",
 		cell: ({ row }) => (
-			<span className="font-medium">{row.getValue("name")}</span>
+			<span className="font-medium">{row.getValue("id")}</span>
 		),
 	},
 	{
-		accessorKey: "date",
-		header: "Date",
+		accessorKey: "purpose",
+		header: "Purpose",
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("purpose")}</span>
+		),
+	},
+	{
+		accessorKey: "travelType",
+		header: "TravelType",
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("travelType")?.name}</span>
+		),
+	},
+	{
+		accessorKey: "startDate",
+		header: "Start Date",
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("startDate")}</span>
+		),
+	},
+	{
+		accessorKey: "endDate",
+		header: "End Date",
+		cell: ({ row }) => (
+			<span className="font-medium">{row.getValue("endDate")}</span>
+		),
 	},
 	{
 		accessorKey: "status",
@@ -50,85 +97,29 @@ export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
 		cell: ({ row }) => <DataTableBadge status={row.getValue("status")} />,
 	},
 	{
-		accessorKey: "amount",
-		header: () => <div className="text-right">Amount</div>,
-		cell: ({ row }) => (
-			<div className="text-right font-medium">{row.getValue("amount")}</div>
-		),
-	},
-	{
 		id: "actions",
-		cell: () => (
-			<div className="text-right">
-				<Button variant={"outline"}>
-					<Eye className="mr-2 h-4 w-4" />
+		header: () => <div className="text-center">Actions</div>,
+		cell: ({ row }) => (
+			<div className="text-right space-x-1">
+				<Button asChild variant={"outline"}>
+					<Link to={`${row.getValue("id")}`} className="border">
+						<Eye className="mr-2 h-4 w-4" />
+						View
+					</Link>
 				</Button>
-				<Button variant={"outline"}>
-					<Pencil className="mr-2 h-4 w-4" />
+				<Button asChild variant={"outline"}>
+					<Link to={`${row.getValue("id")}/edit`} className="border">
+						<Pencil className="mr-2 h-4 w-4" />
+						Edit
+					</Link>
 				</Button>
-				<Button variant={"outline"} className="text-destructive">
-					<Trash2 className="mr-2 h-4 w-4" />
+				<Button asChild variant={"outline"} className="text-destructive">
+					<Link to={`${row.getValue("id")}/delete`} className="border">
+						<Trash2 className="mr-2 h-4 w-4" />
+						Delete
+					</Link>
 				</Button>
 			</div>
 		),
-	},
-];
-
-export const TravelPlanTableData: DataTabelItem[] = [
-	{
-		id: "1",
-		name: "Project Alpha",
-		date: "Jan 15, 2024",
-		status: "completed",
-		amount: "$2,500",
-	},
-	{
-		id: "2",
-		name: "Website Redesign",
-		date: "Feb 3, 2024",
-		status: "processing",
-		amount: "$4,200",
-	},
-	{
-		id: "3",
-		name: "Mobile App MVP",
-		date: "Feb 18, 2024",
-		status: "pending",
-		amount: "$8,750",
-	},
-	{
-		id: "4",
-		name: "Brand Identity",
-		date: "Mar 5, 2024",
-		status: "completed",
-		amount: "$1,800",
-	},
-	{
-		id: "5",
-		name: "Marketing Campaign",
-		date: "Mar 22, 2024",
-		status: "cancelled",
-		amount: "$3,400",
-	},
-	{
-		id: "6",
-		name: "Analytics Dashboard",
-		date: "Apr 8, 2024",
-		status: "processing",
-		amount: "$5,600",
-	},
-	{
-		id: "7",
-		name: "E-commerce Platform",
-		date: "Apr 25, 2024",
-		status: "pending",
-		amount: "$12,000",
-	},
-	{
-		id: "8",
-		name: "API Integration",
-		date: "May 10, 2024",
-		status: "completed",
-		amount: "$3,200",
 	},
 ];

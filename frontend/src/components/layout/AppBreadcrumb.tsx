@@ -9,6 +9,7 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const AppBreadcrumb = () => {
+	return <div>breadcrumb</div>;
 	const location = useLocation();
 
 	const path = location.pathname;

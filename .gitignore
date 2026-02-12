@@ -2,3 +2,5 @@ review_descussion.txt
 app.log
 logs/*
 backend/logs/app.log
+tmp
+tmp/*
