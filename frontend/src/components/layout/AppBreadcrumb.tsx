@@ -25,7 +25,6 @@ const AppBreadcrumb = () => {
 			crumbs.push({ title: title, path: newPath });
 		}
 	});
-	console.log(crumbs);
 
 	return (
 		<Breadcrumb>

@@ -1,5 +1,5 @@
-import { TravelPlanSectionCards } from "../../components/travelPlans/TravelPlanSectionCards";
-import TravelPlansTable from "../../components/travelPlans/TravelPlansTable";
+import { TravelPlanSectionCards } from "../../components/travelPlans/TravelplanDashboard/TravelPlanSectionCards";
+import TravelPlansTable from "../../components/travelPlans/TravelplanDashboard/TravelPlansTable";
 
 const TravelPlanPage = () => {
 	return (
@@ -7,7 +7,7 @@ const TravelPlanPage = () => {
 			<div className="h-fit ">
 				<TravelPlanSectionCards />
 			</div>
-			<div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min rounded overflow-hidden border-2 border-red-500 p-2">
+			<div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min rounded overflow-hidden p-2">
 				{/* USE THIS TABLE BLOCK */}
 				{/* https://blocks.so/tables */}
 				{/* USE THIS TABLE BLOCK */}
