@@ -11,3 +11,45 @@ export interface DataTabelItem {
 	status: DataTableStatus;
 	amount: string;
 }
+
+export interface TravelTypeDto {
+	id: number;
+	name: string;
+}
+
+export interface TravelPlanDto {
+	id: number;
+	purpose: string;
+	travelType: TravelTypeDto;
+	startDate: string;
+	endDate: string;
+	destinationCity: string;
+	destinationState: string;
+	destinationCountry: string;
+	lastDateOfExpenseSubmission: string;
+	maxAmountPerDay: number;
+}
+
+export interface TravelPlanCreateDto {
+	purpose: string;
+	travelTypeId: number;
+	startDate: string;
+	endDate: string;
+	destinationCity: string;
+	destinationState: string;
+	destinationCountry: string;
+	lastDateOfExpenseSubmission: string;
+	maxAmountPerDay: number;
+}
+
+export interface TravelPlanUpdateDto {
+	purpose: string;
+	travelTypeId: number;
+	startDate: string;
+	endDate: string;
+	destinationCity: string;
+	destinationState: string;
+	destinationCountry: string;
+	lastDateOfExpenseSubmission: string;
+	maxAmountPerDay: number;
+}

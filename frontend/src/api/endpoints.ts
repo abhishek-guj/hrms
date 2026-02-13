@@ -8,4 +8,8 @@ export const AUTH_ENDPOINTS = {
 
 export const TRAVEL_PLAN_ENDPOINTS = {
 	getAll: () => "/travel-plans",
+	getById: (id: string) => `/travel-plans/${id}`,
+	create: () => "/travel-plans",
+	update: (id: string) => `/travel-plans/${id}`,
+	delete: (id: string) => `/travel-plans/${id}`,
 };

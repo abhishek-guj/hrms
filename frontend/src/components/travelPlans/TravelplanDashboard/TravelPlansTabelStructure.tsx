@@ -1,9 +1,9 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { DataTabelItem, DataTableStatus } from "../types/TravelPlan.types";
-import { Button } from "../../ui/button";
 import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "../../ui/button";
+import type { DataTabelItem, DataTableStatus } from "../types/TravelPlan.types";
 import DataTableBadge from "./Shared/DataTableBadge";
-import { Link, useNavigate } from "react-router-dom";
 
 export const DataTableStatusConfig: Record<
 	DataTableStatus,
@@ -71,11 +71,10 @@ export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
 		),
 	},
 	{
-		accessorKey: "travelType",
+		accessorKey: "travelType.name",
 		header: "TravelType",
-		cell: ({ row }) => (
-			<span className="font-medium">{row.getValue("travelType")?.name}</span>
-		),
+		// accessorFn:({row})=>row.travelType,
+		cell: (row) => <span className="font-medium">{row.getValue()}</span>,
 	},
 	{
 		accessorKey: "startDate",
@@ -103,20 +102,20 @@ export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
 			<div className="text-right space-x-1">
 				<Button asChild variant={"outline"}>
 					<Link to={`${row.getValue("id")}`} className="border">
-						<Eye className="mr-2 h-4 w-4" />
-						View
+						<Eye className="h-4 w-4" />
+						<span className="hidden lg:block">View</span>
 					</Link>
 				</Button>
 				<Button asChild variant={"outline"}>
 					<Link to={`${row.getValue("id")}/edit`} className="border">
-						<Pencil className="mr-2 h-4 w-4" />
-						Edit
+						<Pencil className="h-4 w-4" />
+						<span className="hidden lg:block">Edit</span>
 					</Link>
 				</Button>
 				<Button asChild variant={"outline"} className="text-destructive">
 					<Link to={`${row.getValue("id")}/delete`} className="border">
-						<Trash2 className="mr-2 h-4 w-4" />
-						Delete
+						<Trash2 className="h-4 w-4" />
+						<span className="hidden lg:block">Delete</span>
 					</Link>
 				</Button>
 			</div>

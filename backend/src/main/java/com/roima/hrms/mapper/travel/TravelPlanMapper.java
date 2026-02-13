@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 public class TravelPlanMapper {
 
     private final ModelMapper modelMapper;
+    private final TravelTypeMapper travelTypeMapper;
 
-    public TravelPlanMapper(ModelMapper modelMapper) {
+    public TravelPlanMapper(ModelMapper modelMapper, TravelTypeMapper travelTypeMapper) {
         this.modelMapper = modelMapper;
+        this.travelTypeMapper = travelTypeMapper;
     }
 
     public TravelPlan toEntity(TravelPlanDto dto){
@@ -43,10 +45,24 @@ public class TravelPlanMapper {
     }
 
     public TravelPlanDto toTravelPlanDto(TravelPlan travelPlan){
-        return modelMapper.map(travelPlan, TravelPlanDto.class);
+        TravelPlanDto travelPlanDto = new TravelPlanDto();
+
+        travelPlanDto.setId(travelPlan.getId());
+        travelPlanDto.setPurpose(travelPlan.getPurpose());
+        travelPlanDto.setTravelType(travelTypeMapper.toTravelTypeDto(travelPlan.getTravelType()));
+        travelPlanDto.setStartDate(travelPlan.getStartDate());
+        travelPlanDto.setEndDate(travelPlan.getEndDate());
+        travelPlanDto.setDestinationCity(travelPlan.getDestinationCity());
+        travelPlanDto.setDestinationState(travelPlan.getDestinationState());
+        travelPlanDto.setDestinationCountry(travelPlan.getDestinationCountry());
+        travelPlanDto.setLastDateOfExpenseSubmission(travelPlan.getLastDateOfExpenseSubmission());
+        travelPlanDto.setMaxAmountPerDay(travelPlan.getMaxAmountPerDay());
+
+        return travelPlanDto;
     }
 
     public List<TravelPlanDto> toTravelPlanDtoList(List<TravelPlan> travelPlanList){
+
         return travelPlanList.stream().map(this::toTravelPlanDto).collect(Collectors.toList());
     }
 }

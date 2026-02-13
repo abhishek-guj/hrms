@@ -1,15 +1,14 @@
 import {
 	Breadcrumb,
 	BreadcrumbItem,
-	BreadcrumbLink,
 	BreadcrumbList,
 	BreadcrumbPage,
-	BreadcrumbSeparator,
+	BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const AppBreadcrumb = () => {
-	return <div>breadcrumb</div>;
+	// return <div>breadcrumb</div>;
 	const location = useLocation();
 
 	const path = location.pathname;

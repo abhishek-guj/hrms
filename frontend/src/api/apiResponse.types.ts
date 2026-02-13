@@ -1,7 +1,8 @@
-export type IApiResponse = {
+export interface IApiResponse<T> {
 	status: string;
 	message: string;
-	data: typeof Object;
+	data: T;
 	metadata: string;
 	timestamp: string;
-};
+}
+

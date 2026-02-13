@@ -1,16 +1,14 @@
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
-import TravelPlanCreateForm from "./forms/TravelPlanCreateForm";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import TravelPlanEditForm from "./forms/TravelPlanEditForm";
 
-const TravelPlanCreate = () => {
+const TravelPlanEdit = () => {
 	const [open, setOpen] = useState(true);
 
 	const navigate = useNavigate();
@@ -25,10 +23,10 @@ const TravelPlanCreate = () => {
 				<DialogHeader>
 					<DialogTitle>Create Travel Plan</DialogTitle>
 				</DialogHeader>
-				<TravelPlanCreateForm />
+				<TravelPlanEditForm />
 			</DialogContent>
 		</Dialog>
 	);
 };
 
-export default TravelPlanCreate;
+export default TravelPlanEdit;

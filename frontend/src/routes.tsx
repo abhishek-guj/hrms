@@ -4,6 +4,9 @@ import MainLayout from "./layouts/MainLayout";
 import LoginPage from "./pages/LoginPage";
 import TravelPlanPage from "./pages/travel/TravelPlanPage";
 import TravelPlanCreate from "./components/travelPlans/TravelplanDashboard/TravelPlanCreate";
+import TravelPlanView from "./components/travelPlans/TravelplanDashboard/TravelPlanView";
+import TravelPlanDelete from "./components/travelPlans/TravelplanDashboard/TravelPlanDelete";
+import TravelPlanEdit from "./components/travelPlans/TravelplanDashboard/TravelPlanEdit";
 
 const router = createBrowserRouter([
 	{
@@ -15,9 +18,10 @@ const router = createBrowserRouter([
 				path: "/travel/plans",
 				element: <TravelPlanPage />,
 				children: [
-					{ path: ":id", element: <TravelPlanCreate /> },
-					{ path: ":id/edit", element: <TravelPlanCreate /> },
-					{ path: ":id/delete", element: <TravelPlanCreate /> },
+					{ path: "new", element: <TravelPlanCreate /> },
+					{ path: ":id", element: <TravelPlanView /> },
+					{ path: ":id/edit", element: <TravelPlanEdit /> },
+					{ path: ":id/delete", element: <TravelPlanDelete /> },
 				],
 			},
 		],
