@@ -1,0 +1,1 @@
+- how to determine indexes on each table. cause if we are meant to make it production grade then i would need those. on each table or atleast important tables.

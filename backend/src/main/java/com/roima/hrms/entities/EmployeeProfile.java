@@ -3,8 +3,7 @@ package com.roima.hrms.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
@@ -13,57 +12,58 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "employee_profiles", schema = "office")
 public class EmployeeProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pk_employee_id", nullable = false)
+    @Column(name = "pk_employee_id")
     private Long id;
 
     @OneToOne(mappedBy = "employeeProfile", fetch = FetchType.LAZY)
     private User user;
 
-    @Column(name = "department_id", nullable = false)
+    @Column(name = "department_id")
     private Long departmentId;
 
-    @Column(name = "fk_manager_id", nullable = false)
+    @Column(name = "fk_manager_id")
     private Long fkManagerId;
 
     @Size(max = 255)
-    @NotNull
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name")
     private String firstName;
 
     @Size(max = 255)
-    @NotNull
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "contact_number", nullable = false)
+    @Column(name = "contact_number")
     private Integer contactNumber;
 
-    @Column(name = "joining_date", nullable = false)
+    @Column(name = "joining_date")
     private LocalDate joiningDate;
 
-    @Column(name = "created_on", nullable = false)
+    @Column(name = "created_on")
     private Instant createdOn;
 
-    @Column(name = "updated_on", nullable = false)
+    @Column(name = "updated_on")
     private Instant updatedOn;
 
-    @Column(name = "created_by", nullable = false)
+    @Column(name = "created_by")
     private Long createdBy;
 
-    @Column(name = "updated_by", nullable = false)
+    @Column(name = "updated_by")
     private Long updatedBy;
 
-    @Column(name = "deleted_by", nullable = false)
+    @Column(name = "deleted_by")
     private Long deletedBy;
 
-    @Column(name = "is_deleted", nullable = false)
+    @Column(name = "is_deleted")
     private Boolean isDeleted;
 
 

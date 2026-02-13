@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/travel-expense")
-@Tag(name="Travel Plan")
+//@Tag(name="Travel Expense")
 public class TravelExpenseController {
 
     private final TravelExpenseService travelExpenseService;

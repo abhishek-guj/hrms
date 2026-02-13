@@ -6,11 +6,13 @@ import com.roima.hrms.enums.RoleEnum;
 import com.roima.hrms.repository.RoleRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 @Component
+@Order(1)
 public class RoleSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     private final RoleRepository roleRepository;

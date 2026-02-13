@@ -3,16 +3,20 @@ package com.roima.hrms.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "travel_expense", schema = "travel")
 public class TravelExpense {
     @Id
@@ -33,7 +37,7 @@ public class TravelExpense {
     private Boolean submitStatus;
 
     @Column(name = "expense_upload_date")
-    private Instant expenseUploadDate;
+    private LocalDate expenseUploadDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expense_type_id", nullable = false)
@@ -43,7 +47,7 @@ public class TravelExpense {
     private BigDecimal expenseAmount;
 
     @Column(name = "expense_date")
-    private Instant expenseDate;
+    private LocalDate expenseDate;
 
     @Size(max = 255)
     @NotNull
@@ -59,6 +63,4 @@ public class TravelExpense {
 
     @Column(name = "status_changed_by")
     private Long statusChangedBy;
-
-
 }

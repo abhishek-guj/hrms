@@ -6,6 +6,7 @@ import com.roima.hrms.repository.TravelPlanRepository;
 import com.roima.hrms.repository.TravelTypeRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Component
+@Order(3)
 public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> {
     private final TravelPlanRepository travelPlanRepository;
     private final TravelTypeRepository travelTypeRepository;

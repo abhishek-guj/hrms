@@ -71,7 +71,7 @@ const TravelPlanEditForm = () => {
 		console.log("data update", data);
 		const { id, ...reqData } = data;
 
-		const resData = await updateTravelPlan.mutateAsync({
+		await updateTravelPlan.mutateAsync({
 			id: id,
 			payload: reqData,
 		});

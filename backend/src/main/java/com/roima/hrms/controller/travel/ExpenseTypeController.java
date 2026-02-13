@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/expense-types")
-@Tag(name="Travel Expense")
+@Tag(name="Expense Type")
 public class ExpenseTypeController {
 
     private final ExpenseTypeService expenseTypeService;
