@@ -1,11 +1,13 @@
 package com.roima.hrms.seeder.travel;
 
+import com.roima.hrms.entities.EmployeeProfile;
 import com.roima.hrms.entities.ExpenseType;
 import com.roima.hrms.entities.TravelExpense;
 import com.roima.hrms.repository.EmployeeProfileRepository;
 import com.roima.hrms.repository.TravelExpenseRepository;
 import com.roima.hrms.repository.TravelPlanRepository;
 import com.roima.hrms.repository.ExpenseTypeRepository;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Component
@@ -50,11 +53,11 @@ public class ExpenseSeeder implements ApplicationListener<ContextRefreshedEvent>
         expenseTypeRepository.saveAll(Arrays.asList(food, travel, accomodation));
 
 
-
+        EmployeeProfile emp = employeeProfileRepository.findByFirstName("ad").orElseThrow();
         TravelExpense travelExpense = TravelExpense
                 .builder()
-                .travelPlan(travelPlanRepository.findById(1L).orElseThrow())
-                .employeeProfile(employeeProfileRepository.findById(1L).orElseThrow())
+                .travelPlan(travelPlanRepository.findById(2L).orElseThrow())
+                .employeeProfile(emp)
                 .submitStatus(true)
                 .expenseUploadDate(LocalDate.now())
                 .expenseType(food)
@@ -62,7 +65,8 @@ public class ExpenseSeeder implements ApplicationListener<ContextRefreshedEvent>
                 .expenseDate(LocalDate.now())
                 .status("Pending")
                 .remark("NO REMARK")
-                .statusChangedOn(Instant.now())
+                .statusChangedOn(LocalDateTime.now())
+                .statusChangedBy(emp)
                 .build();
         travelExpenseRepository.save(travelExpense);
     }

@@ -14,11 +14,11 @@ public class MapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper model = new ModelMapper();
         model.getConfiguration()
-                .setSkipNullEnabled(false)
-                .setMatchingStrategy(MatchingStrategies.STRICT)
-                .setPropertyCondition(context -> {
-                    return Hibernate.isInitialized(context.getSource());
-                });
+                .setSkipNullEnabled(false);
+//                .setMatchingStrategy(MatchingStrategies.STRICT)
+//                .setPropertyCondition(context -> {
+//                    return Hibernate.isInitialized(context.getSource());
+//                });
         return model;
     }
 }

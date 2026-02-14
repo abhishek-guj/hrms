@@ -9,7 +9,12 @@ import com.roima.hrms.mapper.travel.TravelExpenseMapper;
 import com.roima.hrms.mapper.travel.ExpenseTypeMapper;
 import com.roima.hrms.repository.TravelExpenseRepository;
 import com.roima.hrms.repository.ExpenseTypeRepository;
+import com.roima.hrms.utils.RoleUtil;
+import org.springdoc.core.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,21 +25,27 @@ public class TravelExpenseService {
     private final TravelExpenseMapper travelExpenseMapper;
     private final ExpenseTypeRepository expenseTypeRepository;
     private final ExpenseTypeMapper expenseTypeMapper;
+    private final RoleUtil roleUtil;
 
     @Autowired
-    public TravelExpenseService(TravelExpenseRepository travelExpenseRepository, TravelExpenseMapper travelExpenseMapper, ExpenseTypeRepository expenseTypeRepository, ExpenseTypeMapper expenseTypeMapper) {
+    public TravelExpenseService(TravelExpenseRepository travelExpenseRepository, TravelExpenseMapper travelExpenseMapper, ExpenseTypeRepository expenseTypeRepository, ExpenseTypeMapper expenseTypeMapper, SecurityService securityService, RoleUtil roleUtil) {
         this.travelExpenseRepository = travelExpenseRepository;
         this.travelExpenseMapper = travelExpenseMapper;
         this.expenseTypeRepository = expenseTypeRepository;
         this.expenseTypeMapper = expenseTypeMapper;
+        this.roleUtil = roleUtil;
     }
 
     public List<TravelExpenseDto> getAllTravelExpenses() {
+
+        String role = roleUtil.getRole();
+        if(role)
         List<TravelExpense> travelExpenses = travelExpenseRepository.findAll();
         return travelExpenseMapper.toTravelExpenseDtoList(travelExpenses);
     }
+
     public TravelExpenseDto getById(Long id) {
-        TravelExpense travelExpense = travelExpenseRepository.findById(id).orElseThrow(()->new RuntimeException("Travel Expense Not Found!"));
+        TravelExpense travelExpense = travelExpenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
         return travelExpenseMapper.toTravelExpenseDto(travelExpense);
     }
 
@@ -53,10 +64,10 @@ public class TravelExpenseService {
 
     public TravelExpenseDto updateTravelExpense(Long id, TravelExpenseRequestDto dto) {
 
-        if(!travelExpenseRepository.existsById(id)){
+        if (!travelExpenseRepository.existsById(id)) {
             throw new RuntimeException("Travel Expense Not Found!");
         }
-        if(!expenseTypeRepository.existsById(dto.getExpenseTypeId())){
+        if (!expenseTypeRepository.existsById(dto.getExpenseTypeId())) {
             throw new ExpenseTypeNotFoundException();
         }
 
@@ -74,7 +85,7 @@ public class TravelExpenseService {
     }
 
     public void deleteTravelExpense(Long id) {
-        TravelExpense travelExpense = travelExpenseRepository.findById(id).orElseThrow(()->new RuntimeException("Travel Expense Not Found!"));
+        TravelExpense travelExpense = travelExpenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
         travelExpenseRepository.delete(travelExpense);
     }
 

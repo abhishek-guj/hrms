@@ -58,9 +58,15 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         emp.setPasswordHash(PasswordUtil.hashPassword("1234"));
         userRepository.save(emp);
 
-        EmployeeProfile employeeProfile = EmployeeProfile.builder()
-                .user(admin)
-                .build();
-        employeeProfileRepository.save(employeeProfile);
+
+        if (!employeeProfileRepository.existsByFirstName(("ad"))) {
+
+            EmployeeProfile employeeProfile = EmployeeProfile.builder()
+                    .user(admin)
+                    .firstName("ad")
+                    .lastName("min")
+                    .build();
+            employeeProfileRepository.save(employeeProfile);
+        }
     }
 }

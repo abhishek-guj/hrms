@@ -43,7 +43,7 @@ const TravelPlanViewForm = () => {
 					</div>
 					<div>
 						<div className="text-black/50 text-sm my-1">Travel Type</div>
-						<div className="p-1 pb-2">{data?.travelType}</div>
+						<div className="p-1 pb-2">{data?.travelType.name}</div>
 					</div>
 				</div>
 

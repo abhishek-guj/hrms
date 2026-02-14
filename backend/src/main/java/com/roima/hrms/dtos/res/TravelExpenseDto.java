@@ -13,20 +13,43 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class TravelExpenseDto {
     private Long id;
-    private String travelPlanPurpose;
-    private String employeeName;
+    private ExpenseTravelPlanDto travelPlan;
+    private ExpenseEmployeeProfileDto employee;
     private Boolean submitStatus;
     private LocalDate expenseUploadDate;
-    private String expenseTypeName;
+    private ExpenseExpenseTypeDto expenseType;
     private BigDecimal expenseAmount;
     private LocalDate expenseDate;
     private String status;
     private String remark;
-    private Instant statusChangedOn;
-    private Long statusChangedBy;
+    private LocalDateTime statusChangedOn;
+    private ExpenseEmployeeProfileDto statusChangedBy;
+}
+
+@Getter
+@Setter
+class ExpenseTravelPlanDto {
+    private Long id;
+    private String purpose;
+}
+
+@Getter
+@Setter
+class ExpenseEmployeeProfileDto {
+    private Long id;
+    private String firstName;
+    private String lastName;
+}
+
+@Getter
+@Setter
+class ExpenseExpenseTypeDto{
+    private Long id;
+    private String name;
 }

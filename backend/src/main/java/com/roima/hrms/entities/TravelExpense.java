@@ -59,8 +59,9 @@ public class TravelExpense {
     private String remark;
 
     @Column(name = "status_changed_on")
-    private Instant statusChangedOn;
+    private LocalDateTime statusChangedOn;
 
-    @Column(name = "status_changed_by")
-    private Long statusChangedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_changed_by_id", nullable = false)
+    private EmployeeProfile statusChangedBy;
 }

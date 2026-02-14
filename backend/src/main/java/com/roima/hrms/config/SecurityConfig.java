@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("**").permitAll()
+//                        .requestMatchers("**").permitAll()
                         .requestMatchers("/scaler").permitAll()
                         .requestMatchers("/scalar/*/**").permitAll()
                         .requestMatchers("/scaler/scalar.js").permitAll()
@@ -60,10 +60,10 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/*/**").permitAll()
                         .requestMatchers("/api/v1/health").permitAll()
 //                 );
-//                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
                 ;
         return http.build();
     }
