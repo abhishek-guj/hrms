@@ -7,6 +7,10 @@ import {
 import { TravelPlansService } from "../services/travelPlans.service";
 import type {
 	DataTabelItem,
+	ExpenseTypeDto,
+	TravelEmployeeDto,
+	TravelExpenseDto,
+	TravelExpenseRequestDto,
 	TravelPlanCreateDto,
 	TravelPlanDto,
 	TravelPlanUpdateDto,
@@ -83,6 +87,80 @@ export const useDeleteTravelPlan = () => {
 		},
 		onError: () => {
 			console.log("error deleted travel plan");
+		},
+	});
+};
+
+export const useTravelEmployees = (
+	id: string,
+): UseQueryResult<TravelEmployeeDto[]> => {
+	return useQuery({
+		queryKey: ["getTravelEmployees", id],
+		queryFn: (): Promise<TravelEmployeeDto[]> =>
+			TravelPlansService.getTravelEmployeesByTravelPlanId(id),
+	});
+};
+
+export const useUpdateTravelEmployees = () => {
+	console.log("useUpdateTravelEmployees");
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ id, payload }: { id: string; payload: number[] }) => {
+			const response = TravelPlansService.updateTravelEmployees(id, payload);
+			return response;
+		},
+		onSuccess: (_, { id }) => {
+			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees", id] });
+			// queryClient.invalidateQueries({ queryKey: ["getTravelEmployees"] });
+			alert("travel employees updated successfull");
+		},
+		onError: () => {
+			console.log("error updaeting travel plan");
+		},
+	});
+};
+
+export const useTravelExpenses = (
+	id: string,
+): UseQueryResult<TravelExpenseDto[]> => {
+	return useQuery({
+		queryKey: ["getTravelExpenses"],
+		queryFn: (): Promise<TravelExpenseDto[]> =>
+			TravelPlansService.getTravelExpensesByTravelPlanId(id),
+	});
+};
+
+export const useTravelExpenseById = (
+	id: string,
+): UseQueryResult<TravelExpenseDto> => {
+	return useQuery({
+		queryKey: ["getTravelExpenses", id],
+		queryFn: (): Promise<TravelExpenseDto> =>
+			TravelPlansService.getTravelExpenseById(id),
+	});
+};
+
+export const useExpenseTypes = (): UseQueryResult<ExpenseTypeDto[]> => {
+	return useQuery({
+		queryKey: ["getExpenseTypes"],
+		queryFn: (): Promise<ExpenseTypeDto[]> =>
+			TravelPlansService.getExpenseTypes(),
+	});
+};
+
+export const useCreateTravelExpense = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async ({ payload }: { payload: TravelExpenseRequestDto }) => {
+			const response = await TravelPlansService.createTravelExpense(payload);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
+			alert("expense created successfull");
+		},
+		onError: () => {
+			console.log("error creating expense ");
 		},
 	});
 };

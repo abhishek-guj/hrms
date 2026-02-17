@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,10 +30,9 @@ public class TravelExpense {
     @JoinColumn(name = "travel_plan_id", nullable = false, foreignKey = @ForeignKey(name = "fk_travel_plan_expense_id"))
     private TravelPlan travelPlan;
 
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_porfile_id", nullable = false)
-    private EmployeeProfile employeeProfile;
+    private EmployeeProfile submittedBy;
 
     @Column(name = "submit_status")
     private Boolean submitStatus;
@@ -64,4 +65,7 @@ public class TravelExpense {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_changed_by_id", nullable = false)
     private EmployeeProfile statusChangedBy;
+
+    @OneToMany(mappedBy = "travelExpense", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ExpenseDocument> expenseDocuments = new HashSet<>();
 }

@@ -9,4 +9,6 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     Optional<EmployeeProfile> findByFirstName(String firstName);
 
     boolean existsByFirstName(String firstName);
+
+    EmployeeProfile getEmployeeProfileByUser_Email(String email);
 }

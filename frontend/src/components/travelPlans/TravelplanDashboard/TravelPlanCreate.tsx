@@ -1,13 +1,11 @@
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import TravelPlanCreateForm from "./forms/TravelPlanCreateForm";
 
 const TravelPlanCreate = () => {
@@ -21,7 +19,7 @@ const TravelPlanCreate = () => {
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent>
+			<DialogContent className="w-96">
 				<DialogHeader>
 					<DialogTitle>Create Travel Plan</DialogTitle>
 				</DialogHeader>

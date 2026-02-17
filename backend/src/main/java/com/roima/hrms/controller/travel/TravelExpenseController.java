@@ -8,14 +8,17 @@ import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.TravelExpenseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/travel-expense")
-//@Tag(name="Travel Expense")
+@CrossOrigin(origins = "*")
+@Tag(name = "Travel Expense")
 public class TravelExpenseController {
 
     private final TravelExpenseService travelExpenseService;
@@ -24,38 +27,50 @@ public class TravelExpenseController {
         this.travelExpenseService = travelExpenseService;
     }
 
+    // -----------------------------------------------------------
+    // OPERATIONS ON TRAVEL EXPENSES [NO REFERNCE TO TRAVELPLAN]
+    // -----------------------------------------------------------
     @GetMapping
-    public ResponseEntity<ApiResponse> getAllTravelExpenses(){
+    public ResponseEntity<ApiResponse> getAllTravelExpenses() {
         List<TravelExpenseDto> travelExpenseDtoList = travelExpenseService.getAllTravelExpenses();
-        ApiResponse<List<TravelExpenseDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,"Fetched all Travel Expenses successfully", travelExpenseDtoList,null);
+        ApiResponse<List<TravelExpenseDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Travel Expenses successfully", travelExpenseDtoList, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse> createTravelExpense(@RequestBody TravelExpenseRequestDto dto){
+
+//    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> createTravelExpense(@ModelAttribute TravelExpenseRequestDto dto) {
         TravelExpenseDto tt = travelExpenseService.createTravelExpense(dto);
-        ApiResponse<TravelExpenseDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,"Successfully created Travel Expense.", tt,null);
+        ApiResponse<TravelExpenseDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Travel Expense.", tt, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<ApiResponse> getTravelExpense(@PathVariable Long id){
-        TravelExpenseDto tt = travelExpenseService.getById(id);
-        ApiResponse<TravelExpenseDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,"Successfully fetched Travel Expense", tt,null);
+    @GetMapping("{expenseId}")
+    public ResponseEntity<ApiResponse> getTravelExpensesById(@PathVariable Long expenseId) {
+        TravelExpenseDto travelExpenseDto = travelExpenseService.getById(expenseId);
+        ApiResponse<TravelExpenseDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Travel Expenses successfully", travelExpenseDto, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> updateTravelExpense(@PathVariable Long id, @RequestBody TravelExpenseRequestDto dto){
+    public ResponseEntity<ApiResponse> updateTravelExpense(@PathVariable Long id, @RequestBody TravelExpenseRequestDto dto) {
         TravelExpenseDto travelExpense = travelExpenseService.updateTravelExpense(id, dto);
-        ApiResponse<TravelExpenseDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,"Successfully updated Travel Expense", travelExpense,null);
+        ApiResponse<TravelExpenseDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully updated Travel Expense", travelExpense, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<ApiResponse> deleteTravelExpense(@PathVariable Long id){
+    public ResponseEntity<ApiResponse> deleteTravelExpense(@PathVariable Long id) {
         travelExpenseService.deleteTravelExpense(id);
-        ApiResponse<Void> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,"Successfully deleted Travel Expense", null,null);
+        ApiResponse<Void> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully deleted Travel Expense", null, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
+
+
+    // -----------------------------------------------------------
+    // OPERATIONS ON TRAVEL EXPENSES [NO REFERNCE TO TRAVELPLAN]
+    // -----------------------------------------------------------
+
+
 }

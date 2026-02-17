@@ -19,9 +19,9 @@ const TravelPlanEdit = () => {
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent>
+			<DialogContent className="w-96">
 				<DialogHeader>
-					<DialogTitle>Create Travel Plan</DialogTitle>
+					<DialogTitle>Edit Travel Plan</DialogTitle>
 				</DialogHeader>
 				<TravelPlanEditForm />
 			</DialogContent>

@@ -27,12 +27,12 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+//    private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
 
     public JwtAuthenticationFilter(JWTUtil jwtUtil, UserDetailsService userDetailsService, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
+//        this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
     }
 
@@ -72,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"message\": \"Invalid or expired JWT token\"}");
-            return;
+//            return;
         }
 
         filterChain.doFilter(request, response);

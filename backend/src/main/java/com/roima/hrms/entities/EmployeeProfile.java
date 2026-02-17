@@ -8,6 +8,8 @@ import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,8 +30,9 @@ public class EmployeeProfile {
     @Column(name = "department_id")
     private Long departmentId;
 
-    @Column(name = "fk_manager_id")
-    private Long fkManagerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private EmployeeProfile manager;
 
     @Size(max = 255)
     @Column(name = "first_name")
@@ -66,5 +69,8 @@ public class EmployeeProfile {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "employeeProfile", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private Set<TravelEmployee> travelEmployees = new HashSet<>();
 
 }

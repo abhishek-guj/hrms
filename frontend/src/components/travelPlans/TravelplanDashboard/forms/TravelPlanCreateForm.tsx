@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { type TravelPlanSchemaType } from "../../../login/schema";
 import { DatePickerInput } from "../../../ui/date-picker";
@@ -11,6 +11,7 @@ import { FieldError, FieldSet } from "../../../ui/field";
 import { Separator } from "../../../ui/separator";
 import type { LoginFormType } from "../../loginForm.types";
 import { useCreateTravelPlan } from "../../queries/travelPlans.queries";
+import TravelTypeSelect from "./TravelTypeSelect";
 
 const TravelPlanCreateForm = () => {
 	// navigate
@@ -52,7 +53,7 @@ const TravelPlanCreateForm = () => {
 				{/*  */}
 				<FieldSet className="grid grid-cols-2">
 					<Field>
-						<FieldLabel htmlFor="email">Email</FieldLabel>
+						<FieldLabel htmlFor="email">Purpose</FieldLabel>
 						<Input
 							id="purpose"
 							type="text"
@@ -63,13 +64,17 @@ const TravelPlanCreateForm = () => {
 						{errors.purpose && <FieldError errors={[errors.purpose]} />}
 					</Field>
 					<Field>
-						<FieldLabel htmlFor="password">Password</FieldLabel>
-						{/* <TravelTypeSelect name="travelTypeId" control={control} /> */}
-						<Input
-							id="travelTypeId"
-							type="number"
-							placeholder="Travel type id"
-							{...register("travelTypeId")}
+						{/* <FieldLabel htmlFor="password">Travel type</FieldLabel> */}
+						<FieldLabel htmlFor="travelTypeId">Travel Type</FieldLabel>
+						<Controller
+							name="travelTypeId"
+							control={control}
+							render={({ field, fieldState }) => (
+								<TravelTypeSelect
+									value={field.value}
+									onValueChange={field.onChange}
+								/>
+							)}
 						/>
 						{errors.travelTypeId && (
 							<FieldError errors={[errors.travelTypeId]} />
@@ -91,21 +96,6 @@ const TravelPlanCreateForm = () => {
 							control={control}
 						/>
 						{errors.purpose && <FieldError errors={[errors.purpose]} />}
-						{/*  */}
-
-						{/* <Controller
-							name="startDate" // The name of the field in your form data
-							control={control} // The control object from useForm
-							rules={{ required: "Please select a date." }} // Validation rules
-							render={({ field }) => (
-								<Calendar
-									mode="single" // Use "single" mode for a single date selection
-									selected={field.value} // Pass the form's value to the date picker
-									onSelect={field.onChange} // Update the form value when a date is selected
-								/>
-							)}
-						/> */}
-						{/*  */}
 					</Field>
 					<Field>
 						<FieldLabel htmlFor="endDate">End Date</FieldLabel>

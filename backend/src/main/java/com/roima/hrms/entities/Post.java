@@ -61,10 +61,6 @@ public class Post {
     @Column(name = "visible_to_all", nullable = false)
     private Boolean visibleToAll;
 
-    @OneToMany(
-            mappedBy = "post",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PostTag> postTags = new HashSet<>();
 }

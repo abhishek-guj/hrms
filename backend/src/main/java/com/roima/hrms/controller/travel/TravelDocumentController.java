@@ -1,0 +1,63 @@
+package com.roima.hrms.controller.travel;
+
+
+import com.roima.hrms.dtos.res.TravelPlanDto;
+import com.roima.hrms.enums.ApiResponseType;
+import com.roima.hrms.response.ApiResponse;
+import com.roima.hrms.services.FileService;
+import com.roima.hrms.services.TravelEmployeeService;
+import com.roima.hrms.services.TravelPlanService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/travel-plans/{travelPlanId}/documents")
+@CrossOrigin(origins = "*")
+@Tag(name = "Travel Plan Documents")
+public class TravelDocumentController {
+
+
+    private final TravelPlanService travelPlanService;
+    private final TravelEmployeeService travelEmployeeService;
+    private final FileService fileService;
+
+    public TravelDocumentController(TravelPlanService travelPlanService, TravelEmployeeService travelEmployeeService, FileService fileService) {
+        this.travelPlanService = travelPlanService;
+        this.travelEmployeeService = travelEmployeeService;
+        this.fileService = fileService;
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> getFile() throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+
+//        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        Object documentBytes = fileService.getFile("document","");
+//        ApiResponse<byte[]> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Travel Plans successfully", documentBytes, null);
+
+        ResponseEntity<Object>
+                responseEntity = ResponseEntity.ok().headers(headers).contentType(
+                MediaType.parseMediaType("application/pdf")).body(documentBytes);
+        return responseEntity;
+
+    }
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+        String resString = fileService.fileUpload(file);
+        ApiResponse<String> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Travel Plan.", resString, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+}

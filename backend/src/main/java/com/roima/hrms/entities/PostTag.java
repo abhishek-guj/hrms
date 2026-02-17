@@ -14,7 +14,6 @@ public class PostTag {
     @Column(name = "post_tag_id", nullable = false)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;

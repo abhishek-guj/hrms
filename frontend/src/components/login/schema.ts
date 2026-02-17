@@ -21,5 +21,21 @@ export const TravelPlanSchema = z.object({
 });
 // used in creating travel plan
 
+// used in creating expense
+export const EmployeeExpenseSchema = z.object({
+	travelPlanId: z.string(),
+	// submittedById: z.string(),
+	expenseTypeId: z.string(),
+	// submitStatus: z.string(),
+	// expenseUploadDate: z.date(),
+	expenseAmount: z.number(),
+	expenseDate: z.date(),
+	// status: z.string(),
+	// remark: z.string(),
+	files: z.array(z.file()).min(1, { error: "atleast one file is requried" }),
+});
+// used in creating expense
+
 export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>;
 export type TravelPlanSchemaType = z.infer<typeof TravelPlanSchema>;
+export type EmployeeExpenseSchemaType = z.infer<typeof EmployeeExpenseSchema>;

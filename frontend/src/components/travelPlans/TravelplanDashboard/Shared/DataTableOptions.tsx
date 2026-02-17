@@ -4,7 +4,7 @@ import SearchInput from "./SearchInput";
 
 const DataTableOptions = ({ table, globalFilter, setGlobalFilter }) => {
 	return (
-		<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+		<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-full">
 			<div className="flex items-center gap-2">
 				<span className="text-sm text-muted-foreground">Show</span>
 				<PageSizeSelector table={table} />

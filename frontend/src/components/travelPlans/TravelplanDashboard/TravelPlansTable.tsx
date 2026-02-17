@@ -5,6 +5,7 @@ import {
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
+	getGroupedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
 
@@ -18,6 +19,9 @@ import DataTableFooter from "./Shared/DataTableFooter";
 import { TravelPlanTableColumns } from "./TravelPlansTabelStructure";
 import { useTravelPlans } from "../queries/travelPlans.queries";
 import type { DataTabelItem } from "../types/TravelPlan.types";
+import { Button } from "../../ui/button";
+import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
 
 const TravelPlansTable = () => {
 	// states
@@ -34,6 +38,7 @@ const TravelPlansTable = () => {
 		data: data ? data : [],
 		columns: TravelPlanTableColumns,
 		getCoreRowModel: getCoreRowModel(),
+		getGroupedRowModel: getGroupedRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
@@ -59,11 +64,19 @@ const TravelPlansTable = () => {
 
 	return (
 		<div className="w-full space-y-4">
-			<DataTableOptions
-				table={table}
-				globalFilter={globalFilter}
-				setGlobalFilter={setGlobalFilter}
-			/>
+			<div className="flex justify-between gap-8 px-4">
+				<DataTableOptions
+					table={table}
+					globalFilter={globalFilter}
+					setGlobalFilter={setGlobalFilter}
+				/>
+
+				<Button asChild>
+					<Link to={"new"}>
+						New <Plus />
+					</Link>
+				</Button>
+			</div>
 
 			<div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
 				<Table className="w-full">

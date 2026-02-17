@@ -2,15 +2,18 @@ package com.roima.hrms.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "expense_documents", schema = "travel")
 public class ExpenseDocument {
     @Id
@@ -18,24 +21,14 @@ public class ExpenseDocument {
     @Column(name = "pk_expense_document_id", nullable = false)
     private Long id;
 
-    @Column(name = "travel_expense_id")
-    private Long travelExpenseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "travel_expense_id")
+    private TravelExpense travelExpense;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "file_path")
     private String filePath;
 
-    @Size(max = 255)
-    @Nationalized
-    @Column(name = "file_type")
-    private String fileType;
-
-    @Column(name = "uploaded_by")
-    private Long uploadedBy;
-
     @Column(name = "uploaded_at")
-    private Instant uploadedAt;
-
-
+    private LocalDateTime uploadedAt;
 }

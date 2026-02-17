@@ -98,7 +98,7 @@ const TravelPlanEditForm = () => {
 						{errors.purpose && <FieldError errors={[errors.purpose]} />}
 					</Field>
 					<Field>
-						<FieldLabel htmlFor="password">Travel Type</FieldLabel>
+						<FieldLabel htmlFor="travelTypeId">Travel Type</FieldLabel>
 						<Controller
 							name="travelTypeId"
 							control={control}

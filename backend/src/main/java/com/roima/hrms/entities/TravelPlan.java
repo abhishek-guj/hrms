@@ -11,7 +11,10 @@ import org.springframework.data.annotation.CreatedBy;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,14 +29,13 @@ public class TravelPlan {
     @Column(name = "pk_travel_plan_id", nullable = false)
     private Long id;
 
-    @Size(max=255)
-    @Column(name="travel_purpose")
+    @Size(max = 255)
+    @Column(name = "travel_purpose")
     private String purpose;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travel_type_id", nullable = false)
     private TravelType travelType;
-
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -59,26 +61,41 @@ public class TravelPlan {
     @Column(name = "max_amount_per_day", precision = 18)
     private BigDecimal maxAmountPerDay;
 
-    @CreationTimestamp
     @Column(name = "created_on")
-    private Instant createdOn;
+    private LocalDateTime createdOn;
 
-    @UpdateTimestamp
     @Column(name = "updated_on")
-    private Instant updatedOn;
+    private LocalDateTime updatedOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "created_by")
+    @JoinColumn(name = "created_by")
     private EmployeeProfile createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "updated_by")
+    @JoinColumn(name = "updated_by")
     private EmployeeProfile updatedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "deleted_by")
+    @JoinColumn(name = "deleted_by")
     private EmployeeProfile deletedBy;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "travelPlan", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private Set<TravelEmployee> travelEmployees = new HashSet<>();
+
+    // persist
+    @PrePersist
+    protected void onCreate() {
+        createdOn = LocalDateTime.now();
+        updatedOn = LocalDateTime.now();
+    }
+
+    // on update
+    @PreUpdate
+    protected void onUpdate() {
+        updatedOn = LocalDateTime.now();
+    }
 }

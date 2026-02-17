@@ -1,26 +1,20 @@
 package com.roima.hrms.dtos.res;
 
 
-import com.roima.hrms.entities.EmployeeProfile;
-import com.roima.hrms.entities.ExpenseType;
-import com.roima.hrms.entities.TravelPlan;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 public class TravelExpenseDto {
     private Long id;
     private ExpenseTravelPlanDto travelPlan;
-    private ExpenseEmployeeProfileDto employee;
+    private ExpenseEmployeeProfileDto submittedBy;
     private Boolean submitStatus;
     private LocalDate expenseUploadDate;
     private ExpenseExpenseTypeDto expenseType;
@@ -30,6 +24,7 @@ public class TravelExpenseDto {
     private String remark;
     private LocalDateTime statusChangedOn;
     private ExpenseEmployeeProfileDto statusChangedBy;
+    private List<String> expenseDocumentFilePaths;
 }
 
 @Getter

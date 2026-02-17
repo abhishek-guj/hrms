@@ -3,6 +3,8 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import { useTravelPlans } from "./components/travelPlans/queries/travelPlans.queries";
+import { ReactFlow, Background, Controls } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 
 function App() {
 	const error = false;
@@ -13,14 +15,34 @@ function App() {
 	if (isLoading) {
 		return <div>Loading....</div>;
 	}
+
+	const initialNodes = [
+		{
+			id: "n1",
+			position: { x: 0, y: 0 },
+			data: { label: "Node 1" },
+			type: "input",
+		},
+		{
+			id: "n2",
+			position: { x: 100, y: 100 },
+			data: { label: "Node 2" },
+		},
+	];
+
+	const initialEdges = [
+		{
+			id: "n1-n2",
+			source: "n1",
+			target: "n2",
+		},
+	];
 	return (
 		<div className="flex flex-1 flex-col gap-4 p-4">
-			{/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="bg-red-100 aspect-video rounded-xl" />
-        <div className="bg-green-100 aspect-video rounded-xl" />
-        <div className="bg-blue-100 aspect-video rounded-xl" />
-      </div>
-      <div className="bg-neutral-200 min-h-[100vh] flex-1 rounded-xl md:min-h-min" /> */}
+			<ReactFlow nodes={initialNodes} edges={initialEdges}>
+				<Background />
+				<Controls />
+			</ReactFlow>
 		</div>
 	);
 }

@@ -73,8 +73,18 @@ export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
 	{
 		accessorKey: "travelType.name",
 		header: "TravelType",
-		// accessorFn:({row})=>row.travelType,
-		cell: (row) => <span className="font-medium">{row.getValue()}</span>,
+		cell: ({ getValue, row }) => {
+			// Show group label for grouped rows
+			if (row.getIsGrouped()) {
+				return (
+					<span className="font-bold">
+						{getValue() as string} ({row.subRows.length})
+					</span>
+				);
+			}
+			return getValue() as string;
+		},
+		// cell: (row) => <span className="font-medium">{row.getValue()}</span>,
 	},
 	{
 		accessorKey: "startDate",

@@ -8,14 +8,14 @@ export const navLinksList = {
 					title: "Travel Plans",
 					url: "/travel/plans",
 				},
-				{
-					title: "Travel Documents",
-					url: "#",
-				},
-				{
-					title: "Travel Expenses",
-					url: "#",
-				},
+				// {
+				// 	title: "Travel Documents",
+				// 	url: "#",
+				// },
+				// {
+				// 	title: "Travel Expenses",
+				// 	url: "#",
+				// },
 			],
 		},
 		{
