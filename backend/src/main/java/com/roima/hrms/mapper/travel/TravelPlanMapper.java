@@ -8,9 +8,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Component
 public class TravelPlanMapper {
@@ -23,16 +23,27 @@ public class TravelPlanMapper {
         this.travelTypeMapper = travelTypeMapper;
     }
 
-    public TravelPlan toEntity(TravelPlanDto dto){
-        return modelMapper.map(dto,TravelPlan.class);
+    public TravelPlan toEntity(TravelPlanDto dto) {
+        return modelMapper.map(dto, TravelPlan.class);
     }
 
-    public TravelPlan toEntity(TravelPlanRequestDto dto){
+    public TravelPlan toEntity(TravelPlanRequestDto dto) {
 
-        return modelMapper.map(dto,TravelPlan.class);
+        return TravelPlan.builder()
+                .purpose(dto.getPurpose())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getStartDate())
+                .destinationCity(dto.getDestinationCity())
+                .destinationState(dto.getDestinationState())
+                .destinationCountry(dto.getDestinationCountry())
+                .lastDateOfExpenseSubmission(dto.getLastDateOfExpenseSubmission())
+                .maxAmountPerDay(dto.getMaxAmountPerDay())
+                .createdOn(LocalDateTime.now())
+                .updatedOn(LocalDateTime.now())
+                .build();
     }
 
-    public TravelPlan updateEntity(TravelPlan travelPlan, TravelPlanRequestDto travelPlanDto){
+    public TravelPlan updateEntity(TravelPlan travelPlan, TravelPlanRequestDto travelPlanDto) {
         travelPlan.setPurpose(travelPlanDto.getPurpose());
         travelPlan.setStartDate(travelPlanDto.getStartDate());
         travelPlan.setEndDate(travelPlanDto.getEndDate());
@@ -44,7 +55,7 @@ public class TravelPlanMapper {
         return travelPlan;
     }
 
-    public TravelPlanDto toTravelPlanDto(TravelPlan travelPlan){
+    public TravelPlanDto toTravelPlanDto(TravelPlan travelPlan) {
         TravelPlanDto travelPlanDto = new TravelPlanDto();
 
         travelPlanDto.setId(travelPlan.getId());
@@ -61,8 +72,9 @@ public class TravelPlanMapper {
         return travelPlanDto;
     }
 
-    public List<TravelPlanDto> toTravelPlanDtoList(List<TravelPlan> travelPlanList){
+    public List<TravelPlanDto> toTravelPlanDtoList(List<TravelPlan> travelPlanList) {
 
-        return travelPlanList.stream().map(this::toTravelPlanDto).collect(Collectors.toList());
+        return travelPlanList.stream()
+                .map(this::toTravelPlanDto).collect(Collectors.toList());
     }
 }

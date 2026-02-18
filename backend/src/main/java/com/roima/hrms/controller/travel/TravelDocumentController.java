@@ -1,6 +1,5 @@
 package com.roima.hrms.controller.travel;
 
-
 import com.roima.hrms.dtos.req.TravelDocumentReqDto;
 import com.roima.hrms.dtos.req.TravelExpenseRequestDto;
 import com.roima.hrms.dtos.res.TravelDocumentDto;
@@ -29,13 +28,13 @@ import java.util.List;
 @Tag(name = "Travel Plan Documents")
 public class TravelDocumentController {
 
-
     private final TravelPlanService travelPlanService;
     private final TravelEmployeeService travelEmployeeService;
     private final FileService fileService;
     private final TravelDocumentService travelDocumentService;
 
-    public TravelDocumentController(TravelPlanService travelPlanService, TravelEmployeeService travelEmployeeService, FileService fileService, TravelDocumentService travelDocumentService) {
+    public TravelDocumentController(TravelPlanService travelPlanService, TravelEmployeeService travelEmployeeService,
+            FileService fileService, TravelDocumentService travelDocumentService) {
         this.travelPlanService = travelPlanService;
         this.travelEmployeeService = travelEmployeeService;
         this.fileService = fileService;
@@ -43,56 +42,64 @@ public class TravelDocumentController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<TravelDocumentDto> createTravelExpense(@ModelAttribute TravelDocumentReqDto dto) {
+    // public ResponseEntity<TravelDocumentDto> createTravelExpense(@ModelAttribute
+    // TravelDocumentReqDto dto) {
     public ResponseEntity<ApiResponse> createTravelExpense(@ModelAttribute TravelDocumentReqDto dto) {
         TravelDocumentDto tt = travelDocumentService.createTravelDocument(dto);
-        ApiResponse<TravelDocumentDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Travel Document.", tt, null);
+        ApiResponse<TravelDocumentDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                "Successfully created Travel Document.", tt, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
-
-
 
     @GetMapping
     public ResponseEntity<ApiResponse> getTravelDocuments(@PathVariable Long travelPlanId) {
         List<TravelDocumentDto> tt = travelDocumentService.getTravelDocuments(travelPlanId);
-        ApiResponse<List<TravelDocumentDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Travel Document.", tt, null);
+        ApiResponse<List<TravelDocumentDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                "Successfully created Travel Document.", tt, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    @DeleteMapping("documentId")
-    public ResponseEntity<ApiResponse> deleteTravelDocuments(@PathVariable Long travelPlanId) {
-        List<TravelDocumentDto> tt = travelDocumentService.getTravelDocuments(travelPlanId);
-        ApiResponse<List<TravelDocumentDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Travel Document.", tt, null);
-        return ResponseEntity.status(HttpStatus.OK).body(res);
-    }
+    // @DeleteMapping("documentId")
+    // public ResponseEntity<ApiResponse> getTravelDocuments(@PathVariable Long
+    // travelPlanId) {
+    // List<TravelDocumentDto> tt =
+    // travelDocumentService.getTravelDocuments(travelPlanId);
+    // ApiResponse<List<TravelDocumentDto>> res =
+    // ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created
+    // Travel Document.", tt, null);
+    // return ResponseEntity.status(HttpStatus.OK).body(res);
+    // }
 
-
-
-
-
-//    @GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
-//    public ResponseEntity<Object> getFile() throws IOException {
-//        HttpHeaders headers = new HttpHeaders();
-//
-////        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-//        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-//        headers.add("Pragma", "no-cache");
-//        headers.add("Expires", "0");
-//
-//        Object documentBytes = fileService.getFile("document","");
-////        ApiResponse<byte[]> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Travel Plans successfully", documentBytes, null);
-//
-//        ResponseEntity<Object>
-//                responseEntity = ResponseEntity.ok().headers(headers).contentType(
-//                MediaType.parseMediaType("application/pdf")).body(documentBytes);
-//        return responseEntity;
-//
-//    }
-//
-//    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<ApiResponse> fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
-//        String resString = fileService.fileUpload(file);
-//        ApiResponse<String> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Travel Plan.", resString, null);
-//        return ResponseEntity.status(HttpStatus.OK).body(res);
-//    }
+    // @GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
+    // public ResponseEntity<Object> getFile() throws IOException {
+    // HttpHeaders headers = new HttpHeaders();
+    //
+    //// headers.add("Content-Disposition", String.format("attachment;
+    // filename=\"%s\"", file.getName()));
+    // headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+    // headers.add("Pragma", "no-cache");
+    // headers.add("Expires", "0");
+    //
+    // Object documentBytes = fileService.getFile("document","");
+    //// ApiResponse<byte[]> res =
+    // ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Travel
+    // Plans successfully", documentBytes, null);
+    //
+    // ResponseEntity<Object>
+    // responseEntity = ResponseEntity.ok().headers(headers).contentType(
+    // MediaType.parseMediaType("application/pdf")).body(documentBytes);
+    // return responseEntity;
+    //
+    // }
+    //
+    // @PostMapping(value = "/upload", consumes =
+    // MediaType.MULTIPART_FORM_DATA_VALUE)
+    // public ResponseEntity<ApiResponse> fileUpload(@RequestParam("file")
+    // MultipartFile file) throws IOException {
+    // String resString = fileService.fileUpload(file);
+    // ApiResponse<String> res =
+    // ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created
+    // Travel Plan.", resString, null);
+    // return ResponseEntity.status(HttpStatus.OK).body(res);
+    // }
 }
