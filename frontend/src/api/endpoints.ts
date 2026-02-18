@@ -24,6 +24,7 @@ export const TRAVEL_PLAN_ENDPOINTS = {
 
 export const EXPENSE_ENDPOINTS = {
 	create: () => `/travel-expense`,
+	delete: (id: string) => `/travel-expense/${id}`,
 	getTravelExpenseById: (id: string) => `/travel-expense/${id}`,
 };
 

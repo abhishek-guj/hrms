@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import TravelDocumentsPage from "../tmp/TravelDocumentsPage";
-import TravelPlanView from "../tmp/TravelPlanView";
+import TravelPlanView from "./components/travelPlans/TravelplanDashboard/TravelPlanView";
 import App from "./App";
 import TravelExpenses from "./components/travelPlans/TravelplanDashboard/TravelExpenses";
 import TravelPlanCreate from "./components/travelPlans/TravelplanDashboard/TravelPlanCreate";
@@ -12,6 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import TravelPlanPage from "./pages/travel/TravelPlanPage";
 import TravelExpenseView from "./components/travelPlans/TravelExpenses/TravelExpenseView";
 import TravelExpenseCreate from "./components/travelPlans/TravelExpenses/TravelExpenseCreate";
+import TravelExpenseDelete from "./components/travelPlans/TravelExpenses/TravelExpenseDelete";
 
 const router = createBrowserRouter([
 	{
@@ -45,6 +46,11 @@ const router = createBrowserRouter([
 								path: "new",
 								index: true,
 								element: <TravelExpenseCreate />,
+							},
+							{
+								path: ":expenseId/delete",
+								index: true,
+								element: <TravelExpenseDelete />,
 							},
 						],
 					},

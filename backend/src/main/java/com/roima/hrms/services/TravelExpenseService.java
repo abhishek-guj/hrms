@@ -115,24 +115,25 @@ public class TravelExpenseService {
 
         // converting to entity
         TravelExpense travelExpense = null;
-        try{
+        try {
 
 //        TravelExpense travelExpense = TravelExpense.builder()
-        travelExpense = TravelExpense.builder()
-                .travelPlan(travelPlan)
-                .submittedBy(submittedBy)
-                .submitStatus(true)
-                .expenseUploadDate(LocalDate.now())
-                .expenseType(expenseType)
-                .expenseAmount(dto.getExpenseAmount())
-                .expenseDate(LocalDate.parse(dto.getExpenseDate().substring(0,10)))
-                .status(dto.getStatus()==null ? "Pending" : dto.getStatus())
-                .remark(dto.getRemark())
-                .statusChangedOn(LocalDateTime.now())
-                .statusChangedBy(roleUtil.getCurrentEmployee())
-                .build();
-        }catch(Exception ex){
-            ex.printStackTrace();;
+            travelExpense = TravelExpense.builder()
+                    .travelPlan(travelPlan)
+                    .submittedBy(submittedBy)
+                    .submitStatus(true)
+                    .expenseUploadDate(LocalDate.now())
+                    .expenseType(expenseType)
+                    .expenseAmount(dto.getExpenseAmount())
+                    .expenseDate(LocalDate.parse(dto.getExpenseDate().substring(0, 10)))
+                    .status(dto.getStatus() == null ? "Pending" : dto.getStatus())
+                    .remark(dto.getRemark())
+                    .statusChangedOn(LocalDateTime.now())
+                    .statusChangedBy(roleUtil.getCurrentEmployee())
+                    .build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            ;
         }
 
         for (String path : proofPaths) {

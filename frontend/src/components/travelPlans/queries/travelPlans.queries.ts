@@ -83,7 +83,6 @@ export const useDeleteTravelPlan = () => {
 		onSuccess: (id) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlan", id] });
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlans"] });
-			alert("travel plan deleted successfull");
 		},
 		onError: () => {
 			console.log("error deleted travel plan");
@@ -161,6 +160,23 @@ export const useCreateTravelExpense = () => {
 		},
 		onError: () => {
 			console.log("error creating expense ");
+		},
+	});
+};
+
+export const useDeleteTravelExpense = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async ({ id }: { id: string }) => {
+			const response = await TravelPlansService.deleteTravelExpense(id);
+			return id;
+		},
+		onSuccess: (id) => {
+			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses", id] });
+			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
+		},
+		onError: () => {
+			console.log("error deleted travel plan");
 		},
 	});
 };

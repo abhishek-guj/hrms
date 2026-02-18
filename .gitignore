@@ -4,3 +4,7 @@ logs/*
 backend/logs/app.log
 tmp
 tmp/*
+
+
+backend/src/main/resources/document/*
+backend/src/main/resources/expense/*

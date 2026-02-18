@@ -1,22 +1,16 @@
-import { cn } from "@/lib/utils";
-
 import { Button } from "../ui/button";
 
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { LoginFormCard } from "./LoginFormCard";
 
-import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { LoginFormType } from "./loginForm.types";
-import { LoginFormSchema, type LoginFormSchemaType } from "./schema";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { authActions } from "../../store/auth/auth.slice";
-import { selectIsAuthenticated } from "../../store/auth/auth.selector";
-import { useEffect } from "react";
+import { useAppDispatch } from "../../store/hooks";
+import type { LoginFormType } from "./loginForm.types";
 import { useLogin } from "./queries/auth.queries";
-import { useMutation } from "@tanstack/react-query";
-import { Navigate, useNavigate } from "react-router-dom";
+import { LoginFormSchema, type LoginFormSchemaType } from "./schema";
 
 export function LoginForm({
 	className,

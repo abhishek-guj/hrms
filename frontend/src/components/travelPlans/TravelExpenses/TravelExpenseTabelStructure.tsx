@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { Eye, Pencil } from "lucide-react";
+import { Eye, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../../ui/button";
 import DataTableBadge from "../TravelplanDashboard/Shared/DataTableBadge";
@@ -79,13 +79,6 @@ export const TravelExpenseTableColumns: ColumnDef<TravelExpenseDto>[] = [
 			<span className="font-medium">{getValue() as string}</span>
 		),
 	},
-	// {
-	// 	accessorKey: "endDate",
-	// 	header: "End Date",
-	// 	cell: ({ row }) => (
-	// 		<span className="font-medium">{row.getValue("endDate")}</span>
-	// 	),
-	// },
 	{
 		accessorKey: "status",
 		header: "Status",
@@ -103,12 +96,12 @@ export const TravelExpenseTableColumns: ColumnDef<TravelExpenseDto>[] = [
 						<span className="hidden lg:block">View</span>
 					</Link>
 				</Button>
-				{/* <Button asChild variant={"outline"}>
-					<Link to={`${row.getValue("id")}/edit`} className="border">
-						<Pencil className="h-4 w-4" />
-						<span className="hidden lg:block">Edit</span>
+				<Button asChild variant={"outline"}>
+					<Link to={`${row.getValue("id")}/delete`} className="border">
+						<Trash className="h-4 w-4" />
+						<span className="hidden lg:block">Delete</span>
 					</Link>
-				</Button> */}
+				</Button>
 			</div>
 		),
 	},

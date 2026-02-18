@@ -29,11 +29,11 @@ const TravelExpenses = () => {
 	}
 	return (
 		<>
-			<Card className="border-none shadow-none max-h-full h-full w-full">
+			<Card className="border-none shadow-none max-h-full h-full w-full px-28">
 				<CardHeader>
 					<CardTitle>Travel Expenses</CardTitle>
 				</CardHeader>
-				<CardContent className="flex flex-col gap-1 px-20">
+				<CardContent className="flex flex-col gap-1">
 					<TravelExpensesTable />
 				</CardContent>
 			</Card>

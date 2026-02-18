@@ -12,6 +12,7 @@ import {
 	useDeleteTravelPlan,
 	useTravelPlan,
 } from "../../queries/travelPlans.queries";
+import { showSuccess } from "../../../ui/toast";
 
 const TravelPlanDeleteDialog = () => {
 	// getting id of open travel plan
@@ -29,6 +30,7 @@ const TravelPlanDeleteDialog = () => {
 	// handlers
 	const handleDelete = async () => {
 		await deleteTravelPlan.mutateAsync({ id: id });
+		showSuccess("Successfully deleted Travel Plan");
 		navigate("/travel/plans");
 	};
 

@@ -45,7 +45,6 @@ export const TravelPlansService = {
 		console.log(id, data);
 		const res = await api.put<IApiResponse<TravelPlanDto>>(
 			TRAVEL_PLAN_ENDPOINTS.update(id),
-			// { id, data },
 			data,
 		);
 		console.log(res.data);
@@ -123,6 +122,13 @@ export const TravelPlansService = {
 				},
 			},
 		);
+		return res.data.data;
+	},
+
+	async deleteTravelExpense(id: string) {
+		const res = await api.delete<IApiResponse>(EXPENSE_ENDPOINTS.delete(id), {
+			id,
+		});
 		return res.data.data;
 	},
 };

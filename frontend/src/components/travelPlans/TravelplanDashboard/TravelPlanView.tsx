@@ -1,34 +1,35 @@
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
+import { Separator } from "../../ui/separator";
 import TravelPlanViewForm from "./forms/TravelPlanViewForm";
-import TravelPlanEmployees from "./TravelPlanEmployees";
 
 const TravelPlanView = () => {
-	const [open, setOpen] = useState(true);
-
-	const navigate = useNavigate();
-
-	const handleClose = () => {
-		navigate("/travel/plans");
-	};
-
 	return (
-		<Dialog open={open} onOpenChange={handleClose} className="">
-			{" "}
-			<DialogHeader>
-				<DialogTitle>View Travel Plan</DialogTitle>
-			</DialogHeader>
-			<DialogContent className="p-0 flex border border-red-500 w-fit max-w-none ">
-				<TravelPlanViewForm />
-				<TravelPlanEmployees />
-			</DialogContent>
-		</Dialog>
+		<main>
+			<TravelPlanViewForm />
+			<Separator />
+			<div className="p-2 flex justify-center gap-4">
+				<NavLink
+					to={"employee"}
+					className="p-2 border bg-secondary rounded-xl "
+				>
+					Assigned Employees
+				</NavLink>
+				<NavLink
+					to={"documents"}
+					className="p-2 border bg-secondary rounded-xl "
+				>
+					Travel Documents
+				</NavLink>
+				<NavLink
+					to={"expenses"}
+					className="p-2 border bg-secondary rounded-xl "
+				>
+					Travel Expenses
+				</NavLink>
+			</div>
+			<Separator />
+			<Outlet />
+		</main>
 	);
 };
 

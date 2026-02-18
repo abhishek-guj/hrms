@@ -35,3 +35,6 @@ build/
 ### LOGS ###
 app.log
 logs/*
+
+resource/expense
+resource/document

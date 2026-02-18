@@ -8,6 +8,7 @@ import { DatePickerInput } from "../../../ui/date-picker";
 import { Separator } from "../../../ui/separator";
 import type { LoginFormType } from "../../loginForm.types";
 import { useTravelPlan } from "../../queries/travelPlans.queries";
+import { showError } from "../../../ui/toast";
 
 const TravelPlanViewForm = () => {
 	// getting id of open travel plan
@@ -19,20 +20,30 @@ const TravelPlanViewForm = () => {
 	// handlers
 
 	if (error) {
-		return <div>{error.message}</div>;
+		showError(error.message);
+		return (
+			<div className="w-full h-4/5 grid items-center justify-center">
+				No Data at the Moment...
+			</div>
+		);
 	}
 	if (isLoading) {
-		return <div>Loading....</div>;
+		return (
+			<div className="w-full h-4/5 grid items-center justify-center">
+				Loading....
+			</div>
+		);
 	}
 
 	//
 	return (
-		<div className="p-4 px-8 flex flex-col">
-			<div className="pb-4">
-				<div className="font-black text-xl">View Travel Plan</div>
+		<div className="p-4 flex flex-col">
+			<div className="pb-4 px-28 ">
+				<h1 className="font-bold text-2xl">View Travel Plan</h1>
 			</div>
-			<div>
-				<div className="grid grid-cols-2">
+			<Separator />
+			<div className="px-28">
+				<div className="grid grid-cols-2 ">
 					<div>
 						<div className="text-black/50 text-sm my-1">Purpose</div>
 						<div className="p-1">{data?.purpose}</div>

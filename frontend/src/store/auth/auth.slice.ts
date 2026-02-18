@@ -31,7 +31,7 @@ const authSlice = createSlice({
 				state.role = decoded.role;
 				state.token = decoded.token;
 			} catch (ex) {
-				console.error(ex);
+				console.error(ex);  
 			}
 		},
 	},
