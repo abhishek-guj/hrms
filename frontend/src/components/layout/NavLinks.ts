@@ -38,7 +38,7 @@ export const navLinksList = {
 			items: [
 				{
 					title: "View Jobs",
-					url: "#",
+					url: "/jobs",
 				},
 				{
 					title: "Reffrals",

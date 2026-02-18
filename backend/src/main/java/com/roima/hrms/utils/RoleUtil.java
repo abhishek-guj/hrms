@@ -23,7 +23,6 @@ public class RoleUtil {
 
     public EmployeeProfile getCurrentEmployee(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = userRepository.findByEmail(auth.getName()).orElseThrow();
         EmployeeProfile employeeProfile = employeeProfileRepository.getEmployeeProfileByUser_Email(auth.getName());
         return employeeProfile;
     }

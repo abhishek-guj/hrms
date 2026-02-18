@@ -39,3 +39,10 @@ export const DOCUMENTS_GET_ENDPOINTS = {
 export const ORGCHART_ENDPOINTS = {
 	getMyOrg: () => "/org",
 };
+
+
+export const JOB_ENDPOINTS = {
+	getAll: () => "/jobs",
+	getById: (id: string) => `/jobs/${id}`
+
+}

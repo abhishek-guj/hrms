@@ -3,10 +3,8 @@ import { Eye, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../../ui/button";
 import DataTableBadge from "../TravelplanDashboard/Shared/DataTableBadge";
-import type {
-	DataTableStatus,
-	TravelExpenseDto,
-} from "../types/TravelPlan.types";
+import type { TravelExpenseDto } from "../types/TravelPlan.types";
+import type { DataTableStatus } from "../../shared/shared.types";
 
 export const DataTableStatusConfig: Record<
 	DataTableStatus,
@@ -31,6 +29,16 @@ export const DataTableStatusConfig: Record<
 		label: "Cancelled",
 		className:
 			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
+	},
+	active: {
+		label: "active",
+		className:
+			"bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+	},
+	closed: {
+		label: "Pending",
+		className:
+			"bg-amber-500/15 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
 	},
 };
 

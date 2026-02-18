@@ -1,8 +1,5 @@
-export type DataTableStatus =
-	| "completed"
-	| "pending"
-	| "processing"
-	| "cancelled";
+import type { DataTableStatus } from "../../shared/shared.types";
+
 
 export interface DataTabelItem {
 	id: string;

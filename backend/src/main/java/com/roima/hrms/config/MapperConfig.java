@@ -1,10 +1,16 @@
 package com.roima.hrms.config;
 
 
+import com.roima.hrms.dtos.res.EmployeeProfileDto;
+import com.roima.hrms.dtos.res.JobDto;
 import com.roima.hrms.dtos.res.TravelEmployeeDto;
+import com.roima.hrms.entities.EmployeeProfile;
+import com.roima.hrms.entities.Job;
 import com.roima.hrms.entities.TravelEmployee;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +21,7 @@ public class MapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper model = new ModelMapper();
-        model.getConfiguration()
-                .setSkipNullEnabled(false);
+        model.getConfiguration().setSkipNullEnabled(false);
 //                .setMatchingStrategy(MatchingStrategies.STRICT)
 //                .setPropertyCondition(context -> {
 //                    return Hibernate.isInitialized(context.getSource());
@@ -28,16 +33,11 @@ public class MapperConfig {
     }
 
     private void addMapping(ModelMapper model) {
-        model.typeMap(TravelEmployee.class, TravelEmployeeDto.class)
-                .addMappings(mapper -> {
-                    mapper.map(src -> src.getEmployeeProfile().getId(),
-                            TravelEmployeeDto::setId);
-                    mapper.map(src -> src.getEmployeeProfile().getFirstName(),
-                            TravelEmployeeDto::setFirstName);
-                    mapper.map(src->src.getEmployeeProfile().getFirstName(),
-                            TravelEmployeeDto::setLastName);
-                });
+        // travel employee
+        model.typeMap(TravelEmployee.class, TravelEmployeeDto.class).addMappings(mapper -> {
+            mapper.map(src -> src.getEmployeeProfile().getId(), TravelEmployeeDto::setId);
+            mapper.map(src -> src.getEmployeeProfile().getFirstName(), TravelEmployeeDto::setFirstName);
+            mapper.map(src -> src.getEmployeeProfile().getFirstName(), TravelEmployeeDto::setLastName);
+        });
     }
-
-
 }

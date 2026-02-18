@@ -75,7 +75,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleBaseException(Exception ex) {
         ApiResponse<Void> errorResponse = ApiResponse.createApiResponse(
                 ApiResponseType.ERROR,
-                ex.getMessage(),
+//                ex.getMessage(),
+                "Internal Server Error",
                 null,
                 null
         );

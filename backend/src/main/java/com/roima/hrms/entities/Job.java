@@ -3,14 +3,16 @@ package com.roima.hrms.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "jobs", schema = "job")
 public class Job {
@@ -25,48 +27,41 @@ public class Job {
     private String jobTitle;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "job_details")
     private String jobDetails;
 
-    @Column(name = "experience_level")
-    private Integer experienceLevel;
+    @Column(name = "experience_years")
+    private Integer experienceYears;
 
     @Column(name = "number_of_vaccancy")
     private Integer numberOfVaccancy;
 
-    @Column(name = "created_by")
-    private Long createdBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private EmployeeProfile createdBy;
 
     @Column(name = "created_on")
-    private Instant createdOn;
+    private LocalDateTime createdOn;
 
-    @Column(name = "last_update_date")
-    private Instant lastUpdateDate;
-
-    @Column(name = "last_updated_by")
-    private Long lastUpdatedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by")
+    private EmployeeProfile updatedBy;
 
     @Column(name = "updated_on")
-    private Instant updatedOn;
+    private LocalDateTime updatedOn;
 
-    @Column(name = "updated_by")
-    private Long updatedBy;
-
-    @Column(name = "deleted_by")
-    private Long deletedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_by")
+    private EmployeeProfile deletedBy;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
     @Size(max = 255)
     @NotNull
-    @Nationalized
     @Column(name = "status", nullable = false)
-    private String status;
+    private String status; // active or close
 
     @Column(name = "status_changed_on")
-    private Instant statusChangedOn;
-
-
+    private LocalDateTime statusChangedOn;
 }

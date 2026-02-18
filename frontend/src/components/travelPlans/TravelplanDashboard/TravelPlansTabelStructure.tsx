@@ -2,8 +2,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../../ui/button";
-import type { DataTabelItem, DataTableStatus } from "../types/TravelPlan.types";
+import type { DataTabelItem } from "../types/TravelPlan.types";
 import DataTableBadge from "./Shared/DataTableBadge";
+import type { DataTableStatus } from "../../shared/shared.types";
 
 export const DataTableStatusConfig: Record<
 	DataTableStatus,

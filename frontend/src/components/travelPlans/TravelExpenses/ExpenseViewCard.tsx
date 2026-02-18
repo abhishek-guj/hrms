@@ -82,7 +82,7 @@ const ExpenseViewCard = () => {
 						{data?.expenseDocumentFilePaths?.map((filePath, idx) => (
 							<>
 								<div>Proof {idx + 1}</div>
-								<div key={filePath} className="border border-red-800 mb-10">
+								<div key={filePath} className="mb-10">
 									<ProofView filePath={filePath} />
 								</div>
 							</>
