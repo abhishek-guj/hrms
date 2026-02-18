@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "../../ui/button";
+import { Button } from "../ui/button";
 import {
 	Dialog,
 	DialogClose,
@@ -8,32 +8,27 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "../../ui/dialog";
-import { showSuccess } from "../../ui/toast";
-import {
-	useDeleteTravelExpense,
-	useTravelExpenseById,
-} from "../queries/travelPlans.queries";
+} from "../ui/dialog";
+import { useDeleteJob, useJobsById } from "./queries/job.queries";
 
-const TravelExpenseDelete = () => {
+const JobDelete = () => {
 	// getting id of open travel plan
-	const { id, expenseId } = useParams<{ id: string; expenseId: string }>();
+	const { jobId } = useParams<{ jobId: string }>();
 
 	const navigate = useNavigate();
 
 	// query hook
-	const { data, error, isLoading } = useTravelExpenseById(expenseId!);
-	const deleteTravelPlan = useDeleteTravelExpense();
+	const { data, error, isLoading } = useJobsById(jobId!);
+	const deleteTravelPlan = useDeleteJob();
 
 	// handlers
 	const handleDelete = async () => {
-		await deleteTravelPlan.mutateAsync({ id: expenseId! });
-		showSuccess("Successfully deleted Travel Expense");
-		navigate(`/travel/plans/${id}/expenses`);
+		await deleteTravelPlan.mutateAsync({ id: jobId! });
+		navigate(`/jobs`);
 	};
 
 	const handleClose = () => {
-		navigate(`/travel/plans/${id}/expenses`);
+		navigate(`/jobs`);
 	};
 
 	if (error) {
@@ -49,10 +44,10 @@ const TravelExpenseDelete = () => {
 				<DialogHeader>
 					<DialogTitle>Delete Travel Plan</DialogTitle>
 					<DialogDescription>
-						Are you sure you want to delete this Travel delete?
+						Are you sure you want to delete this Job?
 					</DialogDescription>
 				</DialogHeader>
-				<div className="space-y-2">Expense of {data?.expenseAmount}</div>
+				<div className="space-y-2">{data?.jobTitle}</div>
 				<DialogFooter>
 					<DialogClose asChild>
 						<Button variant={"outline"} type="button">
@@ -68,4 +63,4 @@ const TravelExpenseDelete = () => {
 	);
 };
 
-export default TravelExpenseDelete;
+export default JobDelete;

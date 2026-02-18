@@ -12,5 +12,12 @@ export const JobService = {
     async getJobById(id: string): Promise<JobDto> {
         const res = await api.get<IApiResponse<JobDto>>(JOB_ENDPOINTS.getById(id))
         return res.data.data;
-    }
+    },
+
+    async deleteJob(id: string) {
+        const res = await api.delete<IApiResponse<any>>(
+            JOB_ENDPOINTS.delete(id),
+        );
+        return res.data;
+    },
 }

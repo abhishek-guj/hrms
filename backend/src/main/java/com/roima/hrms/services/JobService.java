@@ -46,7 +46,7 @@ public class JobService {
     }
 
     public JobDto getById(Long id) {
-        Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
+        Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job Not Found!"));
         // this will be returned f admin or hr
         return jobMapper.toJobDto(job);
     }
@@ -118,7 +118,7 @@ public class JobService {
 //    public JobDto updateJob(Long id, JobRequestDto dto) {
 //
 //        Job job = jobRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
+//                .orElseThrow(() -> new RuntimeException("Job Not Found!"));
 //
 //        job = jobMapper.toUpdateEntity(job, dto);
 //
@@ -143,17 +143,14 @@ public class JobService {
 //        }
 //    }
 //
-//    public void deleteJob(Long id) {
-//        Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
-//        Long submittedById = job.getSubmittedBy().getId();
-//        if (roleUtil.isEmployee() && roleUtil.getCurrentEmployeeId().equals(submittedById)) {
-//            jobRepository.delete(job);
-//        } else if (roleUtil.isAdmin() || roleUtil.isHr()) {
-//            jobRepository.delete(job);
-//        } else {
-//            throw new UnauthorizedException("You are not allowed to delete this.");
-//        }
-//    }
+    public void deleteJob(Long id) {
+        Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job Not Found!"));
+        if (roleUtil.isAdmin() || roleUtil.isHr()) {
+            jobRepository.delete(job);
+        } else {
+            throw new UnauthorizedException("You are not allowed to delete this.");
+        }
+    }
 //
 //    public List<JobDto> getAllJobsByTravelPlanId(Long travelPlanId) {
 //        // if admin or hr then show all expenses

@@ -3,6 +3,7 @@ package com.roima.hrms.handlers;
 
 import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.exceptions.AuthorizationHeaderMissing;
+import com.roima.hrms.exceptions.UnauthorizedException;
 import com.roima.hrms.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,17 @@ public class GlobalExceptionHandler {
                 null
         );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    ResponseEntity<ApiResponse<Void>> handleUnauthorizedException(UnauthorizedException ex) {
+        ApiResponse<Void> errorResponse = ApiResponse.createApiResponse(
+                ApiResponseType.UNAUTHORIZED,
+                ex.getMessage(),
+                null,
+                null
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

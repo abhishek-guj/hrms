@@ -52,7 +52,7 @@ const TravelPlanDeleteDialog = () => {
 				<DialogHeader>
 					<DialogTitle>Delete Travel Plan</DialogTitle>
 					<DialogDescription>
-						Are you sure you wan to delete this Travel Plan?
+						Are you sure you want to delete this Travel Plan?
 					</DialogDescription>
 				</DialogHeader>
 				<div className="space-y-2">{data?.purpose}</div>

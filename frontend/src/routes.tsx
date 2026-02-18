@@ -16,6 +16,7 @@ import JobsPage from "./pages/job/JobsPage";
 import LoginPage from "./pages/LoginPage";
 import OrgChartPage from "./pages/org/OrgChartPage";
 import TravelPlanPage from "./pages/travel/TravelPlanPage";
+import JobDelete from "./components/job/JobDelete";
 
 const router = createBrowserRouter([
 	{
@@ -63,7 +64,10 @@ const router = createBrowserRouter([
 			{
 				path: "/jobs",
 				element: <JobsPage />,
-				children: [{ path: ":jobId", element: <JobView /> }],
+				children: [
+					{ path: ":jobId", element: <JobView /> },
+					{ path: ":jobId/delete", element: <JobDelete /> }
+				],
 			},
 		],
 	},
