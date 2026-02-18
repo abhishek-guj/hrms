@@ -60,7 +60,7 @@ public class TravelDocumentController {
     }
 
     @DeleteMapping("documentId")
-    public ResponseEntity<ApiResponse> getTravelDocuments(@PathVariable Long travelPlanId) {
+    public ResponseEntity<ApiResponse> deleteTravelDocuments(@PathVariable Long travelPlanId) {
         List<TravelDocumentDto> tt = travelDocumentService.getTravelDocuments(travelPlanId);
         ApiResponse<List<TravelDocumentDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Travel Document.", tt, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);

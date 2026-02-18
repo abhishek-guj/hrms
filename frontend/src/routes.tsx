@@ -13,52 +13,54 @@ import TravelPlanPage from "./pages/travel/TravelPlanPage";
 import TravelExpenseView from "./components/travelPlans/TravelExpenses/TravelExpenseView";
 import TravelExpenseCreate from "./components/travelPlans/TravelExpenses/TravelExpenseCreate";
 import TravelExpenseDelete from "./components/travelPlans/TravelExpenses/TravelExpenseDelete";
+import OrgChartPage from "./pages/org/OrgChartPage";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <MainLayout />,
-		children: [
-			{ index: true, path: "/", element: <App /> },
-			{
-				path: "/travel/plans",
-				element: <TravelPlanPage />,
-				children: [{ path: "new", element: <TravelPlanCreate /> }],
-			},
-			{
-				path: "/travel/plans/:id",
-				element: <TravelPlanView />,
-				children: [
-					{ path: "edit", element: <TravelPlanEdit /> },
-					{ path: "delete", element: <TravelPlanDelete /> },
-					{ path: "employee", index: true, element: <TravelPlanEmployees /> },
-					{ path: "documents", element: <TravelDocumentsPage /> },
-					{
-						path: "expenses",
-						element: <TravelExpenses />,
-						children: [
-							{
-								path: ":expenseId",
-								index: true,
-								element: <TravelExpenseView />,
-							},
-							{
-								path: "new",
-								index: true,
-								element: <TravelExpenseCreate />,
-							},
-							{
-								path: ":expenseId/delete",
-								index: true,
-								element: <TravelExpenseDelete />,
-							},
-						],
-					},
-				],
-			},
-		],
-	},
-	{ path: "/login", element: <LoginPage /> },
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      { index: true, path: "/", element: <App /> },
+      {
+        path: "/travel/plans",
+        element: <TravelPlanPage />,
+        children: [{ path: "new", element: <TravelPlanCreate /> }],
+      },
+      {
+        path: "/travel/plans/:id",
+        element: <TravelPlanView />,
+        children: [
+          { path: "edit", element: <TravelPlanEdit /> },
+          { path: "delete", element: <TravelPlanDelete /> },
+          { path: "employee", index: true, element: <TravelPlanEmployees /> },
+          { path: "documents", element: <TravelDocumentsPage /> },
+          {
+            path: "expenses",
+            element: <TravelExpenses />,
+            children: [
+              {
+                path: ":expenseId",
+                index: true,
+                element: <TravelExpenseView />,
+              },
+              {
+                path: "new",
+                index: true,
+                element: <TravelExpenseCreate />,
+              },
+              {
+                path: ":expenseId/delete",
+                index: true,
+                element: <TravelExpenseDelete />,
+              },
+            ],
+          },
+        ],
+      },
+      { path: "/org-chart", element: <OrgChartPage /> },
+    ],
+  },
+  { path: "/login", element: <LoginPage /> },
 ]);
 
 export default router;

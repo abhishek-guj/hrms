@@ -2,6 +2,7 @@ package com.roima.hrms.controller.orgChart;
 
 import com.roima.hrms.dtos.res.OrgEmployeeDto;
 import com.roima.hrms.dtos.res.TravelPlanDto;
+import com.roima.hrms.entities.EmployeeProfile;
 import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.OrgChartService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/org")
@@ -29,8 +31,12 @@ public class OrgChartController {
 
     @GetMapping
     public ResponseEntity<ApiResponse> getWholeOrg(){
-        var orgList = orgChartService.getAll();
-        ApiResponse< List<OrgEmployeeDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched whole orglist successfully", orgList, null);
+//        var orgList = orgChartService.getMyOrgChart();
+//        var orgChart = orgChartService.getOrgChart();
+        var orgList2 = orgChartService.getMyOrgChain();
+        ApiResponse<List<OrgEmployeeDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched whole orglist successfully", orgList2, null);
+//        ApiResponse<OrgEmployeeDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched whole orglist successfully", orgList, null);
+//        ApiResponse<Map<Long,OrgEmployeeDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched whole orglist successfully", orgList, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 }

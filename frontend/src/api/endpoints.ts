@@ -35,3 +35,7 @@ export const EXPENSE_TYPES_ENDPOINTS = {
 export const DOCUMENTS_GET_ENDPOINTS = {
 	getExpense: () => `/documents/expense`,
 };
+
+export const ORGCHART_ENDPOINTS = {
+	getMyOrg: () => "/org",
+};

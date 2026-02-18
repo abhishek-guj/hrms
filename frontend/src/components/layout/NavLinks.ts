@@ -48,11 +48,11 @@ export const navLinksList = {
 		},
 		{
 			title: "Organization",
-			url: "#",
+			url: "/org-chart",
 			items: [
 				{
 					title: "Org Chart",
-					url: "#",
+					url: "/org-chart",
 				},
 			],
 		},

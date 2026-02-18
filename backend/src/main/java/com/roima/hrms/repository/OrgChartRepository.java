@@ -31,4 +31,6 @@ public interface OrgChartRepository extends JpaRepository<EmployeeProfile, Long>
 //    @Query(value=" with Recursee as (select ep from EmployeeProfile ep where ep.manager is null union all " +
 //            "select epp from EmployeeProfile epp join fetch Recursee re where epp.manager.id = re.id) select ree from Recursee ree")
 //    List<EmployeeProfile> getAllOrgJPQL();
+
+
 }
