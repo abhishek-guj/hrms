@@ -33,7 +33,9 @@ export const EXPENSE_TYPES_ENDPOINTS = {
 };
 
 export const DOCUMENTS_GET_ENDPOINTS = {
+	getDocument: (type: string) => `/documents/${type}`,
 	getExpense: () => `/documents/expense`,
+	getJobJd: () => `/documents/job`
 };
 
 export const ORGCHART_ENDPOINTS = {

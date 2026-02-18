@@ -32,5 +32,18 @@ public class JobDto {
     private LocalDateTime updatedOn;
     private String status; // active or close
     private LocalDateTime statusChangedOn;
-    private MultipartFile jdFile;
+    private JobJdFileDto jobJdFile;
+}
+
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+class JobJdFileDto{
+    private Long id;
+    private String filePath;
+    private LocalDateTime uploadedOn;
+    private EmployeeProfileDto uploadedBy;
 }

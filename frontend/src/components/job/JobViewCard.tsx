@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { Separator } from "../ui/separator";
 import { useJobsById } from "./queries/job.queries";
 import { Badge } from "../ui/badge";
+import ProofView from "../travelPlans/TravelExpenses/ProofView";
+import { ScrollArea } from "../ui/scroll-area";
 
 const JobViewCard = () => {
 	const { jobId } = useParams<{ jobId: string }>();
@@ -23,7 +25,7 @@ const JobViewCard = () => {
 
 	console.log(data);
 	return (
-		<div className="p-4 px-4 flex flex-col w-fit gap-2">
+		<div className="p-4 px-4 flex flex-col w-fit gap-2 overflow-y-scroll">
 			<div className="grid grid-cols-2 space-x-10">
 				<div>
 					<div className="text-black/50 text-sm my-1">Job Id</div>
@@ -34,18 +36,14 @@ const JobViewCard = () => {
 					<div className="p-1">{data?.jobTitle}</div>
 				</div>
 			</div>
-
 			<Separator />
-
 			<div className="grid grid-cols-1">
 				<div>
 					<div className="text-black/50 text-sm my-1">Description</div>
 					<div className="p-1">{data?.jobDetails}</div>
 				</div>
 			</div>
-
 			<Separator />
-
 			<div className="grid grid-cols-2 gap-5">
 				<div>
 					<div className="text-black/50 text-sm my-1">Exp. Req.</div>
@@ -56,9 +54,7 @@ const JobViewCard = () => {
 					<div className="p-1">{data?.numberOfVaccancy}</div>
 				</div>
 			</div>
-
 			<Separator />
-
 			<div className="grid grid-cols-2 gap-5">
 				<div>
 					<div className="text-black/50 text-sm my-1">Status Changed On</div>
@@ -75,23 +71,14 @@ const JobViewCard = () => {
 				</div>
 			</div>
 			<Separator />
-			<div className="">
-				<div className="text-black/50 text-sm my-1">Job Description Pdf</div>
-				<div className="grid grid-cols-1 max-h-60">
-					{/* {data?.expenseDocumentFilePaths?.length === 0 && (
-						<div>No Proofs there....</div>
-					)}
-					{data?.expenseDocumentFilePaths?.map((filePath, idx) => (
-						<>
-							<div>Proof {idx + 1}</div>
-							<div key={filePath} className="border border-red-800 mb-10">
-								<ProofView filePath={filePath} />
-							</div>
-						</>
-					))} */}
-					JD FILE
+			<div className="text-black/50 text-sm my-1">Job Description Pdf</div>
+			{/* <div className="grid grid-cols-1"> */}
+			{!data?.jobJdFile && <div>No Proofs there....</div>}
+			{data?.jobJdFile && (
+				<div className="h-96 p-0">
+					<ProofView filePath={data?.jobJdFile?.filePath} docType={"job"} />
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };

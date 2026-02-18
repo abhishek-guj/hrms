@@ -12,3 +12,17 @@ export const useExpenseDocument = (id: string): UseQueryResult<Blob> => {
 		},
 	});
 };
+
+export const useJobJdFile = (id: string): UseQueryResult<Blob> => {
+	return useQuery({
+		queryKey: ["getJobJdDocument", id],
+		queryFn: async (): Promise<Blob> => await ExpenseDocumentSerivce.getJobJdDocument(id)
+	});
+};
+
+export const useGetDocument = (id: string, type: string): UseQueryResult<Blob> => {
+	return useQuery({
+		queryKey: ["getJobJdDocument", id],
+		queryFn: async (): Promise<Blob> => await ExpenseDocumentSerivce.getDocument(id, type)
+	});
+};

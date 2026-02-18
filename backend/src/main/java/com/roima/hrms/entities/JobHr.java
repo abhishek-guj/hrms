@@ -1,11 +1,13 @@
 package com.roima.hrms.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "job_hrs", schema = "job")
 public class JobHr {
@@ -14,11 +16,13 @@ public class JobHr {
     @Column(name = "pk_job_hr_id", nullable = false)
     private Long id;
 
-    @Column(name = "job_id")
-    private Long jobId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id", nullable = false)
+    private Job job;
 
-    @Column(name = "hr_id")
-    private Long hrId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hr_id")
+    private EmployeeProfile hr;
 
 
 }

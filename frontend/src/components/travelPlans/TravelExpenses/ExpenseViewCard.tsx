@@ -83,7 +83,7 @@ const ExpenseViewCard = () => {
 							<>
 								<div>Proof {idx + 1}</div>
 								<div key={filePath} className="mb-10">
-									<ProofView filePath={filePath} />
+									<ProofView filePath={filePath} docType={"expense"} />
 								</div>
 							</>
 						))}

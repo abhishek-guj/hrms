@@ -3,14 +3,18 @@ package com.roima.hrms.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.cglib.core.Local;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "job_referrals", schema = "job")
 public class JobReferral {
@@ -19,51 +23,43 @@ public class JobReferral {
     @Column(name = "pk_job_referral_id", nullable = false)
     private Long id;
 
-    @Column(name = "job_id")
-    private Long jobId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id")
+    private Job job;
 
     @Size(max = 255)
-    @Nationalized
-    @Column(name = "fname")
-    private String fname;
+    @Column(name = "first_name")
+    private String firstName;
 
     @Size(max = 255)
-    @Nationalized
-    @Column(name = "lname")
-    private String lname;
+    @Column(name = "last_name")
+    private String last_name;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "email")
     private String email;
 
-    @Column(name = "contact_num")
-    private Integer contactNum;
+    @Column(name = "contact_number")
+    private String contactNumber;
 
     @Column(name = "referred_on")
-    private Instant referredOn;
+    private LocalDateTime referredOn;
 
-    @Column(name = "reffered_by")
-    private Long refferedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reffered_by")
+    private EmployeeProfile referredBy;
 
-    @Size(max = 255)
-    @Nationalized
     @Column(name = "cv_path")
     private String cvPath;
 
-    @Size(max = 255)
-    @Nationalized
     @Column(name = "note")
     private String note;
 
-    @Size(max = 255)
-    @NotNull
-    @Nationalized
     @Column(name = "status", nullable = false)
     private String status;
 
     @Column(name = "status_changed_on")
-    private Instant statusChangedOn;
+    private LocalDateTime statusChangedOn;
 
 
 }

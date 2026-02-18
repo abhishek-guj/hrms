@@ -1,11 +1,13 @@
 package com.roima.hrms.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "job_cv_reviewers", schema = "job")
 public class JobCvReviewer {
@@ -14,11 +16,11 @@ public class JobCvReviewer {
     @Column(name = "pk_job_cv_reviewer_id", nullable = false)
     private Long id;
 
-    @Column(name = "job_id")
-    private Long jobId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id")
+    private Job job;
 
-    @Column(name = "reviewer_id")
-    private Long reviewerId;
-
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewer_id")
+    private EmployeeProfile reviewer;
 }

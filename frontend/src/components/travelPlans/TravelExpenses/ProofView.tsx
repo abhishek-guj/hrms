@@ -1,17 +1,18 @@
 import React from "react";
-import { useExpenseDocument } from "../../shared/services/documents.queries";
+import {
+	useExpenseDocument,
+	useGetDocument,
+} from "../../shared/services/documents.queries";
 import PdfViewer from "../../PdfViewer";
 
-const ProofView = ({ filePath }) => {
-	const { data, isLoading, error } = useExpenseDocument(filePath);
+const ProofView = ({ filePath, docType }) => {
+	const { data, isLoading, error } = useGetDocument(filePath, docType);
 
 	const getType = (blob: Blob) => {
 		return blob?.type;
 	};
 
 	const fileType = getType(data);
-	console.log(fileType);
-	console.log(fileType?.startsWith("image"));
 	if (fileType === "application/pdf") {
 		return (
 			// <div>

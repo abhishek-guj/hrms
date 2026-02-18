@@ -26,4 +26,23 @@ export const ExpenseDocumentSerivce = {
 		console.log(res);
 		return res.data;
 	},
+
+	async getJobJdDocument(id: string): Promise<Blob> {
+		const res = await api.get(DOCUMENTS_GET_ENDPOINTS.getJobJd(), {
+			responseType: "blob",
+			params: { id },
+		});
+		console.log(res);
+		return res.data;
+	},
+
+	async getDocument(id: string, type: string): Promise<Blob> {
+		const res = await api.get(DOCUMENTS_GET_ENDPOINTS.getDocument(type), {
+			responseType: "blob",
+			params: { id },
+		});
+		console.log(res);
+		return res.data;
+	},
+
 };

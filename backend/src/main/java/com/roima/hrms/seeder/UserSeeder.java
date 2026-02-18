@@ -49,6 +49,9 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
         EmployeeProfile employeeProfile103;
         EmployeeProfile employeeProfile104;
         EmployeeProfile employeeProfile105;
+
+        EmployeeProfile hrProfile1;
+        EmployeeProfile hrProfile2;
         if (!employeeProfileRepository.existsByFirstName(("ad"))) {
 
             adminProfile = EmployeeProfile.builder()
@@ -68,8 +71,8 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
             admin.setPasswordHash(PasswordUtil.hashPassword("1234"));
             admin.setEmployeeProfile(adminProfile);
             userRepository.save(admin);
-        }
-        if (!employeeProfileRepository.existsByFirstName(("emp"))) {
+//        }
+//        if (!employeeProfileRepository.existsByFirstName(("emp"))) {
 
             managerProfile = EmployeeProfile.builder()
                     .firstName("man")
@@ -150,6 +153,20 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
                     .build();
             employeeProfileRepository.save(employeeProfile105);
 
+            hrProfile1 = EmployeeProfile.builder()
+                    .firstName("hr1")
+                    .lastName("profile1")
+                    .manager(adminProfile)
+                    .build();
+            employeeProfileRepository.save(hrProfile1);
+
+            hrProfile2 = EmployeeProfile.builder()
+                    .firstName("hr2")
+                    .lastName("profile2")
+                    .manager(hrProfile1)
+                    .build();
+            employeeProfileRepository.save(hrProfile2);
+
 
             // user creation
 
@@ -211,6 +228,32 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
             mng.setPasswordHash(PasswordUtil.hashPassword("1234"));
             mng.setEmployeeProfile(managerProfile);
             userRepository.save(mng);
+
+
+            Role hrRole = roleRepository.findByRole(RoleEnum.Hr).orElseThrow(() -> new RuntimeException("Role Not Found!"));
+
+            String hr1Email = "hr1@exp.com";
+            if(userRepository.existsByEmail(hr1Email)) {
+                return;
+            }
+            User hr1 = new User();
+            hr1.setRole(hrRole);
+            hr1.setEmail(hr1Email);
+            hr1.setPasswordHash(PasswordUtil.hashPassword("1234"));
+            hr1.setEmployeeProfile(hrProfile1);
+            userRepository.save(hr1);
+
+
+            String hr2Email = "hr2@exp.com";
+            if(userRepository.existsByEmail(hr2Email)) {
+                return;
+            }
+            User hr2 = new User();
+            hr2.setRole(hrRole);
+            hr2.setEmail(hr2Email);
+            hr2.setPasswordHash(PasswordUtil.hashPassword("1234"));
+            hr2.setEmployeeProfile(hrProfile2);
+            userRepository.save(hr2);
         }
     }
 }

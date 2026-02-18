@@ -7,6 +7,10 @@ import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -64,4 +68,24 @@ public class Job {
 
     @Column(name = "status_changed_on")
     private LocalDateTime statusChangedOn;
+
+
+    // mapppings
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<JobHr> jobHrs = new HashSet<>();
+
+    @OneToOne(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private JobJdFile jobJdFile;
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<JobReferral> jobReferrals = new HashSet<>();
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private  Set<JobCvReviewer> jobCvReviewers = new HashSet<>();
+
+
+    public void addJdFile(JobJdFile file){
+
+        file.setJob(this);
+    }
 }

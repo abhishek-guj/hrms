@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
@@ -65,6 +66,18 @@ public class GlobalExceptionHandler {
         ApiResponse apiError = ApiResponse.createApiResponse(
                 ApiResponseType.ERROR,
                 "IDENTIFIER not provided OR provided wrong!",
+                null,
+                null
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMaxUploadSizeExceededException(
+            MaxUploadSizeExceededException ex) {
+        ApiResponse apiError = ApiResponse.createApiResponse(
+                ApiResponseType.ERROR,
+                "File to large!",
                 null,
                 null
         );
