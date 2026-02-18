@@ -8,11 +8,10 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-	// const token = localStorage.getItem("token");
-	// if (token) {
-	// 	config.headers.Authorization = `Bearer ${token}`;
-	// }
-	config.headers.Authorization = `Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQWRtaW4iLCJleHAiOjE3NzIxMTA0NzgsImlhdCI6MTc3MTIyMTQ0Niwic3ViIjoiYWJoaUBleHAuY29tIn0.rqQcGz4Mg9dhxQwuauhBXRg0qRD1P4tcmhBp57ZPNQE`;
+	const token = localStorage.getItem("token");
+	if (token) {
+		config.headers.Authorization = `Bearer ${token}`;
+	}
 	return config;
 });
 

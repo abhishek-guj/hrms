@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AuthService } from "../services/auth.service";
+import { showError, showSuccess } from "../../ui/toast";
 
 // export const useLogin = (email: string, password: string) => {
 // 	return useQuery({
@@ -21,11 +22,12 @@ export const useLogin = () => {
 			const response = await AuthService.login(email, password);
 			return response.data;
 		},
-		onSuccess: () => {
-			alert("login successfull");
+		onSuccess: (data) => {
+			localStorage.setItem("token",data.data)
+			showSuccess("Login successfull");
 		},
 		onError: () => {
-			console.log("error logging in ");
+			showError("Error logging in");
 		},
 	});
 };
