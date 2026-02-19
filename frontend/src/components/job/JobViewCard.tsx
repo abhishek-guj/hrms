@@ -1,31 +1,17 @@
 import { format } from "date-fns";
 import { useParams } from "react-router-dom";
+import ProofView from "../travelPlans/TravelExpenses/ProofView";
+import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { useJobsById } from "./queries/job.queries";
-import { Badge } from "../ui/badge";
-import ProofView from "../travelPlans/TravelExpenses/ProofView";
-import { ScrollArea } from "../ui/scroll-area";
 
 const JobViewCard = () => {
 	const { jobId } = useParams<{ jobId: string }>();
 
 	const { data, isLoading, error } = useJobsById(jobId!);
 
-	// id: string;
-	// jobTitle: string;
-	// jobDetails: string;
-	// experienceYears: number;
-	// numberOfVaccancy: number;
-	// createdBy: EmployeeProfileDto;
-	// createdOn: string;
-	// updatedBy: EmployeeProfileDto;
-	// updatedOn: string;
-	// status: string; // active or close
-	// statusChangedOn: string;
-
-	console.log(data);
 	return (
-		<div className="p-4 px-4 flex flex-col w-fit gap-2 overflow-y-scroll">
+		<div className="p-4 px-4 flex flex-col w-full gap-2 overflow-y-auto">
 			<div className="grid grid-cols-2 space-x-10">
 				<div>
 					<div className="text-black/50 text-sm my-1">Job Id</div>

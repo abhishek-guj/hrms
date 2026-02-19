@@ -69,8 +69,8 @@ const JobsViewTable = () => {
 					globalFilter={globalFilter}
 					setGlobalFilter={setGlobalFilter}
 				/>
-				<Button asChild>
-					<Link to={"new"}>
+				<Button disabled={true}>
+					<Link to={"new"} className="flex gap-1">
 						New <Plus />
 					</Link>
 				</Button>

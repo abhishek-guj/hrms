@@ -12,7 +12,22 @@ const ExpenseViewCard = () => {
 
 	const { data, isLoading, error } = useTravelExpenseById(expenseId!);
 
-	console.log(data);
+	if (isLoading) {
+		return (
+			<div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+				Loading
+			</div>
+		);
+	}
+	if (error) {
+		return (
+			<div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+				No Data Found...
+			</div>
+		);
+	}
+
+	console.log(data, error);
 	return (
 		// <Card>
 		// 	<CardContent>

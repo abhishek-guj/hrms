@@ -1,6 +1,7 @@
 package com.roima.hrms.services;
 
 import com.roima.hrms.dtos.req.TravelExpenseRequestDto;
+import com.roima.hrms.dtos.req.TravelExpenseStatusUpdateDto;
 import com.roima.hrms.dtos.res.TravelExpenseDto;
 import com.roima.hrms.entities.*;
 import com.roima.hrms.exceptions.UnauthorizedException;
@@ -222,4 +223,23 @@ public class TravelExpenseService {
 //        }
 //        return travelExpenseMapper.toTravelExpenseDtoList(travelExpenses);
 //    }
+
+    @Transactional
+    public void updateStatus(Long id, TravelExpenseStatusUpdateDto statusDto) {
+        TravelExpense travelExpense = travelExpenseRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
+
+        var r = roleUtil.getRole();
+
+        if (!roleUtil.isAdmin() && !roleUtil.isHr()) {
+            throw new UnauthorizedException("You are not allowed to view this expense");
+        }
+
+        if (statusDto.isStatus() == true) {
+            travelExpense.setStatus("approved");
+        } else {
+            travelExpense.setStatus("rejected");
+        }
+        travelExpenseRepository.save(travelExpense);
+
+    }
 }

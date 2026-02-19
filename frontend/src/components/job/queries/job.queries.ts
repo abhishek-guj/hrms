@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
-import type { JobDto } from "../types/job.types";
+import type { JobDto, JobReferralReqDto } from "../types/job.types";
 import { JobService } from "../service/job.service";
 import { showError, showSuccess } from "../../ui/toast";
 
@@ -37,4 +37,39 @@ export const useDeleteJob = () => {
 
         }
     })
+};
+
+export const useShareJob = () => {
+    return useMutation({
+        mutationFn: async ({ id, email }: { id: string, email: string }) => {
+            const response = await JobService.shareJob(id, email);
+            return id;
+        },
+        onSuccess: (id) => {
+            showSuccess(`Succefully shared Job Id: ${id}`)
+        },
+        onError: (err, payload) => {
+            console.log(`Error sharing ${payload.id} Job`, payload)
+            showError(`Error sharing Job id: ${payload?.id} `)
+
+        }
+    })
+};
+
+
+export const useReferJob = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ jobId, payload }: { jobId: string, payload: JobReferralReqDto }) => {
+            const response = await JobService.referJob(jobId, payload);
+            return response;
+        },
+        onSuccess: () => {
+            showSuccess("Job Referred successfully");
+        },
+        onError: () => {
+            console.log("error creating expense ");
+            showError("Some error occurred during referring")
+        },
+    });
 };

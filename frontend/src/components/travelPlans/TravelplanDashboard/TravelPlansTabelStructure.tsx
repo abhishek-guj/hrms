@@ -30,8 +30,13 @@ export const DataTableStatusConfig: Record<
 		className:
 			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
 	},
-	undefined: {
-		label: "Cancelled",
+	accepted: {
+		label: "accepted",
+		className:
+			"bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+	},
+	rejected: {
+		label: "Rejected",
 		className:
 			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
 	},
@@ -101,11 +106,11 @@ export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
 			<span className="font-medium">{row.getValue("endDate")}</span>
 		),
 	},
-	{
-		accessorKey: "status",
-		header: "Status",
-		cell: ({ row }) => <DataTableBadge status={row.getValue("status")} />,
-	},
+	// {
+	// 	accessorKey: "status",
+	// 	header: "Status",
+	// 	cell: ({ row }) => <DataTableBadge status={row.getValue("status")} />,
+	// },
 	{
 		id: "actions",
 		header: () => <div className="text-center">Actions</div>,

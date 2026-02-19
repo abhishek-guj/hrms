@@ -15,6 +15,8 @@ import type {
 	TravelPlanDto,
 	TravelPlanUpdateDto,
 } from "../types/TravelPlan.types";
+import { showError, showSuccess } from "../../ui/toast";
+import { api } from "../../../api/apiClient";
 
 export const useTravelPlans = () => {
 	return useQuery({
@@ -41,9 +43,10 @@ export const useCreateTravelPlan = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlans"] });
-			alert("travel plan created successfull");
+			showSuccess("travel plan updated successfully");
 		},
 		onError: () => {
+			showError("error creating travel plan");
 			console.log("error creating travel plan ");
 		},
 	});
@@ -65,9 +68,11 @@ export const useUpdateTravelPlan = () => {
 		onSuccess: (_, { id }) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlan", id] });
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlans"] });
-			alert("travel plan updated successfull");
+			showSuccess("travel plan updated successfully");
+
 		},
 		onError: () => {
+			showError("error travel plan updating");
 			console.log("error updaeting travel plan");
 		},
 	});
@@ -83,9 +88,11 @@ export const useDeleteTravelPlan = () => {
 		onSuccess: (id) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlan", id] });
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlans"] });
+			showSuccess("travel plan deleted successfully");
 		},
 		onError: () => {
 			console.log("error deleted travel plan");
+			showError("error deleted travel plan");
 		},
 	});
 };
@@ -110,11 +117,12 @@ export const useUpdateTravelEmployees = () => {
 		},
 		onSuccess: (_, { id }) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees", id] });
-			// queryClient.invalidateQueries({ queryKey: ["getTravelEmployees"] });
-			alert("travel employees updated successfull");
+			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees"] });
+			showError("employees assigned successfully");
 		},
 		onError: () => {
 			console.log("error updaeting travel plan");
+			showError("error assgining employees");
 		},
 	});
 };
@@ -156,13 +164,33 @@ export const useCreateTravelExpense = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
-			alert("expense created successfull");
+			// alert("expense created successfull");
+			showSuccess("expense created successfull");
 		},
 		onError: () => {
-			console.log("error creating expense ");
+			showError("error creating expense");
+			console.log("error status update ");
 		},
 	});
 };
+
+export const useChangeStatus = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async ({ id, payload }: { id: string, payload: boolean }) => {
+			const response = await api.put(`/travel-expense/${id}/status`, { status: payload });
+			return response.data;
+		},
+		onSuccess: (id) => {
+			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses", id] });
+			showSuccess("status update successfull");
+		},
+		onError: () => {
+			showError("error status update");
+			console.log("error creating expense ");
+		},
+	});
+}
 
 export const useDeleteTravelExpense = () => {
 	const queryClient = useQueryClient();
@@ -174,9 +202,11 @@ export const useDeleteTravelExpense = () => {
 		onSuccess: (id) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses", id] });
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
+			showSuccess("expense deleted successfull");
+
 		},
 		onError: () => {
-			console.log("error deleted travel plan");
+			showError("error deleting expense");
 		},
 	});
 };

@@ -80,7 +80,7 @@ const ExpenseCreateForm = () => {
 						)}
 					</Field>
 					<Field>
-						<FieldLabel htmlFor="expenseAmount">Expense Amount</FieldLabel>
+						<FieldLabel htmlFor="expenseAmount">Expense aaAmount</FieldLabel>
 						<Input
 							id="expenseAmount"
 							type="number"
@@ -120,14 +120,9 @@ const ExpenseCreateForm = () => {
 
 				<Separator />
 
-				<FieldSet className="grid grid-cols-2">
+				<FieldSet className="grid grid-cols-1">
 					<Field>
-						<Button type="submit" variant={"outline"}>
-							Save
-						</Button>
-					</Field>
-					<Field>
-						<Button type="submit">Submit</Button>
+						<Button type="submit">Save</Button>
 					</Field>
 				</FieldSet>
 			</FieldGroup>

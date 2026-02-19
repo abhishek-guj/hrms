@@ -10,12 +10,15 @@ import java.util.Set;
 
 public interface TravelPlanRepository extends JpaRepository<TravelPlan, Long> {
     // find by employee
-    @Query("select distinct tp from TravelPlan tp join tp.travelEmployees te where te.id = :employeeId")
+    @Query("select distinct tp from TravelPlan tp join tp.travelEmployees te where te.employeeProfile.id = :employeeId order by tp.id desc")
     List<TravelPlan> findByEmployeeId(Long employeeId);
     // find by manager
-    @Query("select distinct tp from TravelPlan tp join tp.travelEmployees te join te.employeeProfile ep where ep.manager.id = :managerId")
+    @Query("select distinct tp from TravelPlan tp join tp.travelEmployees te join te.employeeProfile ep where ep.manager.id = :managerId order by tp.id desc")
     List<TravelPlan> findByManagerId(Long managerId);
 
+    @Override
+    @Query("select distinct tp from TravelPlan tp order by tp.id desc")
+    List<TravelPlan> findAll();
     // find by status
 
     // validate the new dates dont conflict with current dates

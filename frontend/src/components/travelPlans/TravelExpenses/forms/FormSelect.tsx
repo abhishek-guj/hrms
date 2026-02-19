@@ -16,7 +16,7 @@ import {
 } from "../../../ui/select";
 import type { ExpenseTypeDto } from "../../types/TravelPlan.types";
 
-const FormSelect = ({ data, name, value, onValueChange }) => {
+const FormSelect = ({ data, name, value, onValueChange, type }) => {
 	return (
 		<Field orientation="responsive">
 			<Select name={name} value={value} onValueChange={onValueChange}>
@@ -27,7 +27,7 @@ const FormSelect = ({ data, name, value, onValueChange }) => {
 					{data?.map((d) => {
 						return (
 							<SelectItem key={d?.id} value={`${d?.id}`}>
-								{d?.name}
+								{type === "job" ? d?.jobTitle : d?.name}
 							</SelectItem>
 						);
 					})}

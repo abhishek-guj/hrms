@@ -63,6 +63,9 @@ public class SecurityConfig {
                                 .requestMatchers("/swagger-ui.html").permitAll()
                                 .requestMatchers("/swagger-ui/*/**").permitAll()
                                 .requestMatchers("/api/v1/health").permitAll()
+                                .requestMatchers("/api/v1/jobs/**").permitAll()
+                                .requestMatchers("/api/v1/jobs/*").permitAll()
+                                .requestMatchers("/api/v1/documents/job").permitAll()
 //                 );
                         .anyRequest().authenticated()
                 )

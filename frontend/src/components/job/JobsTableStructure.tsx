@@ -1,9 +1,10 @@
+import { IconShare3 } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
-import DataTableBadge from "../travelPlans/TravelplanDashboard/Shared/DataTableBadge";
-import type { JobDto } from "./types/job.types";
-import { Button } from "../ui/button";
+import { Eye, Pencil, PlusIcon, Trash, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Eye, Pencil, Trash } from "lucide-react";
+import DataTableBadge from "../travelPlans/TravelplanDashboard/Shared/DataTableBadge";
+import { Button } from "../ui/button";
+import type { JobDto } from "./types/job.types";
 
 export const DEFAULT_STATUS = {
 	label: "Empty",
@@ -26,7 +27,7 @@ export const DEFAULT_STATUS = {
 export const JobsTableColumns: ColumnDef<JobDto>[] = [
 	{
 		accessorKey: "id",
-		header: "Expense Id",
+		header: "Job Id",
 		cell: ({ row }) => (
 			<span className="font-medium">{row.getValue("id")}</span>
 		),
@@ -80,6 +81,34 @@ export const JobsTableColumns: ColumnDef<JobDto>[] = [
 			<span className="font-medium text-center">{getValue() as string}</span>
 		),
 	},
+	{
+		id: "refer",
+		header: () => <div className="text-center">Refer</div>,
+		cell: ({ row }) => (
+			<div className="text-right space-x-1">
+				<Button asChild variant={"outline"}>
+					<Link to={`${row.getValue("id")}/refer`} className="border">
+						<PlusIcon className="h-4 w-4" />
+						<span className="hidden lg:block">Refer</span>
+					</Link>
+				</Button>
+			</div>
+		),
+	},
+	{
+		id: "share",
+		header: () => <div className="text-center">Share</div>,
+		cell: ({ row }) => (
+			<div className="text-right space-x-1">
+				<Button asChild variant={"outline"}>
+					<Link to={`${row.getValue("id")}/share`} className="border">
+						<IconShare3 className="h-4 w-4" />
+						<span className="hidden lg:block">Share</span>
+					</Link>
+				</Button>
+			</div>
+		),
+	},
 
 	{
 		id: "actions",
@@ -93,14 +122,14 @@ export const JobsTableColumns: ColumnDef<JobDto>[] = [
 					</Link>
 				</Button>
 				<Button asChild variant={"outline"}>
-					<Link to={`${row.getValue("id")}/edit`} className="border">
+					<Link to={`${row.getValue("id")}/refer`} className="border">
 						<Pencil className="h-4 w-4" />
 						<span className="hidden lg:block">Edit</span>
 					</Link>
 				</Button>
 				<Button asChild variant={"outline"}>
-					<Link to={`${row.getValue("id")}/delete`} className="border">
-						<Trash className="h-4 w-4" />
+					<Link to={`${row.getValue("id")}/share`} className="border">
+						<Trash2 className="h-4 w-4" />
 						<span className="hidden lg:block">Delete</span>
 					</Link>
 				</Button>

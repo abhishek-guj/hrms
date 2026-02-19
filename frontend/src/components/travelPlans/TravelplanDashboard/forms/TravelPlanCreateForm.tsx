@@ -5,13 +5,17 @@ import { Input } from "@/components/ui/input";
 
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { type TravelPlanSchemaType } from "../../../login/schema";
+import {
+	TravelPlanSchema,
+	type TravelPlanSchemaType,
+} from "../../../login/schema";
 import { DatePickerInput } from "../../../ui/date-picker";
 import { FieldError, FieldSet } from "../../../ui/field";
 import { Separator } from "../../../ui/separator";
 import type { LoginFormType } from "../../loginForm.types";
 import { useCreateTravelPlan } from "../../queries/travelPlans.queries";
 import TravelTypeSelect from "./TravelTypeSelect";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const TravelPlanCreateForm = () => {
 	// navigate
@@ -31,17 +35,14 @@ const TravelPlanCreateForm = () => {
 	} = useForm<TravelPlanSchemaType>({
 		mode: "onBlur",
 		defaultValues: {},
-		// resolver: zodResolver(TravelPlanSchema),
+		resolver: zodResolver(TravelPlanSchema),
 		// defaultValues: JSON.parse(sessionStorage.getItem("prod")),
 	});
 	// react form
 
 	// handlers
 	const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
-		alert();
-
 		const resData = await create.mutateAsync({ payload: data });
-		console.log("data update", resData);
 		navigate("/travel/plans");
 	};
 	// handlers
@@ -95,7 +96,7 @@ const TravelPlanCreateForm = () => {
 							{...register("startDate")}
 							control={control}
 						/>
-						{errors.purpose && <FieldError errors={[errors.purpose]} />}
+						{errors.startDate && <FieldError errors={[errors.startDate]} />}
 					</Field>
 					<Field>
 						<FieldLabel htmlFor="endDate">End Date</FieldLabel>
@@ -106,7 +107,7 @@ const TravelPlanCreateForm = () => {
 							control={control}
 							{...register("endDate")}
 						/>
-						{errors.purpose && <FieldError errors={[errors.purpose]} />}
+						{errors.endDate && <FieldError errors={[errors.endDate]} />}
 					</Field>
 				</FieldSet>
 

@@ -15,7 +15,7 @@ const JobView = () => {
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent className="max-w-fit w-fit max-h-10/12 h-screen/50 flex flex-col overflow-hidden">
+			<DialogContent className="max-w-1/2 w-1/2 max-h-10/12 h-screen/50 flex flex-col overflow-hidden">
 				<DialogHeader>
 					<DialogTitle>View Job Details</DialogTitle>
 				</DialogHeader>

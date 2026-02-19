@@ -73,4 +73,6 @@ public class EmployeeProfile {
     @OneToMany(mappedBy = "employeeProfile", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<TravelEmployee> travelEmployees = new HashSet<>();
 
+    @OneToMany(mappedBy = "employeeProfile")
+    private Set<Notification> notifications = new HashSet<>();
 }

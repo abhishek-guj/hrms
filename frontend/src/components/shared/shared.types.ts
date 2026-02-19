@@ -4,4 +4,6 @@ export type DataTableStatus =
     | "processing"
     | "cancelled"
     | "active"
-    | "closed";
+    | "closed"
+    | "approved"
+    | "rejected";

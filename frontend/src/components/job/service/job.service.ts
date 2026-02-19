@@ -1,3 +1,4 @@
+import type { JobReferralReqDto } from './../types/job.types';
 import { api } from "../../../api/apiClient";
 import type { IApiResponse } from "../../../api/apiResponse.types";
 import { JOB_ENDPOINTS } from "../../../api/endpoints";
@@ -19,5 +20,22 @@ export const JobService = {
             JOB_ENDPOINTS.delete(id),
         );
         return res.data;
+    },
+    async shareJob(id: string, email: string): Promise<string> {
+        const res = await api.post<IApiResponse<string>>(JOB_ENDPOINTS.share(id),
+            { email: email }
+        );
+        return res.data.data;
+    },
+    async referJob(id: string, data: JobReferralReqDto): Promise<boolean> {
+        const res = await api.post<IApiResponse<boolean>>(JOB_ENDPOINTS.refer(id),
+            data,
+            {
+                headers: {
+                    "content-type": "multipart/form-data",
+                },
+            },
+        );
+        return res.data.data;
     },
 }

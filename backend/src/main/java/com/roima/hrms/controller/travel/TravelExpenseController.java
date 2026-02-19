@@ -2,6 +2,7 @@ package com.roima.hrms.controller.travel;
 
 
 import com.roima.hrms.dtos.req.TravelExpenseRequestDto;
+import com.roima.hrms.dtos.req.TravelExpenseStatusUpdateDto;
 import com.roima.hrms.dtos.res.TravelExpenseDto;
 import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.response.ApiResponse;
@@ -57,6 +58,13 @@ public class TravelExpenseController {
     public ResponseEntity<ApiResponse> updateTravelExpense(@PathVariable Long id, @RequestBody TravelExpenseRequestDto dto) {
         TravelExpenseDto travelExpense = travelExpenseService.updateTravelExpense(id, dto);
         ApiResponse<TravelExpenseDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully updated Travel Expense", travelExpense, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @PutMapping("{id}/status")
+    public ResponseEntity<ApiResponse> updateTravelExpenseStatus(@PathVariable Long id, @RequestBody TravelExpenseStatusUpdateDto statusDto) {
+        travelExpenseService.updateStatus(id,statusDto);
+        ApiResponse<TravelExpenseDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully updated Travel Expense Status", null, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 

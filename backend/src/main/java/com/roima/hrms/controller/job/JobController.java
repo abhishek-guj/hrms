@@ -1,6 +1,8 @@
 package com.roima.hrms.controller.job;
 
 
+import com.roima.hrms.dtos.req.EmailShareReqDto;
+import com.roima.hrms.dtos.req.JobReferralReqDto;
 import com.roima.hrms.dtos.res.JobDto;
 import com.roima.hrms.dtos.req.JobRequestDto;
 import com.roima.hrms.enums.ApiResponseType;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,21 +40,22 @@ public class JobController {
     }
 
 
-    //    @PostMapping
-//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<ApiResponse> createJob(@ModelAttribute JobRequestDto dto) {
-//        JobDto tt = jobService.createJob(dto);
-//        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Job.", tt, null);
-//        return ResponseEntity.status(HttpStatus.OK).body(res);
-//    }
-//
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> createJob(@ModelAttribute JobRequestDto dto) {
+        JobDto jobDto = jobService.createJob(dto);
+        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Job.", jobDto, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    //
     @GetMapping("{jobId}")
     public ResponseEntity<ApiResponse> getJobsById(@PathVariable Long jobId) {
         JobDto jobDto = jobService.getById(jobId);
         ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Jobs successfully", jobDto, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
-//
+
+    //
 //    @PutMapping("{jobId}")
 //    public ResponseEntity<ApiResponse> updateJob(@PathVariable Long id, @RequestBody JobRequestDto dto) {
 //        JobDto job = jobService.updateJob(id, dto);
@@ -71,5 +75,17 @@ public class JobController {
     // OPERATIONS ON TRAVEL EXPENSES [NO REFERNCE TO TRAVELPLAN]
     // -----------------------------------------------------------
 
+    @PostMapping("{jobId}/share")
+    public ResponseEntity<ApiResponse> shareJobById(@PathVariable Long jobId, @RequestBody EmailShareReqDto email) {
+        jobService.shareById(jobId, List.of(email));
+        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Shared Job successfully", null, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
 
+    @PostMapping(value = "{jobId}/refer", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> referJobById(@PathVariable Long jobId, @ModelAttribute JobReferralReqDto jobReferralReqDto) {
+        boolean createReferral = jobService.referById(jobId,jobReferralReqDto);
+        ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Referred successfully", createReferral, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
 }

@@ -46,6 +46,7 @@ export const ORGCHART_ENDPOINTS = {
 export const JOB_ENDPOINTS = {
 	getAll: () => "/jobs",
 	getById: (id: string) => `/jobs/${id}`,
-	delete: (id: string) => `/jobs/${id}`
-
+	delete: (id: string) => `/jobs/${id}`,
+	share: (id: string) => `jobs/${id}/share`,
+	refer: (id: string) => `jobs/${id}/refer`
 }

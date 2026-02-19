@@ -8,3 +8,5 @@ tmp/*
 
 backend/src/main/resources/document/*
 backend/src/main/resources/expense/*
+backend/src/main/resources/cv/*
+backend/src/main/resources/job/*

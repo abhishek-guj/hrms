@@ -30,3 +30,15 @@ export interface JobJdFileDto {
     // EmployeeProfileDto 
     uploadedBy: string;
 }
+
+
+export interface JobReferralReqDto {
+    jobId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    contactNumber: string;
+    referredById: string;
+    cvFile: File;
+    note: string;
+}

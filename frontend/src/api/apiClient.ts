@@ -1,5 +1,11 @@
 import axios from "axios";
 
+const PUBLIC_ROUTES = [
+	"/login",
+	"/jobs/public",
+]
+
+
 export const api = axios.create({
 	baseURL: import.meta.env.VITE_API_URL,
 	headers: {
@@ -8,8 +14,10 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+	const isPublic = PUBLIC_ROUTES.some(url => config.url?.includes(url))
+
 	const token = localStorage.getItem("token");
-	if (token) {
+	if (token && !isPublic) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}
 	return config;

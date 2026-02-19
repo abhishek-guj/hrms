@@ -1,10 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { Eye, Trash } from "lucide-react";
+import { Check, Cross, Eye, Trash, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../../ui/button";
 import DataTableBadge from "../TravelplanDashboard/Shared/DataTableBadge";
 import type { TravelExpenseDto } from "../types/TravelPlan.types";
 import type { DataTableStatus } from "../../shared/shared.types";
+import StatusUpdate from "./StatusUpdate";
 
 export const DataTableStatusConfig: Record<
 	DataTableStatus,
@@ -39,6 +40,16 @@ export const DataTableStatusConfig: Record<
 		label: "Pending",
 		className:
 			"bg-amber-500/15 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+	},
+	approved: {
+		label: "Approved",
+		className:
+			"bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+	},
+	rejected: {
+		label: "Rejected",
+		className:
+			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
 	},
 };
 
@@ -90,8 +101,13 @@ export const TravelExpenseTableColumns: ColumnDef<TravelExpenseDto>[] = [
 	{
 		accessorKey: "status",
 		header: "Status",
-		cell: ({ getValue }) => <DataTableBadge status={getValue() ?? "pending"} />,
+		cell: ({ getValue }) => <DataTableBadge status={getValue()} />,
 		// cell: ({ getValue }) => <div>{getValue() as string}</div>,
+	},
+	{
+		id: "changeStatus",
+		header: () => <div className="text-center">Change Status</div>,
+		cell: ({ row }) => <StatusUpdate id={row.getValue("id")} />,
 	},
 	{
 		id: "actions",

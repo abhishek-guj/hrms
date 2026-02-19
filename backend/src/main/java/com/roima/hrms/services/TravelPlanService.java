@@ -76,6 +76,10 @@ public class TravelPlanService {
 
     public TravelPlanDto createTravelPlan(TravelPlanRequestDto dto) {
 
+        if(!roleUtil.isAdmin()||!roleUtil.isHr()){
+            throw new RuntimeException("Not Authorised to create");
+        }
+
         // getting travel type
         TravelType travelType = travelTypeRepository.findById(dto.getTravelTypeId()).orElseThrow(TravelTypeNotFoundException::new);
 
@@ -95,6 +99,10 @@ public class TravelPlanService {
 
     public TravelPlanDto updateTravelPlan(Long id, TravelPlanRequestDto dto) {
 
+        if(!roleUtil.isAdmin()||!roleUtil.isHr()){
+            throw new RuntimeException("Not Authorised to create");
+        }
+
         TravelPlan travelPlan = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
 
         TravelType travelType = travelTypeRepository.findById(dto.getTravelTypeId()).orElseThrow(TravelTypeNotFoundException::new);
@@ -113,5 +121,7 @@ public class TravelPlanService {
         TravelPlan tp = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
         travelPlanRepository.delete(tp);
     }
+
+
 
 }
