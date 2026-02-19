@@ -119,7 +119,7 @@ public class TravelPlanService {
 
     public void deleteTravelPlan(Long id) {
         TravelPlan tp = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
-        travelPlanRepository.delete(tp);
+        travelPlanRepository.deleteById(tp.getId());
     }
 
 

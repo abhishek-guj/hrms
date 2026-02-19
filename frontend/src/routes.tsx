@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import TravelDocumentsPage from "../tmp/TravelDocumentsPage";
+import TravelDocumentsPage from "./components/travelPlans/TravelDocuments/TravelDocumentsPage";
 import App from "./App";
 import JobShare from "./components/job/JobShare";
 import JobView from "./components/job/JobView";
@@ -21,6 +21,9 @@ import LoginPage from "./pages/LoginPage";
 import OrgChartPage from "./pages/org/OrgChartPage";
 import TravelPlanPage from "./pages/travel/TravelPlanPage";
 import JobReferral from "./components/job/JobReferral";
+import TravelDocumentCreate from "./components/travelPlans/TravelDocuments/TravelDocumentCreate";
+import TravelDocumentView from "./components/travelPlans/TravelDocuments/TravelDocumentView";
+import TravelDocumentDelete from "./components/travelPlans/TravelDocuments/TravelDocumentDelete";
 
 const router = createBrowserRouter([
 	{
@@ -40,7 +43,15 @@ const router = createBrowserRouter([
 					{ path: "edit", element: <TravelPlanEdit /> },
 					{ path: "delete", element: <TravelPlanDelete /> },
 					{ path: "employee", index: true, element: <TravelPlanEmployees /> },
-					{ path: "documents", element: <TravelDocumentsPage /> },
+					{
+						path: "documents",
+						element: <TravelDocumentsPage />,
+						children: [
+							{ path: "new", element: <TravelDocumentCreate /> },
+							{ path: ":documentId", element: <TravelDocumentView /> },
+							{ path: ":documentId/delete", element: <TravelDocumentDelete /> },
+						],
+					},
 					{
 						path: "expenses",
 						element: <TravelExpenses />,

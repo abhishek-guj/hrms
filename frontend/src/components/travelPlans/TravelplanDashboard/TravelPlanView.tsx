@@ -10,21 +10,21 @@ const TravelPlanView = () => {
 			<div className="p-2 flex justify-center gap-4">
 				<NavLink
 					to={"employee"}
-					className="p-2 border bg-secondary rounded-xl "
+					className="p-2 border bg-secondary rounded-xl text-sm sm:text-base"
 				>
-					Assigned Employees
+					Employees
 				</NavLink>
 				<NavLink
 					to={"documents"}
-					className="p-2 border bg-secondary rounded-xl "
+					className="p-2 border bg-secondary rounded-xl text-sm sm:text-base"
 				>
-					Travel Documents
+					Documents
 				</NavLink>
 				<NavLink
 					to={"expenses"}
-					className="p-2 border bg-secondary rounded-xl "
+					className="p-2 border bg-secondary rounded-xl text-sm sm:text-base"
 				>
-					Travel Expenses
+					Expenses
 				</NavLink>
 			</div>
 			<Separator />

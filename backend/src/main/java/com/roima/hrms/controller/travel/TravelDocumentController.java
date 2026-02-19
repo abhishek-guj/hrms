@@ -1,10 +1,7 @@
 package com.roima.hrms.controller.travel;
 
 import com.roima.hrms.dtos.req.TravelDocumentReqDto;
-import com.roima.hrms.dtos.req.TravelExpenseRequestDto;
 import com.roima.hrms.dtos.res.TravelDocumentDto;
-import com.roima.hrms.dtos.res.TravelExpenseDto;
-import com.roima.hrms.dtos.res.TravelPlanDto;
 import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.FileService;
@@ -12,14 +9,11 @@ import com.roima.hrms.services.TravelDocumentService;
 import com.roima.hrms.services.TravelEmployeeService;
 import com.roima.hrms.services.TravelPlanService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -34,7 +28,7 @@ public class TravelDocumentController {
     private final TravelDocumentService travelDocumentService;
 
     public TravelDocumentController(TravelPlanService travelPlanService, TravelEmployeeService travelEmployeeService,
-            FileService fileService, TravelDocumentService travelDocumentService) {
+                                    FileService fileService, TravelDocumentService travelDocumentService) {
         this.travelPlanService = travelPlanService;
         this.travelEmployeeService = travelEmployeeService;
         this.fileService = fileService;
@@ -42,14 +36,15 @@ public class TravelDocumentController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    // public ResponseEntity<TravelDocumentDto> createTravelExpense(@ModelAttribute
+    // public ResponseEntity<TravelDocumentDto> createTravelDocument(@ModelAttribute
     // TravelDocumentReqDto dto) {
-    public ResponseEntity<ApiResponse> createTravelExpense(@ModelAttribute TravelDocumentReqDto dto) {
+    public ResponseEntity<ApiResponse> createTravelDocument(@ModelAttribute TravelDocumentReqDto dto) {
         TravelDocumentDto tt = travelDocumentService.createTravelDocument(dto);
         ApiResponse<TravelDocumentDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
                 "Successfully created Travel Document.", tt, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
+
 
     @GetMapping
     public ResponseEntity<ApiResponse> getTravelDocuments(@PathVariable Long travelPlanId) {
@@ -59,16 +54,21 @@ public class TravelDocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    // @DeleteMapping("documentId")
-    // public ResponseEntity<ApiResponse> getTravelDocuments(@PathVariable Long
-    // travelPlanId) {
-    // List<TravelDocumentDto> tt =
-    // travelDocumentService.getTravelDocuments(travelPlanId);
-    // ApiResponse<List<TravelDocumentDto>> res =
-    // ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created
-    // Travel Document.", tt, null);
-    // return ResponseEntity.status(HttpStatus.OK).body(res);
-    // }
+    @GetMapping("{docId}")
+    public ResponseEntity<ApiResponse> getTravelDocumentById(@PathVariable Long docId) {
+        TravelDocumentDto tt = travelDocumentService.getTravelDocument(docId);
+        ApiResponse<TravelDocumentDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                "Successfully got Travel Document.", tt, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @DeleteMapping("{docId}")
+    public ResponseEntity<ApiResponse> deleteTravelDocument(@PathVariable Long docId) {
+        travelDocumentService.deleteTravelDocument(docId);
+        ApiResponse<List<TravelDocumentDto>> res =
+                ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully deleted Travel Document.", null, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
 
     // @GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
     // public ResponseEntity<Object> getFile() throws IOException {

@@ -11,8 +11,17 @@ public interface TravelDocumentRepository extends JpaRepository<TravelDocument, 
 
 
 //    @Query(value = "select te from TravelExpense te join te.submittedBy ep where ep.manager.id = :managerId")
-    @Query("select td from TravelDocument td join td.uploadedForEmployee ep where ep.manager.id = :managerId")
-    List<TravelDocument> getTravelDocumentsByManagerId(Long managerId);
+    @Query("select td from TravelDocument td join td.uploadedForEmployee ep where ep.manager.id = :managerId and td.travelPlan.id = :travelPlanId")
+    List<TravelDocument> getTravelDocumentsByManagerId(Long managerId, Long travelPlanId);
 
     List<TravelDocument> getTravelDocumentsByTravelPlan_Id(Long travelPlanId);
+
+
+    @Query("select distinct td from TravelDocument td join EmployeeProfile ep where ep.manager.id = :managerId and td.id = :travelDocumentId")
+    TravelDocument getTravelDocumentByManagerId(Long currentEmployeeId, Long travelDocumentId);
+
+    @Query("select distinct td from TravelDocument td join TravelEmployee te on te.travelPlan.id = td.travelPlan.id where te.employeeProfile.id = :employeeId and td.id = :id")
+    TravelDocument getTravelDocumentByIdForEmployee(Long id, Long employeeId);
+
+    TravelDocument getTravelDocumentById(Long id);
 }

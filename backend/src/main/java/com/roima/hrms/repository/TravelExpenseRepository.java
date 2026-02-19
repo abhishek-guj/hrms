@@ -10,22 +10,22 @@ import java.util.Optional;
 
 public interface TravelExpenseRepository extends JpaRepository<TravelExpense, Long> {
 
-    @Query(value = "select te from TravelExpense te where te.id = :id")
+    @Query(value = "select te from TravelExpense te where te.id = :id and te.travelPlan.isDeleted = false ")
     Optional<TravelExpense> findById(Long id);
 
 
     // GETTING ALL EXPENSES WITHOUT ANY TRAVEL ID
     // for admin hr
     @Override
-    @Query(value = "SELECT te,tp From TravelExpense te join fetch te.travelPlan tp")
+    @Query(value = "SELECT te,tp From TravelExpense te join fetch te.travelPlan tp where tp.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAll();
 
     // get all expenses under this manager
-    @Query(value = "select te from TravelExpense te join te.submittedBy ep where ep.manager.id = :managerId")
+    @Query(value = "select te from TravelExpense te join te.submittedBy ep where ep.manager.id = :managerId and te.travelPlan.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAllByManagerId(Long managerId);
 
     //get all expenses of this employee
-    @Query("select te from TravelExpense te join te.submittedBy ep where ep.id = :employeeId")
+    @Query("select te from TravelExpense te join te.submittedBy ep where ep.id = :employeeId and te.travelPlan.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAllByEmployeeId(Long employeeId);
     // GETTING ALL EXPENSES WITHOUT ANY TRAVEL ID
 
@@ -34,13 +34,13 @@ public interface TravelExpenseRepository extends JpaRepository<TravelExpense, Lo
     //
 
     // GETTING ALL EXPENSES BY ANY TRAVEL ID
-    @Query("SELECT te,tp From TravelExpense te join fetch te.travelPlan tp where tp.id = :travelPlanId order by te.submittedBy.id, te.expenseUploadDate")
+    @Query("SELECT te,tp From TravelExpense te join fetch te.travelPlan tp where tp.id = :travelPlanId and tp.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAllByTravelId(Long travelPlanId);
 
-    @Query(value = "select te from TravelExpense te join te.submittedBy ep where ep.manager.id = :managerId and te.travelPlan.id = :travelPlanId")
+    @Query(value = "select te from TravelExpense te join te.submittedBy ep where ep.manager.id = :managerId and te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAllByManagerIdAndTravelId(Long managerId, Long travelPlanId);
 
-    @Query("select te from TravelExpense te join te.submittedBy ep where ep.id = :employeeId and te.travelPlan.id = :travelPlanId")
+    @Query("select te from TravelExpense te join te.submittedBy ep where ep.id = :employeeId and te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAllByEmployeeIdAndTravelId(Long employeeId, Long travelPlanId);
     // GETTING ALL EXPENSES BY ANY TRAVEL ID
 }

@@ -40,6 +40,7 @@ public class TravelPlanMapper {
                 .maxAmountPerDay(dto.getMaxAmountPerDay())
                 .createdOn(LocalDateTime.now())
                 .updatedOn(LocalDateTime.now())
+                .isDeleted(false)
                 .build();
     }
 

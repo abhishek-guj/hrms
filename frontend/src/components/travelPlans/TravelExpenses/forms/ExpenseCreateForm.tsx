@@ -48,12 +48,9 @@ const ExpenseCreateForm = () => {
 
 	// handlers
 	const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
-		alert();
-
 		console.log("before save expense", data);
 		const resData = await createTravelExpense.mutateAsync({ payload: data });
 		console.log("save expense", resData);
-		// navigate("/travel/plans");
 	};
 	// handlers
 	return (
@@ -112,7 +109,7 @@ const ExpenseCreateForm = () => {
 				{/* files */}
 				<FieldSet>
 					<Field>
-						<FieldLabel htmlFor="files">Expense Date</FieldLabel>
+						<FieldLabel htmlFor="files">Expense Proof</FieldLabel>
 						<Input id="files" type="file" multiple {...register("files")} />
 						{errors.files && <FieldError errors={[errors.files]} />}
 					</Field>

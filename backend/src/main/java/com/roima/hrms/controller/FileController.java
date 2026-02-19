@@ -64,4 +64,21 @@ public class FileController {
         return responseEntity;
 
     }
+
+    @GetMapping(value = "doc", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> getTravelDoc(@RequestParam String id) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        Object documentBytes = fileService.getFile("document", id);
+
+        ResponseEntity<Object>
+                responseEntity = ResponseEntity.ok().headers(headers).contentType(
+                MediaType.parseMediaType("application/pdf")).body(documentBytes);
+        return responseEntity;
+
+    }
 }

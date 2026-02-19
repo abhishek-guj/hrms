@@ -29,7 +29,7 @@ const TravelExpenses = () => {
 	}
 	return (
 		<>
-			<Card className="border-none shadow-none max-h-full h-full w-full px-28">
+			<Card className="border-none shadow-none max-h-full h-full w-full px-2 sm:px-28">
 				<CardHeader>
 					<CardTitle>Travel Expenses</CardTitle>
 				</CardHeader>

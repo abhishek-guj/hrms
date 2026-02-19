@@ -25,6 +25,11 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
 	(response) => {
+		if (response.data.status == "ERROR") {
+			if (response.data.message?.includes("not found")) {
+				window.location.href = "/error"
+			}
+		}
 		return response;
 	},
 	(error) => {

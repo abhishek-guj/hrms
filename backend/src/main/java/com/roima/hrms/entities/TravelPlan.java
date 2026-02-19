@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Nationalized;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 
@@ -23,6 +24,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "travel_plans", schema = "travel")
+@SQLDelete(sql = "update travelplan set is_deleted = true, delete_on currenttimestamp where pktrabelplanid = ? ")
 public class TravelPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

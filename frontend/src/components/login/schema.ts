@@ -37,7 +37,10 @@ export const EmployeeExpenseSchema = z.object({
 			error: "please provide expense"
 		}),
 	expenseDate: z.date(),
-	files: z.array(z.file()).min(1, { error: "atleast one file is requried" }),
+	// files: z.array(z.file()).min(1, { error: "atleast one file is requried" }),
+	files: z.array(z.instanceof(File))
+		.min(1, { message: "At least one file is required" })
+
 });
 // used in creating expense
 
@@ -49,12 +52,26 @@ export const JobReferralSchema = z.object({
 	email: z.email({ error: "provide valid email" }),
 	contactNumber: z.regex(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/, 'invalid'),
 	referredById: z.string(),
-	cvFile: z.file(),
-	note: z.string(),
+	// cvFile: z.file({ error: "Select Travel Document" }).min(1, { error: "you need to provide cv" }).refine((data) => ["application/pdf", "image/png", "image/jpeg", "image/jpg"].includes(data.type), { message: "Invlaid file type" }),
+	cvFile: z.instanceof(FileList).transform((fileList) => fileList[0])
+		.refine((file) => !!file, { message: "CV is required" })
+		.refine((data) => ["application/pdf"].includes(data.type), { message: "Invlaid file type" }),
+	note: z.string().optional(),
 })
+
+export const TravelDocumentSchema = z.object({
+	travelPlanId: z.string(),
+	uploadedForEmployeeId: z.string(),
+	documentTypeId: z.string().min(1, { error: "select document type" }),
+	file: z.instanceof(FileList).transform((fileList) => fileList[0])
+		.refine((file) => !!file, { message: "File is required" })
+		.refine((data) => ["application/pdf", "image/png", "image/jpeg", "image/jpg"].includes(data.type), { message: "Invlaid file type" })
+})
+
 // used in referring job form
 
 export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>;
 export type TravelPlanSchemaType = z.infer<typeof TravelPlanSchema>;
 export type EmployeeExpenseSchemaType = z.infer<typeof EmployeeExpenseSchema>;
 export type JobReferralSchemaType = z.infer<typeof JobReferralSchema>;
+export type TravelDocumentSchemaType = z.infer<typeof TravelDocumentSchema>;

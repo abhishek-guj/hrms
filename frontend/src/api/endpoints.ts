@@ -22,6 +22,14 @@ export const TRAVEL_PLAN_ENDPOINTS = {
 	//
 };
 
+export const TRAVEL_DOCUMENTS_ENDPOINTS = {
+	create: (id: string) => `/travel-plans/${id}/documents`,
+	delete: (id: string, docId: string) => `/travel-plans/${id}/documents/${docId}`,
+	getByTravelId: (id: string) => `/travel-plans/${id}/documents`,
+	getByDocId: (id: string, docId: string) => `/travel-plans/${id}/documents/${docId}`,
+	getDocumentTypes: () => `/travel-document-types`
+}
+
 export const EXPENSE_ENDPOINTS = {
 	create: () => `/travel-expense`,
 	delete: (id: string) => `/travel-expense/${id}`,

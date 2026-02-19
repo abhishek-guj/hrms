@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
                 null,
                 null
         );
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiError, HttpStatus.OK);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
                 null,
                 null
         );
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiError, HttpStatus.OK);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
                 null,
                 null
         );
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiError, HttpStatus.OK);
     }
 
 
@@ -106,13 +106,14 @@ public class GlobalExceptionHandler {
                 null,
                 null
         );
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiError, HttpStatus.OK);
     }
 
 
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleBaseException(Exception ex) {
+
         ApiResponse<Void> errorResponse = ApiResponse.createApiResponse(
                 ApiResponseType.ERROR,
 //                ex.getMessage(),

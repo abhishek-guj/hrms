@@ -45,7 +45,8 @@ public class TravelDocumentService {
     @Transactional
     public TravelDocumentDto createTravelDocument(TravelDocumentReqDto dto) {
         TravelPlan travelPlan = travelPlanRepository.findById(dto.getTravelPlanId()).orElseThrow(TravelPlanNotFoundException::new);
-        EmployeeProfile uploadedBy = employeeProfileRepository.findById(dto.getUploadedByEmployeeId()).orElseThrow(EmployeeNotFoundException::new);
+//        EmployeeProfile uploadedBy = employeeProfileRepository.findById(dto.getUploadedByEmployeeId()).orElseThrow(EmployeeNotFoundException::new);
+        EmployeeProfile uploadedBy = roleUtil.getCurrentEmployee();
 //        EmployeeProfile uploadedFor = employeeProfileRepository.findById(dto.getUploadedForEmployeeId()).orElseThrow(EmployeeNotFoundException::new);
         TravelDocumentType travelDocumentType = travelDocumentTypeRepository.findById(dto.getDocumentTypeId()).orElseThrow(TravelDocumentTypeNotFoundException::new);
 
@@ -97,28 +98,41 @@ public class TravelDocumentService {
         return toTravelDocumentDto(travelDocument);
     }
 
-    public List<TravelDocumentDto> getTravelDocuments(Long travelPlanId){
+    public List<TravelDocumentDto> getTravelDocuments(Long travelPlanId) {
 
         List<TravelDocument> travelDocuments = null;
 
-        if(roleUtil.isEmployee()){
-            travelDocuments =travelDocumentRepository.getTravelDocumentsByUploadedForEmployee_IdAndTravelPlan_Id(roleUtil.getCurrentEmployeeId(), travelPlanId);
-        }
-        else if (roleUtil.isManager()){
-            boolean exists = travelEmployeeRepository.findByTravelPlan_Id(travelPlanId).stream().anyMatch(tp->tp.getEmployeeProfile().getManager().getId()==roleUtil.getCurrentEmployeeId());
-            if(exists){
-                travelDocuments = travelDocumentRepository.getTravelDocumentsByManagerId(roleUtil.getCurrentEmployeeId());
+        if (roleUtil.isEmployee()) {
+            travelDocuments = travelDocumentRepository.getTravelDocumentsByUploadedForEmployee_IdAndTravelPlan_Id(roleUtil.getCurrentEmployeeId(), travelPlanId);
+        } else if (roleUtil.isManager()) {
+            boolean exists = travelEmployeeRepository.findByTravelPlan_Id(travelPlanId).stream().anyMatch(tp -> tp.getEmployeeProfile().getManager().getId() == roleUtil.getCurrentEmployeeId());
+            if (exists) {
+                travelDocuments = travelDocumentRepository.getTravelDocumentsByManagerId(roleUtil.getCurrentEmployeeId(), travelPlanId);
             }
-        }
-        else{
+        } else {
             travelDocuments = travelDocumentRepository.getTravelDocumentsByTravelPlan_Id(travelPlanId);
         }
         return travelDocuments.stream().map(this::toTravelDocumentDto).toList();
     }
 
+    public TravelDocumentDto getTravelDocument(Long travelDocumentID) {
+
+        TravelDocument travelDocument = null;
+
+        if (roleUtil.isEmployee()) {
+            travelDocument = travelDocumentRepository.getTravelDocumentByIdForEmployee(travelDocumentID, roleUtil.getCurrentEmployeeId());
+        } else if (roleUtil.isManager()) {
+            travelDocument = travelDocumentRepository.getTravelDocumentByManagerId(roleUtil.getCurrentEmployeeId(), travelDocumentID);
+        } else {
+            travelDocument = travelDocumentRepository.getTravelDocumentById(travelDocumentID);
+        }
+        return toTravelDocumentDto(travelDocument);
+    }
+
+
     @Transactional
-    public void deleteTravelDocument(Long travelDocumentId){
-        TravelDocument travelDocument = travelDocumentRepository.findById(travelDocumentId).orElseThrow(()->new IllegalArgumentException("Travel Document not found"));
+    public void deleteTravelDocument(Long travelDocumentId) {
+        TravelDocument travelDocument = travelDocumentRepository.findById(travelDocumentId).orElseThrow(() -> new IllegalArgumentException("Travel Document not found"));
 
         travelDocument.setDeletedBy(roleUtil.getCurrentEmployeeId());
         travelDocument.setIsDeleted(true);

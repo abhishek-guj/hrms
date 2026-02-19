@@ -11,26 +11,21 @@ import java.util.List;
 import java.util.Set;
 
 public interface TravelEmployeeRepository extends JpaRepository<TravelEmployee, Long> {
-    @Query("select te from TravelEmployee te Join fetch te.employeeProfile where te.travelPlan.id = :travelPlanId")
+    @Query("select te from TravelEmployee te Join fetch te.employeeProfile where te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted")
     List<TravelEmployee> findByTravelPlan_Id(Long travelPlanId);
 
-    TravelEmployee findByTravelPlan_IdAndEmployeeProfile_Id(Long travelPlanId, Long employeeProfileId);
-
-    boolean removeTravelEmployeeById(Long travelEmployeeId);
-
+    @Query("select (count(t) > 0) from TravelEmployee t where t.travelPlan = :travelPlan and t.employeeProfile = :employeeProfile and t.travelPlan.isDeleted = false")
     boolean existsByTravelPlanAndEmployeeProfile(TravelPlan travelPlan, EmployeeProfile employeeProfile);
-
 
     @Modifying
     @Query("delete from TravelEmployee te where te.travelPlan.id = :travelPlanId and te.employeeProfile.id = :employeeId")
     void removeTravelEmployeesByTravelPlan_IdAndEmployeeProfile_Id(Long travelPlanId, Long employeeId);
 
-    Set<TravelEmployee> removeTravelEmployeesByTravelPlan_Id(Long travelPlanId);
-
     void deleteAllByTravelPlan_Id(Long travelPlanId);
 
-    @Query("select ep from TravelEmployee te join fetch EmployeeProfile ep where te.travelPlan.id = :travelPlanId")
+    @Query("select ep from TravelEmployee te join fetch EmployeeProfile ep where te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted = false")
     Set<EmployeeProfile> getAllEmployeeProfilesByTravelPlan_Id(Long travelPlanId);
 
+    @Query("select t from TravelEmployee t where t.travelPlan.id = :travelPlanId and t.travelPlan.isDeleted = false")
     Set<TravelEmployee> findAllByTravelPlan_Id(Long travelPlanId);
 }

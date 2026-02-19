@@ -112,7 +112,6 @@ export const TravelPlansService = {
 	},
 
 	async createTravelExpense(data: TravelExpenseRequestDto) {
-		console.log("dateeeeeeeeee", data);
 		const res = await api.post<IApiResponse<TravelExpenseDto>>(
 			EXPENSE_ENDPOINTS.create(),
 			data,

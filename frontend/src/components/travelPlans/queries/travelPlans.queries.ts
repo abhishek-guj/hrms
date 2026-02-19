@@ -21,7 +21,7 @@ import { api } from "../../../api/apiClient";
 export const useTravelPlans = () => {
 	return useQuery({
 		queryKey: ["getTravelPlans"],
-		queryFn: (): Promise<DataTabelItem[]> =>
+		queryFn: async (): Promise<DataTabelItem[]> =>
 			TravelPlansService.getTravelPlans(),
 	});
 };
@@ -29,8 +29,12 @@ export const useTravelPlans = () => {
 export const useTravelPlan = (id: string): UseQueryResult<TravelPlanDto> => {
 	return useQuery({
 		queryKey: ["getTravelPlan", id],
-		queryFn: async (): Promise<TravelPlanDto> =>
-			await TravelPlansService.getTravelPlanById(id),
+		queryFn: async (): Promise<TravelPlanDto> => {
+			const res = await TravelPlansService.getTravelPlanById(id)
+			console.log("check error", res)
+			return res
+		},
+
 	});
 };
 
@@ -55,14 +59,14 @@ export const useCreateTravelPlan = () => {
 export const useUpdateTravelPlan = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: ({
+		mutationFn: async ({
 			id,
 			payload,
 		}: {
 			id: string;
 			payload: TravelPlanUpdateDto;
 		}) => {
-			const response = TravelPlansService.updateTravelPlan(id, payload);
+			const response = await TravelPlansService.updateTravelPlan(id, payload);
 			return response;
 		},
 		onSuccess: (_, { id }) => {
@@ -118,7 +122,7 @@ export const useUpdateTravelEmployees = () => {
 		onSuccess: (_, { id }) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees", id] });
 			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees"] });
-			showError("employees assigned successfully");
+			showSuccess("employees assigned successfully");
 		},
 		onError: () => {
 			console.log("error updaeting travel plan");
@@ -140,6 +144,7 @@ export const useTravelExpenses = (
 export const useTravelExpenseById = (
 	id: string,
 ): UseQueryResult<TravelExpenseDto> => {
+	console.log(id)
 	return useQuery({
 		queryKey: ["getTravelExpenses", id],
 		queryFn: (): Promise<TravelExpenseDto> =>
@@ -167,7 +172,7 @@ export const useCreateTravelExpense = () => {
 			// alert("expense created successfull");
 			showSuccess("expense created successfull");
 		},
-		onError: () => {
+		onError: (err) => {
 			showError("error creating expense");
 			console.log("error status update ");
 		},
@@ -182,7 +187,7 @@ export const useChangeStatus = () => {
 			return response.data;
 		},
 		onSuccess: (id) => {
-			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses", id] });
+			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
 			showSuccess("status update successfull");
 		},
 		onError: () => {

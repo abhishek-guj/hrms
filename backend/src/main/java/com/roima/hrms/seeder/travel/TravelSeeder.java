@@ -61,6 +61,7 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
                     .destinationCountry("India")
                     .lastDateOfExpenseSubmission(LocalDate.parse("2026-02-28"))
                     .maxAmountPerDay(BigDecimal.valueOf(2000))
+                    .isDeleted(false)
                     .build();
             travelPlanRepository.save(travelPlan1);
 
@@ -74,6 +75,7 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
                     .destinationCountry("India")
                     .lastDateOfExpenseSubmission(LocalDate.parse("2026-02-25"))
                     .maxAmountPerDay(BigDecimal.valueOf(2000))
+                    .isDeleted(false)
                     .build();
             travelPlanRepository.save(travelPlan2);
 
@@ -87,6 +89,7 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
                     .destinationCountry("India")
                     .lastDateOfExpenseSubmission(LocalDate.parse("2026-03-06"))
                     .maxAmountPerDay(BigDecimal.valueOf(1000))
+                    .isDeleted(false)
                     .build();
             travelPlanRepository.save(travelPlan3);
 
@@ -100,6 +103,7 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
                     .destinationCountry("USA")
                     .lastDateOfExpenseSubmission(LocalDate.parse("2026-03-20"))
                     .maxAmountPerDay(BigDecimal.valueOf(6000))
+                    .isDeleted(false)
                     .build();
             travelPlanRepository.save(travelPlan4);
 
@@ -113,6 +117,7 @@ public class TravelSeeder implements ApplicationListener<ContextRefreshedEvent> 
                     .destinationCountry("Sweden")
                     .lastDateOfExpenseSubmission(LocalDate.parse("2025-06-20"))
                     .maxAmountPerDay(BigDecimal.valueOf(11000))
+                    .isDeleted(false)
                     .build();
 
             travelPlanRepository.save(travelPlan5);

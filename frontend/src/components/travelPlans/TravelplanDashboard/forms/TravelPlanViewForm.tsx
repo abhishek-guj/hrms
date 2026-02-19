@@ -38,12 +38,12 @@ const TravelPlanViewForm = () => {
 	//
 	return (
 		<div className="p-4 flex flex-col">
-			<div className="pb-4 px-28 ">
+			<div className="pb-4 px-1 sm:px-28 ">
 				<h1 className="font-bold text-2xl">View Travel Plan</h1>
 			</div>
 			<Separator />
-			<div className="px-28">
-				<div className="grid grid-cols-2 ">
+			<div className="px-1 sm:px-28">
+				<div className="grid grid-cols-1 sm:grid-cols-2 ">
 					<div>
 						<div className="text-black/50 text-sm my-1">Purpose</div>
 						<div className="p-1">{data?.purpose}</div>
@@ -57,7 +57,7 @@ const TravelPlanViewForm = () => {
 				<Separator />
 				{/* dates */}
 
-				<div className="grid grid-cols-2">
+				<div className="grid grid-cols-1 sm:grid-cols-2">
 					<div>
 						<div className="text-black/50 text-sm my-1">Start Date</div>
 						<div className="p-1">{data?.startDate}</div>
@@ -71,7 +71,7 @@ const TravelPlanViewForm = () => {
 				{/* place */}
 				<Separator />
 
-				<div className="grid grid-cols-3">
+				<div className="grid grid-cols-1 sm:grid-cols-3">
 					<div>
 						<div className="text-black/50 text-sm my-1">City</div>
 						<div className="p-1">{data?.destinationCity}</div>
@@ -89,7 +89,7 @@ const TravelPlanViewForm = () => {
 				{/* place */}
 				<Separator />
 
-				<div className="grid grid-cols-2">
+				<div className="grid grid-cols-1 sm:grid-cols-2">
 					<div>
 						<div className="text-black/50 text-sm my-1">
 							Expense Submit Last Date

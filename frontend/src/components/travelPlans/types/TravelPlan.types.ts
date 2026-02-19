@@ -108,3 +108,27 @@ export interface TravelExpenseRequestDto {
 	remark: string;
 	files: File[];
 }
+
+
+
+export interface TravelDocumentCreateDto {
+	travelPlanId: string;
+	uploadedForEmployeeId: string;
+	documentTypeId: string;
+	file: File;
+}
+
+export interface TravelDocument {
+	id: string,
+	travelPlanId: string,
+	travelPlanPurpose: string,
+	ownerType: string,
+	uploadedById: string,
+	uploadedByName: string,
+	uploadedForId: string,
+	uploadedForName: string,
+	uploadDate: Date,
+	documentTypeId: string,
+	documentTypeName: string,
+	filePath: string
+}
