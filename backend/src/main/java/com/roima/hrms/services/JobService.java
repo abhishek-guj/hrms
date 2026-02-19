@@ -37,8 +37,9 @@ public class JobService {
     private final EmailService emailService;
     private final JobShareRepository jobShareRepository;
     private final JobReferralRepository jobReferralRepository;
+    private final NotificationService notificationService;
 
-    public JobService(JobRepository jobRepository, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, FileService fileService, ExpenseDocumentRepository expenseDocumentRepository, JobMapper jobMapper, EmailService emailService, JobShareRepository jobShareRepository, JobReferralRepository jobReferralRepository) {
+    public JobService(JobRepository jobRepository, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, FileService fileService, ExpenseDocumentRepository expenseDocumentRepository, JobMapper jobMapper, EmailService emailService, JobShareRepository jobShareRepository, JobReferralRepository jobReferralRepository, NotificationService notificationService) {
         this.jobRepository = jobRepository;
         this.roleUtil = roleUtil;
         this.travelPlanRepository = travelPlanRepository;
@@ -49,6 +50,7 @@ public class JobService {
         this.emailService = emailService;
         this.jobShareRepository = jobShareRepository;
         this.jobReferralRepository = jobReferralRepository;
+        this.notificationService = notificationService;
     }
 
     public List<JobDto> getAllJobs() {
@@ -163,6 +165,7 @@ public class JobService {
                 .build();
 
         try {
+            notificationService.sendJobReferNotification(jobReferral);
             emailService.sendReferMail(jobReferral, jobId);
             jobReferralRepository.save(jobReferral);
             return true;

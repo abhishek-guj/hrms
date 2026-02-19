@@ -26,12 +26,16 @@ public class TravelEmployeeService {
     private final TravelPlanRepository travelPlanRepository;
     private final EmployeeProfileRepository employeeProfileRepository;
     private final ModelMapper modelMapper;
+    private final NotificationService notificationService;
+    private final EmailService emailService;
 
-    public TravelEmployeeService(TravelEmployeeRepository travelEmployeeRepository, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, ModelMapper modelMapper) {
+    public TravelEmployeeService(TravelEmployeeRepository travelEmployeeRepository, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, ModelMapper modelMapper, NotificationService notificationService, EmailService emailService) {
         this.travelEmployeeRepository = travelEmployeeRepository;
         this.travelPlanRepository = travelPlanRepository;
         this.employeeProfileRepository = employeeProfileRepository;
         this.modelMapper = modelMapper;
+        this.notificationService = notificationService;
+        this.emailService = emailService;
     }
 
     public List<TravelEmployeeDto> getTravelEmployees(Long travelPlanId) {
@@ -65,6 +69,13 @@ public class TravelEmployeeService {
             travelEmployee.setTravelPlan(travelPlan);
             travelEmployeeRepository.save(travelEmployee);
 
+            // todo: add email service here
+            notificationService.sendTravelPlanNotification(travelPlan);
+            try {
+                emailService.sendTravelPlanMail(travelPlanId);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
         return true;
     }

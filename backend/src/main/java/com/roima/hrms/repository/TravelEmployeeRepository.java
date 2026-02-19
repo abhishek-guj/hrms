@@ -28,4 +28,9 @@ public interface TravelEmployeeRepository extends JpaRepository<TravelEmployee, 
     Set<TravelEmployee> removeTravelEmployeesByTravelPlan_Id(Long travelPlanId);
 
     void deleteAllByTravelPlan_Id(Long travelPlanId);
+
+    @Query("select ep from TravelEmployee te join fetch EmployeeProfile ep where te.travelPlan.id = :travelPlanId")
+    Set<EmployeeProfile> getAllEmployeeProfilesByTravelPlan_Id(Long travelPlanId);
+
+    Set<TravelEmployee> findAllByTravelPlan_Id(Long travelPlanId);
 }

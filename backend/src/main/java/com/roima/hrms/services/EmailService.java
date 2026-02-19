@@ -1,10 +1,7 @@
 package com.roima.hrms.services;
 
 import com.roima.hrms.entities.*;
-import com.roima.hrms.repository.EmployeeProfileRepository;
-import com.roima.hrms.repository.JobCvReviewerRepository;
-import com.roima.hrms.repository.JobHrRepository;
-import com.roima.hrms.repository.JobRepository;
+import com.roima.hrms.repository.*;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,15 +18,115 @@ public class EmailService {
     private final JobRepository jobRepository;
     private final JobHrRepository jobHrRepository;
     private final JobCvReviewerRepository jobCvReviewerRepository;
+    private final TravelPlanRepository travelPlanRepository;
+    private final TravelEmployeeRepository travelEmployeeRepository;
     @Value("${frontend.url}")
     String baseUrl;
 
-    public EmailService(EmployeeProfileRepository employeeProfileRepository, JobRepository jobRepository, JobHrRepository jobHrRepository, JobCvReviewerRepository jobCvReviewerRepository) {
+    public EmailService(EmployeeProfileRepository employeeProfileRepository, JobRepository jobRepository, JobHrRepository jobHrRepository, JobCvReviewerRepository jobCvReviewerRepository, TravelPlanRepository travelPlanRepository, TravelEmployeeRepository travelEmployeeRepository) {
         this.employeeProfileRepository = employeeProfileRepository;
         this.jobRepository = jobRepository;
         this.jobHrRepository = jobHrRepository;
         this.jobCvReviewerRepository = jobCvReviewerRepository;
+        this.travelPlanRepository = travelPlanRepository;
+        this.travelEmployeeRepository = travelEmployeeRepository;
     }
+
+
+    @Async
+    public void sendTravelPlanMail(Long travelPlanId) throws MessagingException, IOException, MessagingException {
+
+        Set<TravelEmployee> travelEmployees = travelEmployeeRepository.findAllByTravelPlan_Id((travelPlanId));
+
+        List<String> emails = new ArrayList<>();
+
+        travelEmployees.forEach(travelEmployee -> emails.add(travelEmployee.getEmployeeProfile().getUser().getEmail()));
+
+        try {
+
+            Session session = createSession();
+
+            Message msg = createTravelPlanMail(session, emails, travelPlanId);
+
+            Transport.send(msg);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private Message createTravelPlanMail(Session session, List<String> emails, Long travelPlanId) throws IOException, MessagingException {
+        // getting job details
+        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId).orElseThrow(() -> new RuntimeException("Travel not found."));
+
+        // setting mail subject
+        String subject = "Travel Assigned - %s by %s".formatted(travelPlan.getPurpose(), travelPlan.getCreatedBy().getFirstName() + " " + travelPlan.getCreatedBy().getFirstName());
+
+        // getting mail body
+        String body = travelPlanMailBody(travelPlan);
+
+        Message msg = new MimeMessage(session);
+        msg.setFrom(new InternetAddress("skelireverbs@gmail.com", false));
+
+        String emailsParse = emails.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(email -> !email.isEmpty())
+                .collect(Collectors.joining(","));
+
+
+//        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailsParse));
+        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("skelireverbs@gmail.com"));
+        msg.setSubject(subject);
+//        msg.setContent(body, "text/html");
+        msg.setSentDate(new Date());
+
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setContent(body, "text/html");
+
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+
+        msg.setContent(multipart);
+
+        return msg;
+    }
+
+    private String travelPlanMailBody(TravelPlan travelPlan) {
+        EmployeeProfile hr = employeeProfileRepository.getEmployeeProfileByUser_Email("hr1@exp.com");
+        String body = """
+                 Hello,
+                 <br>
+                 <br>You are assigned to Travel by %s.
+                 <br>
+                 <br><b>Purpose:</b> %s
+                 <br><b>Type:</b> %s
+                 <br><b>Destination:</b> %s, %s, %s
+                 <br><b>Start Date:</b> %s
+                 <br><b>End Date:</b> %s
+                 <br>
+                 <br><b>Best Regards,</b>
+                 <br>%s
+                 <br>%s
+                 <br><a href="tel:+%s">%s</a> | <a href="mailto:%s">%s</a>
+                 <br><a href="https://www.roimaint.com/">Roima Intelligence India</a>
+                """.formatted(travelPlan.getCreatedBy().getFirstName() + " " + travelPlan.getCreatedBy().getLastName(),
+                travelPlan.getPurpose(),
+                travelPlan.getTravelType().getName(),
+                travelPlan.getDestinationCity(), travelPlan.getDestinationState(), travelPlan.getDestinationCountry(),
+                travelPlan.getStartDate(),
+                travelPlan.getEndDate(),
+                hr.getFirstName() + " " + hr.getLastName(),
+                "Hr",
+                hr.getContactNumber(),
+                hr.getContactNumber(),
+                hr.getUser().getEmail(),
+                hr.getUser().getEmail()
+        );
+
+
+        return body;
+    }
+
 
     @Async
     public void sendShareMail(String email, Long jobId) throws MessagingException, IOException, MessagingException {
@@ -46,44 +143,6 @@ public class EmailService {
         }
     }
 
-    @Async
-    public void sendReferMail(JobReferral jobReferral, Long jobId) throws MessagingException, IOException, MessagingException {
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
-        // getting job hrs
-        Set<JobHr> jobHrs = jobHrRepository.findAllByJob(job);
-        // getting job reviewers
-        Set<JobCvReviewer> jobCvReviewers = jobCvReviewerRepository.findAllByJob(job);
-
-        List<String> emails = new ArrayList<>();
-
-        jobHrs.forEach(jobHr -> emails.add(jobHr.getHr().getUser().getEmail()));
-        jobCvReviewers.forEach(jobHr -> emails.add(jobHr.getReviewer().getUser().getEmail()));
-
-        try {
-            Session session = createSession();
-
-            Message msg = createReferMail(session, emails, jobReferral, jobId);
-
-            Transport.send(msg);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private Session createSession() {
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-
-        return Session.getInstance(props, new jakarta.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("skelireverbs@gmail.com", "srte szzv bfsa uitk");
-            }
-        });
-    }
-
     private Message createShareMail(Session session, String email, Long jobId) throws IOException, MessagingException {
 
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
@@ -96,50 +155,6 @@ public class EmailService {
         msg.setFrom(new InternetAddress("skelireverbs@gmail.com", false));
 
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-        msg.setSubject(subject);
-//        msg.setContent(body, "text/html");
-        msg.setSentDate(new Date());
-
-        MimeBodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setContent(body, "text/html");
-
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(messageBodyPart);
-        MimeBodyPart attachPart = new MimeBodyPart();
-
-        attachPart.attachFile(filePath);
-        multipart.addBodyPart(attachPart);
-        msg.setContent(multipart);
-
-        return msg;
-    }
-
-    private Message createReferMail(Session session, List<String> emails, JobReferral jobReferral, Long jobId) throws IOException, MessagingException {
-
-        // getting job details
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
-
-        // getting its file path
-        String filePath = getFilePath(jobReferral.getCvPath(), "cv");
-
-        // setting mail subject
-        String subject = "Job Referral - %s by %s".formatted(job.getJobTitle(), jobReferral.getReferredBy().getFirstName() + " " + jobReferral.getReferredBy().getFirstName());
-
-        // getting mail body
-        String body = referMailBody(job, jobReferral, jobReferral.getReferredBy());
-
-        Message msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress("skelireverbs@gmail.com", false));
-
-        String emailsParse = emails.stream()
-                .filter(Objects::nonNull)
-                .map(String::trim)
-                .filter(email -> !email.isEmpty())
-                .collect(Collectors.joining(","));
-
-
-//        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailsParse));
-        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("skelireverbs@gmail.com"));
         msg.setSubject(subject);
 //        msg.setContent(body, "text/html");
         msg.setSentDate(new Date());
@@ -195,6 +210,74 @@ public class EmailService {
         return body;
     }
 
+
+    @Async
+    public void sendReferMail(JobReferral jobReferral, Long jobId) throws MessagingException, IOException, MessagingException {
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
+        // getting job hrs
+        Set<JobHr> jobHrs = jobHrRepository.findAllByJob(job);
+        // getting job reviewers
+        Set<JobCvReviewer> jobCvReviewers = jobCvReviewerRepository.findAllByJob(job);
+
+        List<String> emails = new ArrayList<>();
+
+        jobHrs.forEach(jobHr -> emails.add(jobHr.getHr().getUser().getEmail()));
+        jobCvReviewers.forEach(jobHr -> emails.add(jobHr.getReviewer().getUser().getEmail()));
+
+        try {
+            Session session = createSession();
+
+            Message msg = createReferMail(session, emails, jobReferral, jobId);
+
+            Transport.send(msg);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private Message createReferMail(Session session, List<String> emails, JobReferral jobReferral, Long jobId) throws IOException, MessagingException {
+        // getting job details
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
+
+        // getting its file path
+        String filePath = getFilePath(jobReferral.getCvPath(), "cv");
+
+        // setting mail subject
+        String subject = "Job Referral - %s by %s".formatted(job.getJobTitle(), jobReferral.getReferredBy().getFirstName() + " " + jobReferral.getReferredBy().getFirstName());
+
+        // getting mail body
+        String body = referMailBody(job, jobReferral, jobReferral.getReferredBy());
+
+        Message msg = new MimeMessage(session);
+        msg.setFrom(new InternetAddress("skelireverbs@gmail.com", false));
+
+        String emailsParse = emails.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(email -> !email.isEmpty())
+                .collect(Collectors.joining(","));
+
+
+//        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailsParse));
+        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("skelireverbs@gmail.com"));
+        msg.setSubject(subject);
+//        msg.setContent(body, "text/html");
+        msg.setSentDate(new Date());
+
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setContent(body, "text/html");
+
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+        MimeBodyPart attachPart = new MimeBodyPart();
+
+        attachPart.attachFile(filePath);
+        multipart.addBodyPart(attachPart);
+        msg.setContent(multipart);
+
+        return msg;
+    }
+
     private String referMailBody(Job job, JobReferral jobReferral, EmployeeProfile referEmp) {
 
         String jobLink = baseUrl + "jobs/" + job.getId();
@@ -247,8 +330,22 @@ public class EmailService {
     }
 
 
-    private String getFilePath(String fileName,String docType) {
-        String BASE_PATH = "src/main/resources/"+docType;
+    private Session createSession() {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        return Session.getInstance(props, new jakarta.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("skelireverbs@gmail.com", "srte szzv bfsa uitk");
+            }
+        });
+    }
+
+    private String getFilePath(String fileName, String docType) {
+        String BASE_PATH = "src/main/resources/" + docType;
 
         return BASE_PATH + "/" + fileName;
     }
