@@ -2,8 +2,7 @@ package com.roima.hrms.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
@@ -12,6 +11,9 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "game_types", schema = "game")
 public class GameType {
     @Id
@@ -20,7 +22,6 @@ public class GameType {
     private Long id;
 
     @Size(max = 255)
-    @Nationalized
     @Column(name = "name")
     private String name;
 
@@ -30,8 +31,8 @@ public class GameType {
     @Column(name = "min_players")
     private Integer minPlayers;
 
-    @Column(name = "max_slot_duration")
-    private LocalTime maxSlotDuration;
+    @Column(name = "max_slot_duration_minutes")
+    private Integer maxSlotDurationMinutes;
 
     @Column(name = "created_on")
     private Instant createdOn;
