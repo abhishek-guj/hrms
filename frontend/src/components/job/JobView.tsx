@@ -2,12 +2,15 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import JobViewCard from "./JobViewCard";
+import { useAllReferrals } from "./queries/job.queries";
 
 const JobView = () => {
 	const [open, setOpen] = useState(true);
 
 	const navigate = useNavigate();
 	const { jobId } = useParams<{ jobId: string }>();
+
+	console.log("ref", data);
 
 	const handleClose = () => {
 		navigate(`/jobs`);

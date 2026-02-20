@@ -18,8 +18,10 @@ import { DatePickerInput } from "../../ui/date-picker";
 import { Separator } from "../../ui/separator";
 import { Button } from "../../ui/button";
 import { useJobsAll, useReferJob } from "../queries/job.queries";
+import { useState } from "react";
 
 const JobReferralForm = () => {
+	const [loading, setLoading] = useState(false);
 	// navigate
 	const navigate = useNavigate();
 	// navigate
@@ -44,7 +46,9 @@ const JobReferralForm = () => {
 
 	// handlers
 	const onSubmit: SubmitHandler<JobReferralSchemaType> = async (data) => {
+		setLoading(true);
 		const resData = await referJob.mutateAsync({ jobId: jobId, payload: data });
+		setLoading(false);
 		navigate(`/jobs`);
 	};
 	// handlers
@@ -141,7 +145,9 @@ const JobReferralForm = () => {
 
 				<FieldSet className="grid grid-cols-1">
 					<Field>
-						<Button type="submit">Save</Button>
+						<Button type="submit" disabled={loading}>
+							Save
+						</Button>
 					</Field>
 				</FieldSet>
 			</FieldGroup>

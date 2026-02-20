@@ -24,6 +24,9 @@ import JobReferral from "./components/job/JobReferral";
 import TravelDocumentCreate from "./components/travelPlans/TravelDocuments/TravelDocumentCreate";
 import TravelDocumentView from "./components/travelPlans/TravelDocuments/TravelDocumentView";
 import TravelDocumentDelete from "./components/travelPlans/TravelDocuments/TravelDocumentDelete";
+import ReferralsPage from "./components/job/ReferralsPage";
+import ReferralStatusChange from "./components/job/ReferralStatusChange";
+import CVView from "./components/job/CvView";
 
 const router = createBrowserRouter([
 	{
@@ -84,6 +87,14 @@ const router = createBrowserRouter([
 					{ path: ":jobId", element: <JobView /> },
 					{ path: ":jobId/share", element: <JobShare /> },
 					{ path: ":jobId/refer", element: <JobReferral /> },
+				],
+			},
+			{
+				path: "/referrals",
+				element: <ReferralsPage />,
+				children: [
+					{ path: ":referId", element: <ReferralStatusChange /> },
+					{ path: ":referId/cv", element: <CVView /> },
 				],
 			},
 		],

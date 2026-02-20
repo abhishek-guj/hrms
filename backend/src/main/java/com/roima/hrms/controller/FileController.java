@@ -81,4 +81,20 @@ public class FileController {
         return responseEntity;
 
     }
+    @GetMapping(value = "cv", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> getCv(@RequestParam String id) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        Object documentBytes = fileService.getFile("cv", id);
+
+        ResponseEntity<Object>
+                responseEntity = ResponseEntity.ok().headers(headers).contentType(
+                MediaType.parseMediaType("application/pdf")).body(documentBytes);
+        return responseEntity;
+
+    }
 }

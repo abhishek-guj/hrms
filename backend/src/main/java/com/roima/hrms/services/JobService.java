@@ -1,9 +1,8 @@
 package com.roima.hrms.services;
 
-import com.roima.hrms.dtos.req.EmailShareReqDto;
-import com.roima.hrms.dtos.req.JobReferralReqDto;
-import com.roima.hrms.dtos.req.JobRequestDto;
+import com.roima.hrms.dtos.req.*;
 import com.roima.hrms.dtos.res.JobDto;
+import com.roima.hrms.dtos.res.JobReferralDto;
 import com.roima.hrms.entities.*;
 import com.roima.hrms.exceptions.UnauthorizedException;
 import com.roima.hrms.exceptions.travel.ExpenseTypeNotFoundException;
@@ -12,6 +11,7 @@ import com.roima.hrms.mapper.job.JobMapper;
 import com.roima.hrms.repository.*;
 import com.roima.hrms.utils.RoleUtil;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.Repository;
@@ -38,8 +38,9 @@ public class JobService {
     private final JobShareRepository jobShareRepository;
     private final JobReferralRepository jobReferralRepository;
     private final NotificationService notificationService;
+    private final ModelMapper modelMapper;
 
-    public JobService(JobRepository jobRepository, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, FileService fileService, ExpenseDocumentRepository expenseDocumentRepository, JobMapper jobMapper, EmailService emailService, JobShareRepository jobShareRepository, JobReferralRepository jobReferralRepository, NotificationService notificationService) {
+    public JobService(JobRepository jobRepository, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, FileService fileService, ExpenseDocumentRepository expenseDocumentRepository, JobMapper jobMapper, EmailService emailService, JobShareRepository jobShareRepository, JobReferralRepository jobReferralRepository, NotificationService notificationService, ModelMapper modelMapper) {
         this.jobRepository = jobRepository;
         this.roleUtil = roleUtil;
         this.travelPlanRepository = travelPlanRepository;
@@ -51,6 +52,7 @@ public class JobService {
         this.jobShareRepository = jobShareRepository;
         this.jobReferralRepository = jobReferralRepository;
         this.notificationService = notificationService;
+        this.modelMapper = modelMapper;
     }
 
     public List<JobDto> getAllJobs() {
@@ -173,6 +175,31 @@ public class JobService {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    public List<JobReferralDto> getReferrals() {
+
+        List<JobReferral> referrals = null;
+        if (roleUtil.isHr() || roleUtil.isAdmin()) {
+            referrals = jobReferralRepository.getJobReferralsHr();
+        } else {
+
+            referrals = jobReferralRepository.getJobReferrals(roleUtil.getCurrentEmployeeId());
+        }
+
+        return referrals.stream().map(jobReferral -> modelMapper.map(jobReferral, JobReferralDto.class)).toList();
+    }
+
+    @Transactional
+    public void updateReferralStatus(Long referralId, ReferralStatusDto status) {
+        JobReferral jobReferral = jobReferralRepository.findById(referralId).orElseThrow(() -> new RuntimeException("Referral Not Found"));
+        if (roleUtil.isAdmin() || roleUtil.isHr()) {
+            jobReferral.setStatus(status.getStatus());
+            jobReferralRepository.save(jobReferral);
+        } else {
+            throw new UnauthorizedException("You Can't update status");
+        }
+        return;
     }
 
 }

@@ -6,6 +6,8 @@ import {
 import PdfViewer from "../../PdfViewer";
 
 const ProofView = ({ filePath, docType }) => {
+	console.log(filePath);
+
 	const { data, isLoading, error } = useGetDocument(filePath, docType);
 
 	const getType = (blob: Blob) => {

@@ -4,43 +4,6 @@ import { Link } from "react-router-dom";
 import { Button } from "../../ui/button";
 import type { DataTabelItem } from "../types/TravelPlan.types";
 import DataTableBadge from "./Shared/DataTableBadge";
-import type { DataTableStatus } from "../../shared/shared.types";
-
-export const DataTableStatusConfig: Record<
-	DataTableStatus,
-	{ label: string; className: string }
-> = {
-	completed: {
-		label: "Completed",
-		className:
-			"bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
-	},
-	pending: {
-		label: "Pending",
-		className:
-			"bg-amber-500/15 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
-	},
-	processing: {
-		label: "Processing",
-		className:
-			"bg-blue-500/15 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
-	},
-	cancelled: {
-		label: "Cancelled",
-		className:
-			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
-	},
-	accepted: {
-		label: "accepted",
-		className:
-			"bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
-	},
-	rejected: {
-		label: "Rejected",
-		className:
-			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
-	},
-};
 
 //  define structure of each column,
 //  in cell it defines, what should be displayed in there.
@@ -60,6 +23,20 @@ export const DataTableStatusConfig: Record<
 //     "lastDateOfExpenseSubmission": "2026-02-28",
 //     "maxAmountPerDay": 2000
 // }
+
+const checkOngoing = (startDate, endDate) => {
+	const today = new Date();
+	// console.log(today, new Date(endDate), today < new Date(endDate));
+	if (today < new Date(endDate) && today > new Date(startDate)) {
+		console.log(today, new Date(endDate), today > new Date(endDate));
+		return "ongoing";
+	} else if (today > new Date(endDate)) {
+		return "completed";
+	} else {
+		return "upcoming";
+		console.log("not start");
+	}
+};
 
 export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
 	{
@@ -106,11 +83,21 @@ export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
 			<span className="font-medium">{row.getValue("endDate")}</span>
 		),
 	},
-	// {
-	// 	accessorKey: "status",
-	// 	header: "Status",
-	// 	cell: ({ row }) => <DataTableBadge status={row.getValue("status")} />,
-	// },
+	{
+		accessorKey: "status",
+		header: "Status",
+		cell: ({ row }) => {
+			checkOngoing(row.getValue("startDate"), row.getValue("endDate"));
+			return (
+				<DataTableBadge
+					status={checkOngoing(
+						row.getValue("startDate"),
+						row.getValue("endDate"),
+					)}
+				/>
+			);
+		},
+	},
 	{
 		id: "actions",
 		header: () => <div className="text-center">Actions</div>,

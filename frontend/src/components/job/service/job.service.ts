@@ -1,4 +1,4 @@
-import type { JobReferralReqDto } from './../types/job.types';
+import type { JobReferralDto, JobReferralReqDto } from './../types/job.types';
 import { api } from "../../../api/apiClient";
 import type { IApiResponse } from "../../../api/apiResponse.types";
 import { JOB_ENDPOINTS } from "../../../api/endpoints";
@@ -38,4 +38,16 @@ export const JobService = {
         );
         return res.data.data;
     },
+    async getAllReferrals(): Promise<JobReferralDto[]> {
+        const res = await api.get<IApiResponse<JobReferralDto[]>>(JOB_ENDPOINTS.getAllRefers());
+        return res.data.data;
+    },
+    async updateStatus(id: string, status: string): Promise<string> {
+        const res = await api.put<IApiResponse<string>>(JOB_ENDPOINTS.updateStatus(id),
+            { status }
+        );
+        return res.data.data;
+    },
+
+
 }

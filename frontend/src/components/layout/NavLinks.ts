@@ -42,7 +42,7 @@ export const navLinksList = {
 				},
 				{
 					title: "Reffrals",
-					url: "#",
+					url: "/referrals",
 				},
 			],
 		},

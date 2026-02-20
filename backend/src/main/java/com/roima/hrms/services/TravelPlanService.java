@@ -15,6 +15,7 @@ import com.roima.hrms.repository.TravelEmployeeRepository;
 import com.roima.hrms.repository.TravelPlanRepository;
 import com.roima.hrms.repository.TravelTypeRepository;
 import com.roima.hrms.utils.RoleUtil;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,10 +74,10 @@ public class TravelPlanService {
     }
 
 
-
+    @Transactional
     public TravelPlanDto createTravelPlan(TravelPlanRequestDto dto) {
 
-        if(!roleUtil.isAdmin()||!roleUtil.isHr()){
+        if (!roleUtil.isAdmin() || !roleUtil.isHr()) {
             throw new RuntimeException("Not Authorised to create");
         }
 
@@ -97,10 +98,11 @@ public class TravelPlanService {
     }
 
 
+    @Transactional
     public TravelPlanDto updateTravelPlan(Long id, TravelPlanRequestDto dto) {
 
-        if(!roleUtil.isAdmin()||!roleUtil.isHr()){
-            throw new RuntimeException("Not Authorised to create");
+        if (!roleUtil.isAdmin() && !roleUtil.isHr()) {
+            throw new RuntimeException("Not Authorised to update");
         }
 
         TravelPlan travelPlan = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
@@ -117,11 +119,11 @@ public class TravelPlanService {
         return travelPlanMapper.toTravelPlanDto(updatedEntity);
     }
 
+    @Transactional
     public void deleteTravelPlan(Long id) {
         TravelPlan tp = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
         travelPlanRepository.deleteById(tp.getId());
     }
-
 
 
 }

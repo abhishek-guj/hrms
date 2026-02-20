@@ -42,3 +42,19 @@ export interface JobReferralReqDto {
     cvFile: File;
     note: string;
 }
+
+export interface JobReferralDto {
+    id: string,
+    jobId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    contactNumber: string;
+    referredById: string;
+    cvFile: File;
+    note: string;
+    referredBy: { id: string, firstName: string, lastName: string };
+    referredOn: Date;
+    status: string;
+    statusChangedOn: string;
+}

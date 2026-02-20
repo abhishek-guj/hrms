@@ -56,5 +56,8 @@ export const JOB_ENDPOINTS = {
 	getById: (id: string) => `/jobs/${id}`,
 	delete: (id: string) => `/jobs/${id}`,
 	share: (id: string) => `jobs/${id}/share`,
-	refer: (id: string) => `jobs/${id}/refer`
+	refer: (id: string) => `jobs/${id}/refer`,
+	getAllRefers: () => `/jobs/referrals`,
+	updateStatus: (id: string) => `/jobs/referrals/${id}`
+
 }

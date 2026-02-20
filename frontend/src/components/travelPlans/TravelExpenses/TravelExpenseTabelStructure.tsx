@@ -51,6 +51,36 @@ export const DataTableStatusConfig: Record<
 		className:
 			"bg-rose-500/15 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400",
 	},
+	upcoming: {
+		label: "Upcoming",
+		className:
+			"bg-amber-500/15 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+	},
+	ongoing: {
+		label: "Ongoing",
+		className:
+			"bg-blue-500/15 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+	},
+	review: {
+		label: "Review",
+		className:
+			"bg-amber-500/15 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+	},
+	interview: {
+		label: "Interview",
+		className:
+			"bg-blue-500/15 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+	},
+	hold: {
+		label: "Hold",
+		className:
+			"bg-amber-500/15 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+	},
+	accepted: {
+		label: "Accepted",
+		className:
+			"bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+	},
 };
 
 export const DEFAULT_STATUS = {

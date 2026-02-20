@@ -1,10 +1,9 @@
 package com.roima.hrms.controller.job;
 
 
-import com.roima.hrms.dtos.req.EmailShareReqDto;
-import com.roima.hrms.dtos.req.JobReferralReqDto;
+import com.roima.hrms.dtos.req.*;
 import com.roima.hrms.dtos.res.JobDto;
-import com.roima.hrms.dtos.req.JobRequestDto;
+import com.roima.hrms.dtos.res.JobReferralDto;
 import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.JobService;
@@ -86,6 +85,20 @@ public class JobController {
     public ResponseEntity<ApiResponse> referJobById(@PathVariable Long jobId, @ModelAttribute JobReferralReqDto jobReferralReqDto) {
         boolean createReferral = jobService.referById(jobId,jobReferralReqDto);
         ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Referred successfully", createReferral, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @GetMapping("referrals")
+    public ResponseEntity<ApiResponse> getAllRefers() {
+        List<JobReferralDto> jobDtoList = jobService.getReferrals();
+        ApiResponse<List<JobReferralDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Referrals successfully", jobDtoList, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @PutMapping("referrals/{referralId}")
+    public ResponseEntity<ApiResponse> updateReferralStatus(@PathVariable Long referralId, @RequestBody ReferralStatusDto status) {
+        jobService.updateReferralStatus(referralId,status);
+        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Shared Job successfully", null, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 }

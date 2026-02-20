@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
-import type { JobDto, JobReferralReqDto } from "../types/job.types";
+import type { JobDto, JobReferralDto, JobReferralReqDto } from "../types/job.types";
 import { JobService } from "../service/job.service";
 import { showError, showSuccess } from "../../ui/toast";
 
@@ -9,6 +9,14 @@ export const useJobsAll = (): UseQueryResult<JobDto[]> => {
         queryKey: ["getAllJobs"],
         queryFn: (): Promise<JobDto[]> =>
             JobService.getAllJobs(),
+    });
+};
+
+export const useAllReferrals = (): UseQueryResult<JobReferralDto[]> => {
+    return useQuery({
+        queryKey: ["getAllReferrals"],
+        queryFn: (): Promise<JobReferralDto[]> =>
+            JobService.getAllReferrals(),
     });
 };
 
@@ -65,6 +73,7 @@ export const useReferJob = () => {
             return response;
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["getAllReferrals"] })
             showSuccess("Job Referred successfully");
         },
         onError: () => {
@@ -72,4 +81,23 @@ export const useReferJob = () => {
             showError("Some error occurred during referring")
         },
     });
+};
+
+export const useUpdateStatus = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, status }: { id: string, status: string }) => {
+            const response = await JobService.updateStatus(id, status);
+            return id;
+        },
+        onSuccess: (id) => {
+            queryClient.invalidateQueries({ queryKey: ["getAllReferrals"] })
+            showSuccess(`Succefully updated ${id} Referral`)
+        },
+        onError: (err, payload) => {
+            console.log(`Error deleting ${payload.id} Job`, payload)
+            showError(`Error updating Referral id: ${payload?.id} `)
+
+        }
+    })
 };
