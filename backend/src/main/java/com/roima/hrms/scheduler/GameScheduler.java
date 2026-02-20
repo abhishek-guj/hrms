@@ -1,7 +1,9 @@
 package com.roima.hrms.scheduler;
 
+import com.roima.hrms.entities.GameOperationHour;
 import com.roima.hrms.entities.GameSlot;
 import com.roima.hrms.entities.GameType;
+import com.roima.hrms.repository.GameOperationHourRepository;
 import com.roima.hrms.repository.GameSlotRepository;
 import com.roima.hrms.repository.GameTypeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -23,16 +26,24 @@ public class GameScheduler {
     private final int initialDelay = 3000;
     private final GameTypeRepository gameTypeRepository;
     private final GameSlotRepository gameSlotRepository;
+    private final GameOperationHourRepository gameOperationHourRepository;
 
-    public GameScheduler(GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository) {
+    public GameScheduler(GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository, GameOperationHourRepository gameOperationHourRepository) {
         this.gameTypeRepository = gameTypeRepository;
         this.gameSlotRepository = gameSlotRepository;
+        this.gameOperationHourRepository = gameOperationHourRepository;
     }
 
     @Scheduled(fixedDelay = fixedDelay, initialDelay = initialDelay)
     public void execute() {
         System.out.println("Fixed Delay Task Executed at: " + new Date());
+
+        // create slots
+        // todo: later add loop to loop thru all gae types
         createSlot(1L);
+
+        //
+
     }
 
     public void createSlot(Long gameId) {
@@ -50,22 +61,42 @@ public class GameScheduler {
         int slotBufferSize = 24;
         int intervalMinuts = gameType.getMaxSlotDurationMinutes();
 
-        LocalDateTime currentTime = lastSlot != null ? lastSlot.getSlotEnd() : LocalDateTime.now();
+        // Operational hours
+        List<GameOperationHour> opHrs = gameOperationHourRepository.findAllByGameType(gameType);
 
-        var currentNewSlotTime = roundUpToNextInterval(LocalDateTime.now(), intervalMinuts);
+        LocalDateTime currentTime = lastSlot != null ? lastSlot.getSlotEnd().minusMinutes(Long.valueOf(gameType.getMaxSlotDurationMinutes())) : LocalDateTime.now();
+
+        var currentNewSlotTime = roundUpToNextInterval(LocalDateTime.now().plusHours(24L), intervalMinuts);
         var interval = ChronoUnit.MINUTES.between(currentNewSlotTime, lastSlot.getSlotEnd());
 
-        var remainBuffer = slotBufferSize - (interval / gameType.getMaxSlotDurationMinutes());
+        var totalSlots = (interval / gameType.getMaxSlotDurationMinutes());
+//        var remainBuffer = Math.abs(totalSlots % slotBufferSize);
 
         log.info("new slots");
-        for (int i = 1; i < remainBuffer + 1; i++) {
+//        for (int i = 1; i < remainBuffer + 1; i++) {
+        for (int i = 1; i < Math.abs(totalSlots) + 1; i++) {
             var time = roundUpToNextInterval(currentTime, intervalMinuts * i);
-            log.info("time " + i + ":" + time + " = " + time.plusMinutes(Long.valueOf(intervalMinuts)));
-            GameSlot slot = GameSlot.builder().gameType(gameType).slotStart(time).slotEnd(time.plusMinutes(Long.valueOf(intervalMinuts))).build();
-            gameSlotRepository.save(slot);
+
+            // check if in operational hours
+            boolean timeConflict = opHrs.stream().filter(opHr -> opHr != null).anyMatch(opHr -> {
+                var opStartDateTime = LocalDateTime.of(time.toLocalDate(), opHr.getStartTime());
+                var opEndDateTime = LocalDateTime.of(time.toLocalDate(), opHr.getEndTime());
+                boolean afterTime = time.isAfter(opEndDateTime.minusMinutes(Long.valueOf(intervalMinuts)));
+                boolean beforeTime = time.isBefore(opStartDateTime);
+                return time.isAfter(opEndDateTime.minusMinutes(Long.valueOf(intervalMinuts))) || time.isBefore(opStartDateTime);
+            });
+            // continue if time conflict
+            if (timeConflict) {
+                continue;
+            } else {
+
+
+                log.info("time " + i + ":" + time + " = " + time.plusMinutes(Long.valueOf(intervalMinuts)));
+                GameSlot slot = GameSlot.builder().gameType(gameType).slotStart(time).slotEnd(time.plusMinutes(Long.valueOf(intervalMinuts))).build();
+                gameSlotRepository.save(slot);
+            }
         }
     }
-
 
     private static LocalDateTime roundUpToNextInterval(LocalDateTime dateTime, int intervalMinutes) {
 

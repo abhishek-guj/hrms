@@ -1,14 +1,18 @@
 package com.roima.hrms.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "game_operation_hours", schema = "game")
 public class GameOperationHour {
     @Id
@@ -16,14 +20,16 @@ public class GameOperationHour {
     @Column(name = "pk_game_operation_hour_id", nullable = false)
     private Long id;
 
-    @Column(name = "game_id")
-    private Long gameId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_type_id")
+    private GameType gameType;
 
     @Column(name = "start_time")
-    private Instant startTime;
+    private LocalTime startTime;
 
     @Column(name = "end_time")
-    private Instant endTime;
+    private LocalTime endTime;
 
     @Column(name = "created_on")
     private Instant createdOn;
