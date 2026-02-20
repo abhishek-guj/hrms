@@ -39,7 +39,7 @@ public class GameScheduler {
         System.out.println("Fixed Delay Task Executed at: " + new Date());
 
         // create slots
-        // todo: later add loop to loop thru all gae types
+        // todo: later add loop to loop thru all game types
         createSlot(1L);
 
         //
