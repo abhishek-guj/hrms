@@ -1,6 +1,7 @@
 package com.roima.hrms.controller;
 
 import com.roima.hrms.dtos.req.LoginReqDto;
+import com.roima.hrms.dtos.res.LoginDto;
 import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.AuthService;
@@ -17,19 +18,20 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginReqDto dto) {
+    public ResponseEntity<ApiResponse<LoginDto>> login(@RequestBody LoginReqDto dto) {
         try {
-            String token = authService.login(dto.email, dto.password);
+            LoginDto res = authService.login(dto.email, dto.password);
             log.info("Login");
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.createApiResponse(ApiResponseType.SUCCESS,"logged in...!", token, null));
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "logged in...!", res, null));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.createApiResponse(ApiResponseType.ERROR,"Login Failed", ex.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.createApiResponse(ApiResponseType.ERROR, ex.getMessage(), null, null));
         }
     }
 }

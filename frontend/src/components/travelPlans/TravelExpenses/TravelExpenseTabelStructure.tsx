@@ -6,6 +6,7 @@ import DataTableBadge from "../TravelplanDashboard/Shared/DataTableBadge";
 import type { TravelExpenseDto } from "../types/TravelPlan.types";
 import type { DataTableStatus } from "../../shared/shared.types";
 import StatusUpdate from "./StatusUpdate";
+import { RoleUtil } from "../../../auth/role.util";
 
 export const DataTableStatusConfig: Record<
 	DataTableStatus,
@@ -135,28 +136,34 @@ export const TravelExpenseTableColumns: ColumnDef<TravelExpenseDto>[] = [
 		// cell: ({ getValue }) => <div>{getValue() as string}</div>,
 	},
 	{
-		id: "changeStatus",
-		header: () => <div className="text-center">Change Status</div>,
-		cell: ({ row }) => <StatusUpdate id={row.getValue("id")} />,
-	},
-	{
+		accessorFn: (row) => `${row.submittedBy.managerId}`,
 		id: "actions",
 		header: () => <div className="text-center">Actions</div>,
-		cell: ({ row }) => (
-			<div className="text-right space-x-1">
+		cell: ({ row, getValue }) => (
+			<div className="text-center space-x-1">
 				<Button asChild variant={"outline"}>
 					<Link to={`${row.getValue("id")}`} className="border">
 						<Eye className="h-4 w-4" />
 						<span className="hidden lg:block">View</span>
 					</Link>
 				</Button>
-				<Button asChild variant={"outline"}>
-					<Link to={`${row.getValue("id")}/delete`} className="border">
-						<Trash className="h-4 w-4" />
-						<span className="hidden lg:block">Delete</span>
-					</Link>
-				</Button>
+
+				{!RoleUtil.isThisManager(getValue()) && (
+					<Button asChild variant={"outline"}>
+						<Link to={`${row.getValue("id")}/delete`} className="border">
+							<Trash className="h-4 w-4" />
+							<span className="hidden lg:block">Delete</span>
+						</Link>
+					</Button>
+				)}
 			</div>
 		),
 	},
 ];
+
+if (RoleUtil.isAdmin || RoleUtil.isHr)
+	TravelExpenseTableColumns.push({
+		id: "changeStatus",
+		header: () => <div className="text-center">Change Status</div>,
+		cell: ({ row }) => <StatusUpdate id={row.getValue("id")} />,
+	});

@@ -92,6 +92,14 @@ public class TravelEmployeeService {
         for (EmployeeProfile emp : newEmployeeProfiles) {
             TravelEmployee newTE = TravelEmployee.builder().travelPlan(travelPlan).employeeProfile(emp).build();
             travelEmployeeRepository.save(newTE);
+
+            // todo make this to only the ones that are added
+            notificationService.sendTravelPlanNotification(travelPlan);
+            try {
+                emailService.sendTravelPlanMail(travelPlanId);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
     }

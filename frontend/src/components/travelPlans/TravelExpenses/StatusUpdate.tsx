@@ -16,7 +16,7 @@ const StatusUpdate = ({ id }) => {
 		updateStatus.mutateAsync({ id: id, payload: false });
 	};
 	return (
-		<div className="text-right space-x-1">
+		<div className="text-center space-x-1">
 			<Button variant={"outline"} onClick={handleAccept}>
 				<Check className="h-4 w-4" />
 				<span className="hidden lg:block">Accept</span>

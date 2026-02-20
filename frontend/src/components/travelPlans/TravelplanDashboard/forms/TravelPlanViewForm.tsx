@@ -10,13 +10,7 @@ import type { LoginFormType } from "../../loginForm.types";
 import { useTravelPlan } from "../../queries/travelPlans.queries";
 import { showError } from "../../../ui/toast";
 
-const TravelPlanViewForm = () => {
-	// getting id of open travel plan
-	const { id } = useParams<{ id: string }>();
-
-	// query hook
-	const { data, error, isLoading } = useTravelPlan(id!);
-
+const TravelPlanViewForm = ({ data, error, isLoading }) => {
 	// handlers
 
 	if (error) {

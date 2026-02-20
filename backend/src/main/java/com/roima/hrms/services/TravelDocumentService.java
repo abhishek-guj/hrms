@@ -105,10 +105,10 @@ public class TravelDocumentService {
         if (roleUtil.isEmployee()) {
             travelDocuments = travelDocumentRepository.getTravelDocumentsByUploadedForEmployee_IdAndTravelPlan_Id(roleUtil.getCurrentEmployeeId(), travelPlanId);
         } else if (roleUtil.isManager()) {
-            boolean exists = travelEmployeeRepository.findByTravelPlan_Id(travelPlanId).stream().anyMatch(tp -> tp.getEmployeeProfile().getManager().getId() == roleUtil.getCurrentEmployeeId());
-            if (exists) {
+//            boolean exists = travelEmployeeRepository.findByTravelPlan_Id(travelPlanId).stream().anyMatch(tp -> tp.getEmployeeProfile().getManager().getId() == roleUtil.getCurrentEmployeeId());
+//            if (exists) {
                 travelDocuments = travelDocumentRepository.getTravelDocumentsByManagerId(roleUtil.getCurrentEmployeeId(), travelPlanId);
-            }
+//            }
         } else {
             travelDocuments = travelDocumentRepository.getTravelDocumentsByTravelPlan_Id(travelPlanId);
         }

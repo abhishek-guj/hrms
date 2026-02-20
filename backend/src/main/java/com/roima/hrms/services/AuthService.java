@@ -1,6 +1,7 @@
 package com.roima.hrms.services;
 
 
+import com.roima.hrms.dtos.res.LoginDto;
 import com.roima.hrms.entities.User;
 import com.roima.hrms.exceptions.EmployeeNotFoundException;
 import com.roima.hrms.repository.UserRepository;
@@ -29,10 +30,10 @@ public class AuthService {
     }
 
 
-    public String login(String email, String password) {
+    public LoginDto login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new EmployeeNotFoundException());
         if (user.getPasswordHash().equals(PasswordUtil.hashPassword(password))) {
-            return jwtUtil.generateToken(user);
+            return LoginDto.builder().token(jwtUtil.generateToken(user)).role(user.getRole().getRole().name()).employeeId(user.getEmployeeProfile().getId()).build();
         }
 
         throw new RuntimeException("Invalid Credentials...!");

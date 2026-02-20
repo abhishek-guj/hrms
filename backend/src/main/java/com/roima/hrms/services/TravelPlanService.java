@@ -60,6 +60,7 @@ public class TravelPlanService {
             travelPlans = travelPlanRepository.findByEmployeeId(employeeId);
         } else if (roleUtil.isManager()) {
             travelPlans = travelPlanRepository.findByManagerId(roleUtil.getCurrentEmployeeId());
+            return travelPlanMapper.toTravelPlanDtoList(travelPlans);
         } else {
             // if hr or admin
             travelPlans = travelPlanRepository.findAll();
@@ -70,7 +71,10 @@ public class TravelPlanService {
 
     public TravelPlanDto getById(Long id) {
         TravelPlan tp = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
-        return travelPlanMapper.toTravelPlanDto(tp);
+        boolean assigned = tp.getTravelEmployees().stream().anyMatch(travelEmployee -> travelEmployee.getEmployeeProfile().getId() == roleUtil.getCurrentEmployeeId());
+        var dto = travelPlanMapper.toTravelPlanDto(tp);
+        dto.setAssigned(assigned);
+        return dto;
     }
 
 

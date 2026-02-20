@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Table } from "../../ui/table";
 
 import { Plus } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useOutletContext, useParams } from "react-router-dom";
 import { Button } from "../../ui/button";
 import DataTableBody from "../TravelplanDashboard/Shared/DataTableBody";
 import DataTableFooter from "../TravelplanDashboard/Shared/DataTableFooter";
@@ -22,6 +22,7 @@ import { TravelPlanTableColumns } from "../TravelplanDashboard/TravelPlansTabelS
 import { useTravelPlans } from "../queries/travelPlans.queries";
 import { useTravelDocuments } from "../queries/travelDocuments.queries";
 import { TravelDocumentTableColumns } from "./TravelDocumentsTableStructure";
+import { RoleUtil } from "../../../auth/role.util";
 
 const TravelDocumentsTable = () => {
 	// states
@@ -31,6 +32,8 @@ const TravelDocumentsTable = () => {
 	// states
 
 	const { id } = useParams<{ id: string }>();
+
+	const { data: travelData } = useOutletContext();
 
 	const { data, isLoading, error } = useTravelDocuments(id!);
 	console.log(data);
@@ -72,12 +75,15 @@ const TravelDocumentsTable = () => {
 					globalFilter={globalFilter}
 					setGlobalFilter={setGlobalFilter}
 				/>
-
-				<Button asChild>
-					<Link to={"new"}>
-						New <Plus />
-					</Link>
-				</Button>
+				{(RoleUtil.isAdmin ||
+					RoleUtil.isHr ||
+					RoleUtil.isAssigned(travelData?.assigned)) && (
+					<Button asChild>
+						<Link to={"new"}>
+							New <Plus />
+						</Link>
+					</Button>
+				)}
 			</div>
 
 			<div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">

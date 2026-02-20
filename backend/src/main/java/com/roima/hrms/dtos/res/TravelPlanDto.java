@@ -30,10 +30,5 @@ public class TravelPlanDto {
     private String destinationCountry;
     private LocalDate lastDateOfExpenseSubmission;
     private BigDecimal maxAmountPerDay;
-//    private Instant createdOn;
-//    private Instant updatedOn;
-//    private EmployeeProfile createdBy;
-//    private EmployeeProfile updatedBy;
-//    private EmployeeProfile deletedBy;
-
+    private boolean isAssigned;
 }

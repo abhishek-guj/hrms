@@ -5,12 +5,14 @@ interface AuthSlice {
 	isAuthenticated: boolean;
 	token: string;
 	role: string;
+	employeeId: number;
 }
 
 const initialState: AuthSlice = {
 	isAuthenticated: false,
 	token: "",
 	role: "",
+	employeeId: Number.NaN,
 };
 
 const authSlice = createSlice({
@@ -24,14 +26,17 @@ const authSlice = createSlice({
 					return;
 				}
 
-				const token = action.payload.data;
+				const data = action.payload.data;
+				const token = data.token;
 				const decoded = jwtDecode(token);
 
 				state.isAuthenticated = true;
 				state.role = decoded.role;
 				state.token = decoded.token;
+				state.employeeId = data.employeeId
+				// console.log("authSlice", { ...state })
 			} catch (ex) {
-				console.error(ex);  
+				console.error(ex);
 			}
 		},
 	},

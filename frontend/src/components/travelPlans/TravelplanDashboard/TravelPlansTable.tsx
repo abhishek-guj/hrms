@@ -22,6 +22,7 @@ import type { DataTabelItem } from "../types/TravelPlan.types";
 import { Button } from "../../ui/button";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
+import { RoleUtil } from "../../../auth/role.util";
 
 const TravelPlansTable = () => {
 	// states
@@ -71,11 +72,13 @@ const TravelPlansTable = () => {
 					setGlobalFilter={setGlobalFilter}
 				/>
 
-				<Button asChild>
-					<Link to={"new"}>
-						New <Plus />
-					</Link>
-				</Button>
+				{(RoleUtil.isAdmin || RoleUtil.isHr) && (
+					<Button asChild>
+						<Link to={"new"}>
+							New <Plus />
+						</Link>
+					</Button>
+				)}
 			</div>
 
 			<div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
@@ -85,11 +88,11 @@ const TravelPlansTable = () => {
 				</Table>
 			</div>
 
-			<DataTableFooter
+			{/* <DataTableFooter
 				table={table}
 				pageCount={pageCount}
 				currentPage={currentPage}
-			/>
+			/> */}
 		</div>
 	);
 };

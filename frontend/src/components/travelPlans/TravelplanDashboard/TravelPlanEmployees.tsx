@@ -11,6 +11,7 @@ import { Button } from "../../ui/button";
 import { api } from "../../../api/apiClient";
 import { Trash2 } from "lucide-react";
 import AssignedEmployeeCard from "../TravelEmployees/AssignedEmployeeCard";
+import { RoleUtil } from "../../../auth/role.util";
 
 const TravelPlanEmployeesOLD = () => {
 	// getting id of open travel plan
@@ -63,8 +64,6 @@ const TravelPlanEmployeesOLD = () => {
 		updateTravelEmployees.mutateAsync({ id: id, payload: selected });
 	};
 
-	console.log("selected", selected);
-
 	if (error) {
 		return <div>{error.message}</div>;
 	}
@@ -72,12 +71,14 @@ const TravelPlanEmployeesOLD = () => {
 		return <div>Loading....</div>;
 	}
 	return (
-		<Card className="border-none shadow-none max-h-full h-full w-full">
+		<Card className="border-none shadow-none max-h-full h-full w-full px-28">
 			<CardHeader>
 				<CardTitle>Travel Employees</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<AssignEmloyeeSelect onValueChange={handleChange} />
+				{(RoleUtil.isAdmin || RoleUtil.isHr) && (
+					<AssignEmloyeeSelect onValueChange={handleChange} />
+				)}
 				<div className="py-4 flex flex-wrap gap-1.5">
 					{employees
 						?.filter((emp) => selected.includes(Number(emp.id)))
@@ -91,7 +92,9 @@ const TravelPlanEmployeesOLD = () => {
 							);
 						})}
 				</div>
-				<Button onClick={handleSubmit}>Update</Button>
+				{(RoleUtil.isAdmin || RoleUtil.isHr) && (
+					<Button onClick={handleSubmit}>Update</Button>
+				)}
 			</CardContent>
 		</Card>
 	);

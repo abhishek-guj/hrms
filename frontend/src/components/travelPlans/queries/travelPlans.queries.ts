@@ -31,7 +31,6 @@ export const useTravelPlan = (id: string): UseQueryResult<TravelPlanDto> => {
 		queryKey: ["getTravelPlan", id],
 		queryFn: async (): Promise<TravelPlanDto> => {
 			const res = await TravelPlansService.getTravelPlanById(id)
-			console.log("check error", res)
 			return res
 		},
 

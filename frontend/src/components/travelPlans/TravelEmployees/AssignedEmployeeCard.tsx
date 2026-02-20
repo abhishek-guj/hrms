@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent, CardTitle } from "../../ui/card";
 import { Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
+import { RoleUtil } from "../../../auth/role.util";
 
 const AssignedEmployeeCard = ({ emp, handleRemove }) => {
 	return (
@@ -23,14 +24,16 @@ const AssignedEmployeeCard = ({ emp, handleRemove }) => {
 							<span>need to add in dto</span>
 						</div>
 					</div>
-					<Button
-						onClick={() => {
-							handleRemove(emp.id);
-						}}
-						className="w-8 h-8 grid items-center p-0"
-					>
-						<Trash2 className="h-10 w-10 m-0" />
-					</Button>
+					{(RoleUtil.isAdmin || RoleUtil.isHr) && (
+						<Button
+							onClick={() => {
+								handleRemove(emp.id);
+							}}
+							className="w-8 h-8 grid items-center p-0"
+						>
+							<Trash2 className="h-10 w-10 m-0" />
+						</Button>
+					)}
 				</div>
 			</CardContent>
 		</Card>

@@ -5,6 +5,7 @@ import { Button } from "../../ui/button";
 import { Link } from "react-router-dom";
 import { Eye, Trash } from "lucide-react";
 import { format } from "date-fns";
+import { RoleUtil } from "../../../auth/role.util";
 
 export const TravelDocumentTableColumns: ColumnDef<TravelDocument>[] = [
 	{
@@ -48,22 +49,25 @@ export const TravelDocumentTableColumns: ColumnDef<TravelDocument>[] = [
 		),
 	},
 	{
+		accessorFn: (row) => row.uploadedForId,
 		id: "actions",
 		header: () => <div className="text-center">Actions</div>,
-		cell: ({ row }) => (
-			<div className="text-right space-x-1">
+		cell: ({ row, getValue }) => (
+			<div className="text-center space-x-1">
 				<Button asChild variant={"outline"}>
 					<Link to={`${row.getValue("id")}`} className="border">
 						<Eye className="h-4 w-4" />
 						<span className="hidden lg:block">View</span>
 					</Link>
 				</Button>
-				<Button asChild variant={"outline"}>
-					<Link to={`${row.getValue("id")}/delete`} className="border">
-						<Trash className="h-4 w-4" />
-						<span className="hidden lg:block">Delete</span>
-					</Link>
-				</Button>
+				{RoleUtil.isThisManager(getValue()) && (
+					<Button asChild variant={"outline"}>
+						<Link to={`${row.getValue("id")}/delete`} className="border">
+							<Trash className="h-4 w-4" />
+							<span className="hidden lg:block">Delete</span>
+						</Link>
+					</Button>
+				)}
 			</div>
 		),
 	},

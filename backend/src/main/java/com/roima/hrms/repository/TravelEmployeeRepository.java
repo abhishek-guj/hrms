@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface TravelEmployeeRepository extends JpaRepository<TravelEmployee, Long> {
-    @Query("select te from TravelEmployee te Join fetch te.employeeProfile where te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted")
+    @Query("select te from TravelEmployee te Join fetch te.employeeProfile where te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted = false")
     List<TravelEmployee> findByTravelPlan_Id(Long travelPlanId);
 
     @Query("select (count(t) > 0) from TravelEmployee t where t.travelPlan = :travelPlan and t.employeeProfile = :employeeProfile and t.travelPlan.isDeleted = false")

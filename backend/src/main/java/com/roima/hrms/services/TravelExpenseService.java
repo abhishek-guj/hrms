@@ -99,6 +99,14 @@ public class TravelExpenseService {
             throw new RuntimeException("Please upload at least 1 proof document");
         }
 
+        // check amount and submit date
+        if(travelPlan.getLastDateOfExpenseSubmission().isAfter(LocalDate.now())){
+            throw new RuntimeException("You can't add expense after last date of submission");
+        }
+
+        // checking amount for the day
+        
+
         List<String> proofPaths = new ArrayList<String>();
         for (MultipartFile file : dto.getFiles()) {
             if (file.isEmpty()) {

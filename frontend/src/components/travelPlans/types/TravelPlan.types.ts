@@ -84,6 +84,7 @@ interface ExpenseEmployeeProfileDto {
 	id: number;
 	firstName: string;
 	lastName: string;
+	managerId: number;
 }
 
 interface ExpenseExpenseTypeDto {

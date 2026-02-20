@@ -7,6 +7,7 @@ import {
 	getSortedRowModel,
 	getGroupedRowModel,
 	useReactTable,
+	createColumnHelper,
 } from "@tanstack/react-table";
 
 import { Table } from "../../ui/table";
@@ -24,8 +25,9 @@ import {
 import type { DataTabelItem } from "../types/TravelPlan.types";
 import { TravelExpenseTableColumns } from "./TravelExpenseTabelStructure";
 import { Button } from "../../ui/button";
-import { Link } from "react-router-dom";
+import { Link, useOutlet, useOutletContext } from "react-router-dom";
 import { Plus } from "lucide-react";
+import { RoleUtil } from "../../../auth/role.util";
 
 const TravelExpensesTable = () => {
 	// states
@@ -34,7 +36,9 @@ const TravelExpensesTable = () => {
 	const [globalFilter, setGlobalFilter] = useState("");
 	// states
 
-	// const { data, error, isLoading } = useTravelExpenses(id!); // exclamation to supress undefined error
+	const { data: travelData } = useOutletContext();
+	console.log("travelData", travelData);
+
 	const { data, error, isLoading } = useTravelExpenses(1); // exclamation to supress undefined error
 
 	// defining react table
@@ -78,11 +82,15 @@ const TravelExpensesTable = () => {
 					globalFilter={globalFilter}
 					setGlobalFilter={setGlobalFilter}
 				/>
-				<Button asChild>
-					<Link to={"new"}>
-						New <Plus />
-					</Link>
-				</Button>
+				{(RoleUtil.isAdmin ||
+					RoleUtil.isHr ||
+					RoleUtil.isAssigned(travelData?.assigned)) && (
+					<Button asChild>
+						<Link to={"new"}>
+							New <Plus />
+						</Link>
+					</Button>
+				)}
 			</div>
 
 			<div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
