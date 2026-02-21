@@ -1,14 +1,10 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ExpenseCreateForm from "./forms/ExpenseCreateForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import ExpenseCreateForm from "../travelPlans/TravelExpenses/forms/ExpenseCreateForm";
+import BookGameSlotForm from "./forms/BookGameSlotForm";
 
-const TravelExpenseCreate = () => {
+const BookGameSlot = () => {
   const [open, setOpen] = useState(true);
 
   const navigate = useNavigate();
@@ -16,7 +12,7 @@ const TravelExpenseCreate = () => {
   const { id } = useParams<{ id: string }>();
 
   const handleClose = () => {
-    navigate(`/travel/plans/${id}/expenses`);
+    navigate(`/games`);
   };
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -24,10 +20,10 @@ const TravelExpenseCreate = () => {
         <DialogHeader>
           <DialogTitle>New Expense</DialogTitle>
         </DialogHeader>
-        <ExpenseCreateForm />
+        <BookGameSlotForm />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default TravelExpenseCreate;
+export default BookGameSlot;

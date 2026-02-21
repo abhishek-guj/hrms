@@ -28,91 +28,96 @@ import ReferralsPage from "./components/job/ReferralsPage";
 import ReferralStatusChange from "./components/job/ReferralStatusChange";
 import CVView from "./components/job/CvView";
 import GamesPage from "./pages/game/GamesPage";
+import BookGameSlot from "./components/game/BookGameSlot";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <MainLayout />,
-		children: [
-			{ index: true, path: "/", element: <App /> },
-			{
-				path: "/travel/plans",
-				element: <TravelPlanPage />,
-				children: [{ path: "new", element: <TravelPlanCreate /> }],
-			},
-			{
-				path: "/travel/plans/:id",
-				element: <TravelPlanView />,
-				children: [
-					{ path: "edit", element: <TravelPlanEdit /> },
-					{ path: "delete", element: <TravelPlanDelete /> },
-					{ path: "employee", index: true, element: <TravelPlanEmployees /> },
-					{
-						path: "documents",
-						element: <TravelDocumentsPage />,
-						children: [
-							{ path: "new", element: <TravelDocumentCreate /> },
-							{ path: ":documentId", element: <TravelDocumentView /> },
-							{ path: ":documentId/delete", element: <TravelDocumentDelete /> },
-						],
-					},
-					{
-						path: "expenses",
-						element: <TravelExpenses />,
-						children: [
-							{
-								path: ":expenseId",
-								index: true,
-								element: <TravelExpenseView />,
-							},
-							{
-								path: "new",
-								index: true,
-								element: <TravelExpenseCreate />,
-							},
-							{
-								path: ":expenseId/delete",
-								index: true,
-								element: <TravelExpenseDelete />,
-							},
-						],
-					},
-				],
-			},
-			{ path: "/org-chart", element: <OrgChartPage /> },
-			{
-				path: "/jobs",
-				element: <JobsPage />,
-				children: [
-					{ path: "new", element: <JobView /> },
-					{ path: ":jobId", element: <JobView /> },
-					{ path: ":jobId/share", element: <JobShare /> },
-					{ path: ":jobId/refer", element: <JobReferral /> },
-				],
-			},
-			{
-				path: "/referrals",
-				element: <ReferralsPage />,
-				children: [
-					{ path: ":referId", element: <ReferralStatusChange /> },
-					{ path: ":referId/cv", element: <CVView /> },
-				],
-			},
-			{ path: "/games", element: <GamesPage /> },
-		],
-	},
-	{
-		path: "/",
-		element: <PublicLayout />,
-		children: [
-			{ path: "/login", element: <LoginPage /> },
-			{
-				path: "/jobs/public/:jobId",
-				element: <JobPublicPage />,
-			},
-		],
-	},
-	{ path: "*", element: <ErrorPage /> },
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      { index: true, path: "/", element: <App /> },
+      {
+        path: "/travel/plans",
+        element: <TravelPlanPage />,
+        children: [{ path: "new", element: <TravelPlanCreate /> }],
+      },
+      {
+        path: "/travel/plans/:id",
+        element: <TravelPlanView />,
+        children: [
+          { path: "edit", element: <TravelPlanEdit /> },
+          { path: "delete", element: <TravelPlanDelete /> },
+          { path: "employee", index: true, element: <TravelPlanEmployees /> },
+          {
+            path: "documents",
+            element: <TravelDocumentsPage />,
+            children: [
+              { path: "new", element: <TravelDocumentCreate /> },
+              { path: ":documentId", element: <TravelDocumentView /> },
+              { path: ":documentId/delete", element: <TravelDocumentDelete /> },
+            ],
+          },
+          {
+            path: "expenses",
+            element: <TravelExpenses />,
+            children: [
+              {
+                path: ":expenseId",
+                index: true,
+                element: <TravelExpenseView />,
+              },
+              {
+                path: "new",
+                index: true,
+                element: <TravelExpenseCreate />,
+              },
+              {
+                path: ":expenseId/delete",
+                index: true,
+                element: <TravelExpenseDelete />,
+              },
+            ],
+          },
+        ],
+      },
+      { path: "/org-chart", element: <OrgChartPage /> },
+      {
+        path: "/jobs",
+        element: <JobsPage />,
+        children: [
+          { path: "new", element: <JobView /> },
+          { path: ":jobId", element: <JobView /> },
+          { path: ":jobId/share", element: <JobShare /> },
+          { path: ":jobId/refer", element: <JobReferral /> },
+        ],
+      },
+      {
+        path: "/referrals",
+        element: <ReferralsPage />,
+        children: [
+          { path: ":referId", element: <ReferralStatusChange /> },
+          { path: ":referId/cv", element: <CVView /> },
+        ],
+      },
+      {
+        path: "/games",
+        element: <GamesPage />,
+        children: [{ path: ":slotId", element: <BookGameSlot /> }],
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <PublicLayout />,
+    children: [
+      { path: "/login", element: <LoginPage /> },
+      {
+        path: "/jobs/public/:jobId",
+        element: <JobPublicPage />,
+      },
+    ],
+  },
+  { path: "*", element: <ErrorPage /> },
 ]);
 
 export default router;

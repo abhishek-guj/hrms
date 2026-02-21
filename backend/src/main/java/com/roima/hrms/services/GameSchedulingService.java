@@ -2,6 +2,8 @@ package com.roima.hrms.services;
 
 import com.roima.hrms.dtos.res.AllGameSlotsDto;
 import com.roima.hrms.dtos.res.GameSlotDto;
+import com.roima.hrms.dtos.res.PlayerGroupDto;
+import com.roima.hrms.dtos.res.SlotDetailsDto;
 import com.roima.hrms.entities.*;
 import com.roima.hrms.enums.SlotBookingStatusEnum;
 import com.roima.hrms.exceptions.EmployeeNotFoundException;
@@ -31,10 +33,12 @@ public class GameSchedulingService {
 
     // constants
     private final long PRIORITY_CHECK_DAYS = 3L;
+    private final GameQueueRepository gameQueueRepository;
 
     public GameSchedulingService(RoleUtil roleUtil, EmployeeProfileRepository employeeProfileRepository,
             PlayerGroupRepository playerGroupRepository, SlotBookingRepository slotBookingRepository,
-            GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository, ModelMapper modelMapper) {
+            GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository, ModelMapper modelMapper,
+            GameQueueRepository gameQueueRepository) {
         this.roleUtil = roleUtil;
         this.employeeProfileRepository = employeeProfileRepository;
         this.playerGroupRepository = playerGroupRepository;
@@ -42,26 +46,79 @@ public class GameSchedulingService {
         this.gameTypeRepository = gameTypeRepository;
         this.gameSlotRepository = gameSlotRepository;
         this.modelMapper = modelMapper;
+        this.gameQueueRepository = gameQueueRepository;
     }
 
-    public AllGameSlotsDto getAllSlots() {
+    public List<AllGameSlotsDto> getAllSlots() {
         List<GameType> games = gameTypeRepository.findAll();
 
-        AllGameSlotsDto allGameSlotsMap = AllGameSlotsDto.builder()
-                .gameSlots(new HashMap<Long, List<GameSlotDto>>())
-                .build();
+        List<AllGameSlotsDto> allGameSlotsDtoList = new ArrayList<>();
 
         for (GameType game : games) {
             List<GameSlot> slots = gameSlotRepository.findAllByGameTypeFromNow(game.getId(), LocalDateTime.now());
             List<GameSlotDto> slotDtos = slots
                     .stream()
-                    .map(gameSlot -> modelMapper.map(gameSlot, GameSlotDto.class))
+                    .map(gameSlot -> {
+                        // making dto
+                        GameSlotDto gameSlotDto = modelMapper.map(gameSlot, GameSlotDto.class);
+                        SlotBooking slotsBooked = slotBookingRepository.findByGameSlot(gameSlot).orElse(null);
+                        if (slotsBooked != null) {
+                            gameSlotDto.setBooked(true);
+                            // getting priority less or high
+                            boolean isHigh = compareHighPriorityByProfileGame(roleUtil.getCurrentEmployee(),
+                                    slotsBooked.getGroupOwner(), gameSlot.getGameType());
+                            gameSlotDto.setLowPriority(!isHigh);
+                        } else {
+                            gameSlotDto.setLowPriority(true);
+                            gameSlotDto.setBooked(false);
+                        }
+                        return gameSlotDto;
+                    })
                     .toList();
 
-            allGameSlotsMap.getGameSlots().put(game.getId(), slotDtos);
+            AllGameSlotsDto mapSLot = AllGameSlotsDto.builder()
+                    .gameTypeId(game.getId())
+                    .gameTypeName(game.getName())
+                    .gameSlots(slotDtos)
+                    .build();
+            allGameSlotsDtoList.add(mapSLot);
         }
 
-        return allGameSlotsMap;
+        return allGameSlotsDtoList;
+    }
+
+    public SlotDetailsDto getSlotDetails(Long slotId) {
+
+        // getting required details
+        GameSlot gameSlot = gameSlotRepository.findById(slotId)
+                .orElseThrow(() -> new RuntimeException("Game Slot not found."));
+        SlotBooking slotBooking = slotBookingRepository.findByGameSlot(gameSlot).orElse(null);
+
+        // creating details seperatly
+
+        GameSlotDto gameSlotDto = GameSlotDto.builder()
+                .id(gameSlot.getId())
+                .gameTypeId(gameSlot.getGameType().getId())
+                .slotStart(
+                        gameSlot.getSlotStart())
+                .slotEnd(gameSlot.getSlotEnd())
+                .isBooked(false)
+                .isLowPriority(false)
+                .build();
+
+        SlotDetailsDto slotDetailsDto = SlotDetailsDto.builder().gameSlot(gameSlotDto).build();
+
+        if (slotBooking != null) {
+            gameSlotDto.setBooked(true);
+            boolean isHigh = compareHighPriorityByProfileGame(roleUtil.getCurrentEmployee(),
+                    slotBooking.getGroupOwner(), gameSlot.getGameType());
+            gameSlotDto.setLowPriority(!isHigh);
+        }
+
+        // check active and put canBook
+
+        return slotDetailsDto;
+
     }
 
     @Transactional
@@ -91,54 +148,74 @@ public class GameSchedulingService {
 
     public boolean bookSlot(GameSlot gameSlot, PlayerGroup playerGroup) {
 
-        // check already active booking
+        // check already active booking for the player
         boolean slotActive = checkActiveBooking(roleUtil.getCurrentEmployee(), gameSlot.getGameType());
 
         if (slotActive) {
             // todo: throw error
             log.warn("active booking");
         }
+
         // todo: get priority
         int priority = getPriority(
                 roleUtil.getCurrentEmployee(),
-                gameTypeRepository.findByName("pool").orElseThrow());
+                gameTypeRepository.findByName(gameSlot.getGameType().getName()).orElseThrow());
 
         // todo: check priority
-        // // loop through slots from booking request slot
-        // getting generated slots
-        List<GameSlot> slots = gameSlotRepository.findAllByGameSlotAfter(gameSlot.getGameType(),
-                gameSlot.getSlotStart());
-        GameSlot tmp = null;
         SlotBooking newSlotBooking = SlotBooking.builder()
                 .playerGroup(playerGroup)
                 .gameSlot(gameSlot)
                 .status(SlotBookingStatusEnum.Requested)
                 .groupOwner(roleUtil.getCurrentEmployee())
                 .build();
-        for (GameSlot oldSlot : slots) {
-            if (!slotBookingRepository.existsSlotBookingByGameSlot(oldSlot)) {
-                // dont check if no booking in that slot
-                // create booking here
-                slotBookingRepository.save(newSlotBooking);
-                return true;
-            }
 
-            SlotBooking oldSlotBooking = slotBookingRepository.findByGameSlot(oldSlot);
-
-            boolean isNewPriorityHigh = compareNewHighPriority(newSlotBooking, oldSlotBooking);
-
-            if (isNewPriorityHigh) {
-                // change slots
-                tmp = oldSlotBooking.getGameSlot();
-                oldSlotBooking.setGameSlot(newSlotBooking.getGameSlot());
-                newSlotBooking.setGameSlot(tmp);
-            }
-
+        // if no one has already requested that slot
+        if (!slotBookingRepository.existsSlotBookingByGameSlot(gameSlot)) {
+            // dont check if no booking in that slot
+            // create booking here
+            slotBookingRepository.save(newSlotBooking);
+            return true;
         }
-        // todo: if high priority
-        // book slot to new person
-        // add
-        // add in queue
+
+        // checking pririoty based on booked and new slotBooking request
+        SlotBooking oldSlotBooking = slotBookingRepository.findByGameSlot(gameSlot).orElseThrow(()->new RuntimeException("Internal Logic error"));
+        boolean isNewPriorityHigh = compareNewHighPriority(newSlotBooking, oldSlotBooking);
+        // this will not null if swapped
+        GameSlot tmp = null;
+        if (isNewPriorityHigh) {
+            // swap slots as new request is of more priority
+            tmp = oldSlotBooking.getGameSlot();
+            oldSlotBooking.setGameSlot(newSlotBooking.getGameSlot());
+            newSlotBooking.setGameSlot(tmp);
+
+            // book slot to new person
+            slotBookingRepository.save(newSlotBooking);
+
+            // add the swapped one to queue until confirmed
+            GameQueue gameQueue = GameQueue.builder()
+                    .slot(oldSlotBooking.getGameSlot())
+                    .playerGroup(oldSlotBooking.getPlayerGroup())
+                    .owner(oldSlotBooking.getGroupOwner())
+                    .requestedOn(LocalDateTime.now())
+                    .priorityAtRequest(
+                            getPriority(oldSlotBooking.getGroupOwner(), oldSlotBooking.getGameSlot().getGameType()))
+                    .build();
+
+            gameQueueRepository.save(gameQueue);
+
+        } else {
+
+            // add in queue
+            GameQueue gameQueue = GameQueue.builder()
+                    .slot(newSlotBooking.getGameSlot())
+                    .playerGroup(newSlotBooking.getPlayerGroup())
+                    .owner(newSlotBooking.getGroupOwner())
+                    .requestedOn(LocalDateTime.now())
+                    .priorityAtRequest(priority)
+                    .build();
+
+            gameQueueRepository.save(gameQueue);
+        }
 
         return false;
     }
@@ -168,9 +245,16 @@ public class GameSchedulingService {
         return false;
     }
 
+    public boolean compareHighPriorityByProfileGame(EmployeeProfile player1, EmployeeProfile player2, GameType game) {
+        int player1Priority = getPriority(player1, game);
+        int player2Priority = getPriority(player2, game);
+        return player1Priority > player2Priority;
+    }
+
     public boolean checkActiveBooking(EmployeeProfile player, GameType game) {
         boolean activeBooking = slotBookingRepository.existsSlotBookingByPlayerAndGame(player, game,
                 LocalDateTime.now());
         return activeBooking;
     }
+
 }

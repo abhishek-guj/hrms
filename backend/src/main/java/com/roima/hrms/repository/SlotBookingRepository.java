@@ -36,7 +36,9 @@ public interface SlotBookingRepository extends JpaRepository<SlotBooking, Long> 
 
     List<SlotBooking> findAllByGameSlot(GameSlot gameSlot);
 
-    SlotBooking findByGameSlot(GameSlot gameSlot);
+    Optional<SlotBooking> findByGameSlot(GameSlot gameSlot);
 
     boolean existsSlotBookingByGameSlot(GameSlot gameSlot);
+
+    boolean existsByGameSlot(GameSlot gameSlot);
 }

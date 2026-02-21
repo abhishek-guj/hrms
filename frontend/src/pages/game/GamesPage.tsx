@@ -1,37 +1,36 @@
 import React from "react";
 import { useTimeSlotsAll } from "../../components/game/queries/game.queries";
+import { ScrollArea, ScrollBar } from "../../components/ui/scroll-area";
+import GameSlotSelector from "../../components/game/GameSlotSelector";
+import { Separator } from "../../components/ui/separator";
+import { Outlet } from "react-router-dom";
 
 const GamesPage = () => {
-	const { data, error, isLoading } = useTimeSlotsAll(); // exclamation to supress undefined error
+  const { data, error, isLoading } = useTimeSlotsAll(); // exclamation to supress undefined error
 
-	//
-	//
+  //
+  //
 
-	if (error) {
-		return <div>{error.message}</div>;
-	}
-	if (isLoading) {
-		return <div>Loading....</div>;
-	}
+  if (error) {
+    return <div>{error.message}</div>;
+  }
+  if (isLoading) {
+    return <div>Loading....</div>;
+  }
 
-	console.clear();
-	Object.entries(data.gameSlots).forEach(([key, value]) => {
-		console.log(`${key}:`, value);
-	});
-
-	return (
-		<div className="w-full h-full bg-secondary p-10">
-			{Object.entries(data.gameSlots).map(([keyof, value]) => {
-				value.map((a) => {
-					return (
-						<div className="w-fit p-3 h-10 bg-primary flex items-center rounded-2xl text-white">
-							{value.gameTypeId}
-						</div>
-					);
-				});
-			})}
-		</div>
-	);
+  return (
+    <div className="w-full h-full p-10 flex flex-col gap-8">
+      {data?.map((game) => {
+        return (
+          <>
+            <GameSlotSelector game={game} />
+            <Separator />
+          </>
+        );
+      })}
+      <Outlet />
+    </div>
+  );
 };
 
 export default GamesPage;

@@ -21,6 +21,9 @@ import java.util.Map;
 public class AllGameSlotsDto {
 
     // gameTypeId = list of slots
-    Map<Long, List<GameSlotDto>> gameSlots;
+    private Long gameTypeId;
+    private String gameTypeName;
+    private List<GameSlotDto> gameSlots;
+
 }
 

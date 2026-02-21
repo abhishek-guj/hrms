@@ -79,6 +79,8 @@ public class GameScheduler {
         log.info("new slots");
 //        for (int i = 1; i < remainBuffer + 1; i++) {
         for (int i = 1; i < Math.abs(totalSlots) + 1; i++) {
+            // todo: check for week days
+
             var time = roundUpToNextInterval(currentTime, intervalMinuts * i);
 
             // check if in operational hours

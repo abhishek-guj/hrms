@@ -24,7 +24,7 @@ export const navLinksList = {
 			items: [
 				{
 					title: "Book Game",
-					url: "#",
+					url: "/games",
 				},
 				{
 					title: "Check Games",

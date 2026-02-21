@@ -27,7 +27,9 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
     private final EmployeeProfileRepository employeeProfileRepository;
     private final SlotBookingRepository slotBookingRepository;
 
-    public GameSeeder(GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository, GameOperationHourRepository gameOperationHourRepository, PlayerGroupRepository playerGroupRepository, EmployeeProfileRepository employeeProfileRepository, SlotBookingRepository slotBookingRepository) {
+    public GameSeeder(GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository,
+            GameOperationHourRepository gameOperationHourRepository, PlayerGroupRepository playerGroupRepository,
+            EmployeeProfileRepository employeeProfileRepository, SlotBookingRepository slotBookingRepository) {
         this.gameTypeRepository = gameTypeRepository;
         this.gameSlotRepository = gameSlotRepository;
         this.gameOperationHourRepository = gameOperationHourRepository;
@@ -63,7 +65,6 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
             gameTypeRepository.save(pool);
         }
 
-
         GameType pool = gameTypeRepository.findByName("pool").orElseThrow();
         GameType chess = gameTypeRepository.findByName("chess").orElseThrow();
 
@@ -88,7 +89,8 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
         // initial slot
         if (!gameSlotRepository.existsByGameType(pool)) {
             GameOperationHour opHrs = gameOperationHourRepository.findFirstByGameTypeOrderByStartTime(pool);
-            LocalDateTime startTime = LocalDateTime.of(LocalDate.now(), opHrs.getStartTime().minusMinutes(Long.valueOf(pool.getMaxSlotDurationMinutes())));
+            LocalDateTime startTime = LocalDateTime.of(LocalDate.now(),
+                    opHrs.getStartTime().minusMinutes(Long.valueOf(pool.getMaxSlotDurationMinutes())));
             var start = roundUpToNextInterval(startTime, pool.getMaxSlotDurationMinutes());
             GameSlot slot = GameSlot.builder()
                     .gameType(pool)
@@ -99,7 +101,8 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
         }
         if (!gameSlotRepository.existsByGameType(chess)) {
             GameOperationHour opHrs = gameOperationHourRepository.findFirstByGameTypeOrderByStartTime(chess);
-            LocalDateTime startTime = LocalDateTime.of(LocalDate.now(), opHrs.getStartTime().minusMinutes(Long.valueOf(chess.getMaxSlotDurationMinutes())));
+            LocalDateTime startTime = LocalDateTime.of(LocalDate.now(),
+                    opHrs.getStartTime().minusMinutes(Long.valueOf(chess.getMaxSlotDurationMinutes())));
             var start = roundUpToNextInterval(startTime, chess.getMaxSlotDurationMinutes());
             GameSlot slot = GameSlot.builder()
                     .gameType(chess)
@@ -131,10 +134,19 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
             playerGroupRepository.save(playerGroup2);
         }
 
+        // slot booking
         PlayerGroup pg1 = playerGroupRepository.findById(1L).orElseThrow();
-        GameSlot gameSlot = gameSlotRepository.findBySlotStartAndGameType_Name(LocalDateTime.of(2026, 02, 21, 13, 00, 00), "pool");
+        GameSlot gameSlot = gameSlotRepository.findBySlotStartAndGameType_Name(
+                LocalDateTime.of(
+                        2026,
+                        02,
+                        22,
+                        10,
+                        00,
+                        00),
+                "pool");
         EmployeeProfile owner1 = employeeProfileRepository.findById(1L).orElseThrow(EmployeeNotFoundException::new);
-        if (!slotBookingRepository.existsById(1L)) {
+        if (!slotBookingRepository.existsByGameSlot(gameSlot)) {
             SlotBooking slotBooking1 = SlotBooking.builder()
                     .playerGroup(pg1)
                     .gameSlot(gameSlot)
@@ -142,7 +154,7 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
                     .groupOwner(owner1)
                     .build();
 
-        slotBookingRepository.save(slotBooking1);
+            slotBookingRepository.save(slotBooking1);
         }
     }
 

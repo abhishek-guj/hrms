@@ -64,5 +64,6 @@ export const JOB_ENDPOINTS = {
 
 
 export const GAME_ENDPOINTS = {
-	getAllSlots: () => `/games/slots`
+	getAllSlots: () => `/games/slots`,
+	getSlotDetails: (slotId: string) => `/games/slots/${slotId}`
 }
