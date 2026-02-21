@@ -1,15 +1,18 @@
 package com.roima.hrms.entities;
 
+import com.roima.hrms.enums.SlotBookingStatusEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "slot_bookings", schema = "game")
 public class SlotBooking {
     @Id
@@ -17,20 +20,19 @@ public class SlotBooking {
     @Column(name = "pk_slot_booking_id", nullable = false)
     private Long id;
 
-    @Column(name = "player_group_id")
-    private Long playerGroupId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "player_group_id")
+    private PlayerGroup playerGroup;
 
-    @Column(name = "slot_id")
-    private Long slotId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_slot_id", unique = true)
+    private GameSlot gameSlot;
 
-    @Size(max = 255)
-    @NotNull
-    @Nationalized
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private SlotBookingStatusEnum status;
 
-    @Column(name = "owner_id")
-    private Long ownerId;
-
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private EmployeeProfile groupOwner;
 }

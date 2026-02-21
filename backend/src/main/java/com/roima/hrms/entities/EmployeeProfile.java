@@ -75,4 +75,6 @@ public class EmployeeProfile {
 
     @OneToMany(mappedBy = "employeeProfile")
     private Set<Notification> notifications = new HashSet<>();
+
+
 }

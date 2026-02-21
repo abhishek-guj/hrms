@@ -61,3 +61,8 @@ export const JOB_ENDPOINTS = {
 	updateStatus: (id: string) => `/jobs/referrals/${id}`
 
 }
+
+
+export const GAME_ENDPOINTS = {
+	getAllSlots: () => `/games/slots`
+}

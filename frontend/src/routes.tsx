@@ -27,6 +27,7 @@ import TravelDocumentDelete from "./components/travelPlans/TravelDocuments/Trave
 import ReferralsPage from "./components/job/ReferralsPage";
 import ReferralStatusChange from "./components/job/ReferralStatusChange";
 import CVView from "./components/job/CvView";
+import GamesPage from "./pages/game/GamesPage";
 
 const router = createBrowserRouter([
 	{
@@ -97,6 +98,7 @@ const router = createBrowserRouter([
 					{ path: ":referId/cv", element: <CVView /> },
 				],
 			},
+			{ path: "/games", element: <GamesPage /> },
 		],
 	},
 	{
