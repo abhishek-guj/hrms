@@ -22,6 +22,7 @@ import java.util.List;
 public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
     private final GameTypeRepository gameTypeRepository;
     private final GameSlotRepository gameSlotRepository;
+    private final GameSlotSizeRepository gameSlotSizeRepository;
     private final GameOperationHourRepository gameOperationHourRepository;
     private final PlayerGroupRepository playerGroupRepository;
     private final EmployeeProfileRepository employeeProfileRepository;
@@ -29,9 +30,11 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     public GameSeeder(GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository,
             GameOperationHourRepository gameOperationHourRepository, PlayerGroupRepository playerGroupRepository,
-            EmployeeProfileRepository employeeProfileRepository, SlotBookingRepository slotBookingRepository) {
+            EmployeeProfileRepository employeeProfileRepository, SlotBookingRepository slotBookingRepository,
+            GameSlotSizeRepository gameSlotSizeRepository) {
         this.gameTypeRepository = gameTypeRepository;
         this.gameSlotRepository = gameSlotRepository;
+        this.gameSlotSizeRepository = gameSlotSizeRepository;
         this.gameOperationHourRepository = gameOperationHourRepository;
         this.playerGroupRepository = playerGroupRepository;
         this.employeeProfileRepository = employeeProfileRepository;
@@ -47,8 +50,6 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
         if (!gameTypeRepository.existsByName("pool")) {
             GameType pool = GameType.builder()
                     .name("pool")
-                    .maxPlayers(4)
-                    .minPlayers(2)
                     .maxSlotDurationMinutes(60)
                     .build();
 
@@ -57,8 +58,6 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
         if (!gameTypeRepository.existsByName("chess")) {
             GameType pool = GameType.builder()
                     .name("chess")
-                    .maxPlayers(2)
-                    .minPlayers(2)
                     .maxSlotDurationMinutes(30)
                     .build();
 
@@ -84,6 +83,16 @@ public class GameSeeder implements ApplicationListener<ContextRefreshedEvent> {
                     .endTime(LocalTime.of(18, 0, 0))
                     .build();
             gameOperationHourRepository.save(opHour);
+        }
+
+        // slot sizes
+        if (gameSlotSizeRepository.findAll().size() == 0) {
+            GameSlotSize slotSize1 = GameSlotSize.builder().gameType(pool).slotSize(4).build();
+            gameSlotSizeRepository.save(slotSize1);
+            GameSlotSize slotSize2 = GameSlotSize.builder().gameType(pool).slotSize(2).build();
+            gameSlotSizeRepository.save(slotSize2);
+            GameSlotSize slotSize3 = GameSlotSize.builder().gameType(chess).slotSize(2).build();
+            gameSlotSizeRepository.save(slotSize3);
         }
 
         // initial slot

@@ -27,8 +27,8 @@ export const navLinksList = {
 					url: "/games",
 				},
 				{
-					title: "Check Games",
-					url: "#",
+					title: "My Bookings",
+					url: "/my-slots",
 				},
 			],
 		},

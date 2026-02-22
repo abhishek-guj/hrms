@@ -25,12 +25,6 @@ public class GameType {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "max_players")
-    private Integer maxPlayers;
-
-    @Column(name = "min_players")
-    private Integer minPlayers;
-
     @Column(name = "max_slot_duration_minutes")
     private Integer maxSlotDurationMinutes;
 
@@ -51,6 +45,5 @@ public class GameType {
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
-
 
 }

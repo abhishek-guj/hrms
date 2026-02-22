@@ -1,6 +1,5 @@
 package com.roima.hrms.dtos.res;
 
-
 import com.roima.hrms.entities.EmployeeProfile;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class GameSlotDto{
     private Long id;
     private Long gameTypeId;
+    private String gameTypeName;
     private LocalDateTime slotStart;
     private LocalDateTime slotEnd;
     private boolean isBooked;

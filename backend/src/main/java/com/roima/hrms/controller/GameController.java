@@ -1,6 +1,8 @@
 package com.roima.hrms.controller;
 
+import com.roima.hrms.dtos.req.SlotBookingReqDto;
 import com.roima.hrms.dtos.res.AllGameSlotsDto;
+import com.roima.hrms.dtos.res.SlotBookingDto;
 import com.roima.hrms.dtos.res.SlotDetailsDto;
 import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.repository.GameSlotRepository;
@@ -42,8 +44,6 @@ public class GameController {
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
-
-
         @GetMapping("slots/{slotId}")
         public ResponseEntity<ApiResponse> getSlot(@PathVariable Long slotId) {
                 SlotDetailsDto slotDetailsDto = gameSchedulingService.getSlotDetails(slotId);
@@ -53,30 +53,58 @@ public class GameController {
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
+        @PostMapping("slots/{slotId}")
+        public ResponseEntity<ApiResponse> bookSlot(@PathVariable Long slotId,
+                        @RequestBody SlotBookingReqDto slotBookingReqDto) {
+                boolean slotBooked = gameSchedulingService.bookSlot(slotId, slotBookingReqDto);
+                ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                                "Fetched slot details successfully", slotBooked, null);
+                return ResponseEntity.status(HttpStatus.OK).body(res);
+        }
 
+        @GetMapping("slots/bookings")
+        public ResponseEntity<ApiResponse> getBookings() {
+                List<SlotBookingDto> slotDetailsDto = gameSchedulingService.getBookings();
 
-//        @GetMapping("slots/book-dev")
-//        public ResponseEntity<ApiResponse> bookSlot() {
-//                GameSlot gameSlot = gameSlotRepository
-//                                .findBySlotStartAndGameType_Name(
-//                                                LocalDateTime.of(
-//                                                                2026,
-//                                                                02,
-//                                                                21,
-//                                                                13,
-//                                                                00,
-//                                                                00),
-//                                                "pool");
-//
-//                PlayerGroup playerGroup = gameSchedulingService.createPlayerGroup(List.of(1L, 2L, 3L, 4L));
-//                boolean tmp1 = gameSchedulingService.bookSlot(gameSlot, playerGroup);
-//
-//                int priority = gameSchedulingService.getPriority(roleUtil.getCurrentEmployee(),
-//                                gameTypeRepository.findByName("pool").orElseThrow());
-//
-//                ApiResponse<AllGameSlotsDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
-//                                "Fetched all Travel Expenses successfully", null, null);
-//                return ResponseEntity.status(HttpStatus.OK).body(res);
-//        }
+                ApiResponse<List<SlotBookingDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                                "Fetched slot details successfully", slotDetailsDto, null);
+                return ResponseEntity.status(HttpStatus.OK).body(res);
+        }
+
+        @DeleteMapping("slots/bookings/{slotBookingId}")
+        public ResponseEntity<ApiResponse> cancelBooking(@PathVariable Long slotBookingId) {
+                boolean deleted = gameSchedulingService.deleteBookings(slotBookingId);
+
+                ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                                "Fetched slot details successfully", deleted, null);
+                return ResponseEntity.status(HttpStatus.OK).body(res);
+        }
+
+        // @GetMapping("slots/book-dev")
+        // public ResponseEntity<ApiResponse> bookSlot() {
+        // GameSlot gameSlot = gameSlotRepository
+        // .findBySlotStartAndGameType_Name(
+        // LocalDateTime.of(
+        // 2026,
+        // 02,
+        // 21,
+        // 13,
+        // 00,
+        // 00),
+        // "pool");
+        //
+        // PlayerGroup playerGroup = gameSchedulingService.createPlayerGroup(List.of(1L,
+        // 2L, 3L, 4L));
+        // boolean tmp1 = gameSchedulingService.bookSlot(gameSlot, playerGroup);
+        //
+        // int priority =
+        // gameSchedulingService.getPriority(roleUtil.getCurrentEmployee(),
+        // gameTypeRepository.findByName("pool").orElseThrow());
+        //
+        // ApiResponse<AllGameSlotsDto> res =
+        // ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+        // "Fetched all Travel Expenses successfully", null, null);
+        // return ResponseEntity.status(HttpStatus.OK).body(res);
+        // }
 
 }

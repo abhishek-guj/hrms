@@ -1,6 +1,7 @@
-import { useQuery, type UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import { GameService } from "../services/game.service";
-import type { AllGameSlotsDto, SlotDetailsDto } from "../types/game.types";
+import type { AllGameSlotsDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
+import { showError, showSuccess } from "../../ui/toast";
 
 
 export const useTimeSlotsAll = (): UseQueryResult<AllGameSlotsDto[]> => {
@@ -10,11 +11,62 @@ export const useTimeSlotsAll = (): UseQueryResult<AllGameSlotsDto[]> => {
             GameService.getAllTimeSlots(),
     });
 };
+export const useMySlotBookings = (): UseQueryResult<SlotBookingDto[]> => {
+    return useQuery({
+        queryKey: ["getMySlotBookings"],
+        queryFn: (): Promise<SlotBookingDto[]> =>
+            GameService.getMySlotBookings(),
+    });
+};
 
 export const useSlotDetails = (slotId: string): UseQueryResult<SlotDetailsDto> => {
     return useQuery({
-        queryKey: ["getSlotDetails"],
+        queryKey: ["getSlotDetails", slotId],
         queryFn: (): Promise<SlotDetailsDto> =>
             GameService.getSlotDetails(slotId),
     });
+};
+
+export const useCancelBooking = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id }: { id: string }) => {
+            const response = await GameService.cancelBooking(id);
+            return id;
+        },
+        onSuccess: (id) => {
+            queryClient.invalidateQueries({ queryKey: ["getAllTimeSlots"] })
+            queryClient.invalidateQueries({ queryKey: ["getSlotDetails"] })
+            queryClient.invalidateQueries({ queryKey: ["getMySlotBookings"] })
+            showSuccess(`Succefully deleted ${id} booking`)
+        },
+        onError: (err, payload) => {
+            console.log(`Error deleting ${payload.id} booking`, payload)
+            showError(`Error deleting booking id: ${payload?.id} `)
+
+        }
+    })
+};
+
+export const useBookSlot = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async ({ id, playerIds }: { id: string, playerIds: string[] }) => {
+            alert()
+            console.log("bookslot", playerIds)
+            const response = await GameService.bookSlot(id, playerIds);
+            return id;
+        },
+        onSuccess: (id) => {
+            showSuccess(`Succefully requested slot Id: ${id}`)
+            queryClient.invalidateQueries({ queryKey: ["getAllTimeSlots"] })
+            queryClient.invalidateQueries({ queryKey: ["getSlotDetails"] })
+            queryClient.invalidateQueries({ queryKey: ["getMySlotBookings"] })
+        },
+        onError: (err, payload) => {
+            console.log(`Error requesting  ${payload.id} slot`, payload)
+            showError(`Error requesting  ${payload.id} slot`)
+
+        }
+    })
 };

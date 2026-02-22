@@ -29,6 +29,7 @@ import ReferralStatusChange from "./components/job/ReferralStatusChange";
 import CVView from "./components/job/CvView";
 import GamesPage from "./pages/game/GamesPage";
 import BookGameSlot from "./components/game/BookGameSlot";
+import MyBookingPage from "./pages/game/MyBookingPage";
 
 const router = createBrowserRouter([
   {
@@ -103,6 +104,10 @@ const router = createBrowserRouter([
         path: "/games",
         element: <GamesPage />,
         children: [{ path: ":slotId", element: <BookGameSlot /> }],
+      },
+      {
+        path: "/my-slots",
+        element: <MyBookingPage />,
       },
     ],
   },

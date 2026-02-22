@@ -1,3 +1,4 @@
+import type { EmployeeProfileDto } from "../../job/types/job.types";
 
 export interface AllGameSlotsDto {
 
@@ -10,10 +11,11 @@ export interface AllGameSlotsDto {
 export interface GameSlotDto {
     id: string;
     gameTypeId: string;
+    gameTypeName: string;
     slotStart: Date;
     slotEnd: Date;
-    isBooked: Boolean;
-    isLowPriority: Boolean;
+    booked: Boolean;
+    lowPriority: Boolean;
 }
 
 export interface SlotDetailsDto {
@@ -22,6 +24,22 @@ export interface SlotDetailsDto {
     // max players in group
     // queue in waiting list
 }
+
+
+export interface SlotBookingDto {
+    id: string;
+    playerGroup: PlayerGroupDto;
+    gameSlot: GameSlotDto;
+    status: string;
+    groupOwner: EmployeeProfileDto;
+    slotSizes: number[];
+}
+export interface PlayerGroupDto {
+    id: string;
+    players: EmployeeProfileDto[];
+}
+
+
 
 
 // my bookings

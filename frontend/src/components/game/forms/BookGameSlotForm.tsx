@@ -5,45 +5,176 @@ import type { EmployeeExpenseSchemaType } from "../../login/schema";
 import { useCreateTravelExpense } from "../../travelPlans/queries/travelPlans.queries";
 import { Field, FieldError, FieldLabel } from "../../ui/field";
 import { Input } from "../../ui/input";
-import { useSlotDetails } from "../queries/game.queries";
+import { useBookSlot, useSlotDetails } from "../queries/game.queries";
+import GameSlotDetails from "../GameSlotDetails";
+import AssignEmloyeeSelect from "../../travelPlans/TravelplanDashboard/forms/AssignEmloyeeSelect";
+import { useEffect, useEffectEvent, useState } from "react";
+import AssignedEmployeeCard from "../../travelPlans/TravelEmployees/AssignedEmployeeCard";
+import { Separator } from "../../ui/separator";
+import { Button } from "../../ui/button";
+import { RoleUtil } from "../../../auth/role.util";
 
 const BookGameSlotForm = () => {
   // navigate
   const navigate = useNavigate();
   // navigate
 
+  const [selected, setSelected] = useState([Number(RoleUtil.myId)]);
+  const [countError, setCountError] = useState(false);
   const { id, slotId } = useParams<{ slotId: string }>();
 
+  console.log("init", selected);
+
   // query hooks
-  const createTravelExpense = useCreateTravelExpense();
+  const bookSlot = useBookSlot();
   // query hooks
 
-  console.log("slotDetails");
-  // const { data: slotDetails } = useSlotDetails(slotId!);
-  // console.log("slotDetails", slotDetails);
+  const { data: slotDetails, isLoading, error } = useSlotDetails(slotId!);
+  console.log(slotDetails);
 
-  // react form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm<EmployeeExpenseSchemaType>({
-    mode: "onBlur",
-    defaultValues: { travelPlanId: id },
-  });
-  // react form
+  useEffect(() => {
+    const count = selected.length;
+    console.log(count);
+    if (!slotDetails?.slotSizes?.includes(count)) {
+      setCountError(true);
+    } else {
+      setCountError(false);
+    }
+  }, [slotDetails, selected]);
 
   // handlers
-  const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
-    const resData = await createTravelExpense.mutateAsync({ payload: data });
+  const onSubmit = async (e) => {
+    console.log("submit", selected);
+    e.preventDefault();
+    alert();
+    const resData = await bookSlot.mutateAsync({
+      id: slotId,
+      playerIds: selected,
+    });
+  };
+
+  const handleChange = (value) => {
+    const id = Number(value);
+    if (!selected.includes(id)) {
+      setSelected((prev) => [...prev, id]);
+    }
+  };
+
+  const handleRemove = (value) => {
+    console.log(value);
+    setSelected(selected.filter((select) => select != value));
   };
   // handlers
-  return <form onSubmit={handleSubmit(onSubmit)}></form>;
+
+  // derieved
+  const disabled = countError;
+  const alreadyBooked = slotDetails?.inGroup;
+
+  const employees = [
+    { id: "1", name: "ad" },
+    { id: "2", name: "man" },
+    { id: "3", name: "man2" },
+    { id: "4", name: "emp" },
+    { id: "5", name: "employee" },
+    { id: "6", name: "employee3" },
+    { id: "7", name: "employee4" },
+    { id: "8", name: "employee05" },
+    { id: "9", name: "employee06" },
+    { id: "10", name: "employee07" },
+    { id: "11", name: "employee08" },
+    { id: "12", name: "employee09" },
+  ];
+
+  const myEmployee = employees.filter(
+    (emp) => Number(emp.id) === Number(RoleUtil.myId),
+  )[0];
+
+  console.log("my ", myEmployee);
+
+  // renders
+  if (isLoading) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        Loading
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        No Data Found...
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-8 py-2 flex flex-col gap-6">
+      <GameSlotDetails
+        slotDetails={slotDetails?.gameSlot}
+        slotSizes={slotDetails?.slotSizes}
+      />
+      <Separator />
+      <form onSubmit={onSubmit} className="flex flex-col p-2 gap-2">
+        <Field>
+          {/* <FieldInput
+          name="playerId"
+          displayName="Emploayee Id"
+          register={register}
+          /> */}
+          {alreadyBooked && (
+            <div className="flex justify-center">
+              You are already Booked for this slot
+            </div>
+          )}
+          {!alreadyBooked && (
+            <>
+              <FieldLabel>Select Players</FieldLabel>
+              <AssignEmloyeeSelect onValueChange={handleChange} />
+              <div className="py-4 flex flex-wrap gap-1.5">
+                {countError && (
+                  <div className="text-sm text-red-500 items-center">
+                    Selected players not equal to any slot size...!
+                  </div>
+                )}
+                <AssignedEmployeeCard
+                  handleRemove={handleRemove}
+                  emp={myEmployee}
+                  showDesignation={false}
+                  disableRemove={true}
+                />
+                {employees
+                  ?.filter((emp) => selected.includes(Number(emp.id)))
+                  .filter((emp) => Number(emp.id) !== Number(myEmployee.id))
+                  .map((emp) => {
+                    return (
+                      <AssignedEmployeeCard
+                        key={emp.id}
+                        handleRemove={handleRemove}
+                        emp={emp}
+                        showDesignation={false}
+                      />
+                    );
+                  })}
+              </div>
+            </>
+          )}
+        </Field>
+
+        <Button
+          variant={"default"}
+          disabled={disabled || alreadyBooked}
+          onClick={onSubmit}
+        >
+          Request Slot
+        </Button>
+      </form>
+    </div>
+  );
 };
 
 export default BookGameSlotForm;
 
+// trying out dynamic and reusable components
 export function FieldInput({
   register,
   name,

@@ -16,9 +16,9 @@ const BookGameSlot = () => {
   };
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="w-96">
+      <DialogContent className="min-w-4/6 w-fit">
         <DialogHeader>
-          <DialogTitle>New Expense</DialogTitle>
+          <DialogTitle>Slot Details</DialogTitle>
         </DialogHeader>
         <BookGameSlotForm />
       </DialogContent>

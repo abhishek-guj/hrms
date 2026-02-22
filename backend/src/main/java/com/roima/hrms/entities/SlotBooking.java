@@ -35,4 +35,12 @@ public class SlotBooking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private EmployeeProfile groupOwner;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    @PrePersist
+    private void setVal() {
+        isDeleted = false;
+    }
 }

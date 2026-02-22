@@ -6,4 +6,3 @@ public enum SlotBookingStatusEnum {
     Confirmed, // if no change untill last 15mins or if priority = 0 when booking
     Cancelled, // if someone cancels
 }
-

@@ -14,31 +14,50 @@ import java.util.Set;
 
 public interface SlotBookingRepository extends JpaRepository<SlotBooking, Long> {
 
-    @Query("""
-            select sb from SlotBooking sb 
-            where sb.groupOwner = :employeeProfile 
-            and sb.gameSlot.gameType = :gameType 
-            and sb.gameSlot.slotStart >= :thresholdStartDateTime
-            and sb.gameSlot.slotEnd <= :thresholdEndDateTime
-            """)
-    Set<SlotBooking> findAllByPlayerAndGamePast24Hrs(EmployeeProfile employeeProfile, GameType gameType, LocalDateTime thresholdStartDateTime, LocalDateTime thresholdEndDateTime);
+        @Query("""
+                        select sb from SlotBooking sb
+                        join sb.playerGroup pg
+                        join pg.players p
+                        where p = :employeeProfile
+                        and sb.gameSlot.gameType = :gameType
+                        and sb.gameSlot.slotStart >= :thresholdStartDateTime
+                        and sb.gameSlot.slotEnd <= :thresholdEndDateTime
+                        and sb.isDeleted = false
+                        """)
+        Set<SlotBooking> findAllByPlayerAndGamePast24Hrs(EmployeeProfile employeeProfile, GameType gameType,
+                        LocalDateTime thresholdStartDateTime, LocalDateTime thresholdEndDateTime);
 
-//    count(s) > 0) from SlotBooking
-    @Query("""
-            select (count(sb)>0) from SlotBooking sb 
-            where sb.groupOwner = :player 
-            and (sb.status = 'Requested' or sb.status = 'Waiting') 
-            and sb.gameSlot.slotStart >= :thresholdDateTime 
-            and sb.gameSlot.gameType = :gameType
-            """)
-    boolean existsSlotBookingByPlayerAndGame(EmployeeProfile player, GameType gameType, LocalDateTime thresholdDateTime);
+        // count(s) > 0) from SlotBooking
+        @Query("""
+                        select (count(sb)>0) from SlotBooking sb
+                        where sb.groupOwner = :player
+                        and (sb.status = 'Requested' or sb.status = 'Waiting')
+                        and sb.gameSlot.slotStart >= :thresholdDateTime
+                        and sb.gameSlot.gameType = :gameType
+                        and sb.isDeleted = false
+                        """)
+        boolean existsSlotBookingByPlayerAndGame(EmployeeProfile player, GameType gameType,
+                        LocalDateTime thresholdDateTime);
 
+        @Query("select sb from SlotBooking sb where sb.gameSlot = :gameSlot and (sb.status = 'Requested' or sb.status = 'Waiting') ")
+        List<SlotBooking> findAllByGameSlot(GameSlot gameSlot);
 
-    List<SlotBooking> findAllByGameSlot(GameSlot gameSlot);
+        @Query("select sb from SlotBooking sb where sb.gameSlot = :gameSlot and (sb.status = 'Requested' or sb.status = 'Waiting') ")
+        Optional<SlotBooking> findByGameSlot(GameSlot gameSlot);
 
-    Optional<SlotBooking> findByGameSlot(GameSlot gameSlot);
+        boolean existsSlotBookingByGameSlot(GameSlot gameSlot);
 
-    boolean existsSlotBookingByGameSlot(GameSlot gameSlot);
+        boolean existsByGameSlot(GameSlot gameSlot);
 
-    boolean existsByGameSlot(GameSlot gameSlot);
+        @Query("""
+                            select distinct sb,gs from SlotBooking sb
+                            join sb.playerGroup pg
+                            join pg.players p
+                            join sb.gameSlot gs
+                            where p.id = :playerId
+                            and sb.isDeleted = false
+                            order by gs.slotStart desc
+                        """)
+        List<SlotBooking> findAllByPlayer(Long playerId);
+
 }

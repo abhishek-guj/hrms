@@ -24,5 +24,6 @@ export const RoleUtil = {
     isManager: getRole() === roles.manager,
     isEmplpoyee: getRole() === roles.employee,
     isThisManager: (id) => checkManager(id),
-    isAssigned: (bool) => bool
+    isAssigned: (bool) => bool,
+    myId: getId()
 }
