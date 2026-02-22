@@ -34,6 +34,8 @@ public class GameSchedulingService {
     private final GameTypeRepository gameTypeRepository;
     private final GameSlotRepository gameSlotRepository;
     private final ModelMapper modelMapper;
+    private final EmailService emailService;
+    private final NotificationService notificationService;
 
     // constants
     private final long PRIORITY_CHECK_DAYS = 3L;
@@ -42,7 +44,9 @@ public class GameSchedulingService {
     public GameSchedulingService(RoleUtil roleUtil, EmployeeProfileRepository employeeProfileRepository,
             PlayerGroupRepository playerGroupRepository, SlotBookingRepository slotBookingRepository,
             GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository, ModelMapper modelMapper,
-            GameQueueRepository gameQueueRepository, GameSlotSizeRepository gameSlotSizeRepository) {
+            GameQueueRepository gameQueueRepository, GameSlotSizeRepository gameSlotSizeRepository,
+            NotificationService notificationService,
+            EmailService emailService) {
         this.roleUtil = roleUtil;
         this.employeeProfileRepository = employeeProfileRepository;
         this.playerGroupRepository = playerGroupRepository;
@@ -52,6 +56,9 @@ public class GameSchedulingService {
         this.modelMapper = modelMapper;
         this.gameQueueRepository = gameQueueRepository;
         this.gameSlotSizeRepository = gameSlotSizeRepository;
+        this.notificationService = notificationService;
+        this.emailService = emailService;
+
     }
 
     public List<AllGameSlotsDto> getAllSlots() {
@@ -367,6 +374,13 @@ public class GameSchedulingService {
                     .build();
 
             slotBookingRepository.save(newSlotBooking);
+
+            try {
+                emailService.sendGameMail(slotBookingReqDto.getPlayerIds(), newSlotBooking);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             return;
         }
 
@@ -395,7 +409,12 @@ public class GameSchedulingService {
                     .groupOwner(currentPlayer)
                     .status(SlotBookingStatusEnum.Requested)
                     .build();
+            try {
+                emailService.sendGameMail(slotBookingReqDto.getPlayerIds(), newSlotBooking);
 
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             SlotBooking saved = slotBookingRepository.save(newSlotBooking);
         } else {
             addToQueue(gameSlot, playerGroup, currentPlayer, newPriority);

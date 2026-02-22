@@ -23,7 +23,9 @@ public class EmailService {
     @Value("${frontend.url}")
     String baseUrl;
 
-    public EmailService(EmployeeProfileRepository employeeProfileRepository, JobRepository jobRepository, JobHrRepository jobHrRepository, JobCvReviewerRepository jobCvReviewerRepository, TravelPlanRepository travelPlanRepository, TravelEmployeeRepository travelEmployeeRepository) {
+    public EmailService(EmployeeProfileRepository employeeProfileRepository, JobRepository jobRepository,
+            JobHrRepository jobHrRepository, JobCvReviewerRepository jobCvReviewerRepository,
+            TravelPlanRepository travelPlanRepository, TravelEmployeeRepository travelEmployeeRepository) {
         this.employeeProfileRepository = employeeProfileRepository;
         this.jobRepository = jobRepository;
         this.jobHrRepository = jobHrRepository;
@@ -32,6 +34,72 @@ public class EmailService {
         this.travelEmployeeRepository = travelEmployeeRepository;
     }
 
+    @Async
+    void sendGameMail(List<Long> ids, SlotBooking slotBooking) {
+        List<EmployeeProfile> profiles = employeeProfileRepository.findAllById(ids);
+
+        List<String> emails = profiles.stream().map(emp -> emp.getUser().getEmail()).toList();
+
+        try {
+
+            Session session = createSession();
+
+            Message msg = createGameMail(session, emails, slotBooking);
+
+            Transport.send(msg);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private Message createGameMail(Session session, List<String> emails, SlotBooking slotBooking)
+            throws IOException, MessagingException {
+
+        // setting mail subject
+        String subject = "Game Email";
+
+        // getting mail body
+        String body = gameMailBody(slotBooking);
+
+        Message msg = new MimeMessage(session);
+        msg.setFrom(new InternetAddress("skelireverbs@gmail.com", false));
+
+        String emailsParse = emails.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(email -> !email.isEmpty())
+                .collect(Collectors.joining(","));
+
+        // msg.setRecipients(Message.RecipientType.TO,
+        // InternetAddress.parse(emailsParse));
+        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("skelireverbs@gmail.com"));
+        msg.setSubject(subject);
+        // msg.setContent(body, "text/html");
+        msg.setSentDate(new Date());
+
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setContent(body, "text/html");
+
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+
+        msg.setContent(multipart);
+
+        return msg;
+    }
+
+    private String gameMailBody(SlotBooking slotBooking) {
+        EmployeeProfile hr = employeeProfileRepository.getEmployeeProfileByUser_Email("hr1@exp.com");
+        String s1 = "<br> Game: " + slotBooking.getGameSlot().getGameType().getName();
+        String s2 = "<br> Game Status: " + slotBooking.getStatus();
+        String s3 = "<br> Game Start Time: " + slotBooking.getGameSlot().getSlotStart();
+        String s4 = "<br> Game End Time: " + slotBooking.getGameSlot().getSlotEnd();
+        String s5 = "<br> Booked By: " + slotBooking.getGroupOwner().getFirstName() + " "
+                + slotBooking.getGroupOwner().getLastName();
+        String body = s1 + s2 + s3 + s4 + s5;
+
+        return body;
+    }
 
     @Async
     public void sendTravelPlanMail(Long travelPlanId) throws MessagingException, IOException, MessagingException {
@@ -54,12 +122,15 @@ public class EmailService {
         }
     }
 
-    private Message createTravelPlanMail(Session session, List<String> emails, Long travelPlanId) throws IOException, MessagingException {
+    private Message createTravelPlanMail(Session session, List<String> emails, Long travelPlanId)
+            throws IOException, MessagingException {
         // getting job details
-        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId).orElseThrow(() -> new RuntimeException("Travel not found."));
+        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId)
+                .orElseThrow(() -> new RuntimeException("Travel not found."));
 
         // setting mail subject
-        String subject = "Travel Assigned - %s by %s".formatted(travelPlan.getPurpose(), travelPlan.getCreatedBy().getFirstName() + " " + travelPlan.getCreatedBy().getFirstName());
+        String subject = "Travel Assigned - %s by %s".formatted(travelPlan.getPurpose(),
+                travelPlan.getCreatedBy().getFirstName() + " " + travelPlan.getCreatedBy().getFirstName());
 
         // getting mail body
         String body = travelPlanMailBody(travelPlan);
@@ -73,11 +144,11 @@ public class EmailService {
                 .filter(email -> !email.isEmpty())
                 .collect(Collectors.joining(","));
 
-
-//        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailsParse));
+        // msg.setRecipients(Message.RecipientType.TO,
+        // InternetAddress.parse(emailsParse));
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("skelireverbs@gmail.com"));
         msg.setSubject(subject);
-//        msg.setContent(body, "text/html");
+        // msg.setContent(body, "text/html");
         msg.setSentDate(new Date());
 
         MimeBodyPart messageBodyPart = new MimeBodyPart();
@@ -120,13 +191,10 @@ public class EmailService {
                 hr.getContactNumber(),
                 hr.getContactNumber(),
                 hr.getUser().getEmail(),
-                hr.getUser().getEmail()
-        );
-
+                hr.getUser().getEmail());
 
         return body;
     }
-
 
     @Async
     public void sendShareMail(String email, Long jobId) throws MessagingException, IOException, MessagingException {
@@ -156,7 +224,7 @@ public class EmailService {
 
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
         msg.setSubject(subject);
-//        msg.setContent(body, "text/html");
+        // msg.setContent(body, "text/html");
         msg.setSentDate(new Date());
 
         MimeBodyPart messageBodyPart = new MimeBodyPart();
@@ -181,7 +249,7 @@ public class EmailService {
 
         String body = """
                  Hello,
-                 <br> 
+                 <br>
                  <br>An employee recommended you for the job position of %s.
                  <br>
                  <br><b>Position:</b> %s
@@ -203,16 +271,14 @@ public class EmailService {
                 hr.getContactNumber(),
                 hr.getContactNumber(),
                 hr.getUser().getEmail(),
-                hr.getUser().getEmail()
-        );
-
+                hr.getUser().getEmail());
 
         return body;
     }
 
-
     @Async
-    public void sendReferMail(JobReferral jobReferral, Long jobId) throws MessagingException, IOException, MessagingException {
+    public void sendReferMail(JobReferral jobReferral, Long jobId)
+            throws MessagingException, IOException, MessagingException {
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
         // getting job hrs
         Set<JobHr> jobHrs = jobHrRepository.findAllByJob(job);
@@ -235,7 +301,8 @@ public class EmailService {
         }
     }
 
-    private Message createReferMail(Session session, List<String> emails, JobReferral jobReferral, Long jobId) throws IOException, MessagingException {
+    private Message createReferMail(Session session, List<String> emails, JobReferral jobReferral, Long jobId)
+            throws IOException, MessagingException {
         // getting job details
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
 
@@ -243,7 +310,8 @@ public class EmailService {
         String filePath = getFilePath(jobReferral.getCvPath(), "cv");
 
         // setting mail subject
-        String subject = "Job Referral - %s by %s".formatted(job.getJobTitle(), jobReferral.getReferredBy().getFirstName() + " " + jobReferral.getReferredBy().getFirstName());
+        String subject = "Job Referral - %s by %s".formatted(job.getJobTitle(),
+                jobReferral.getReferredBy().getFirstName() + " " + jobReferral.getReferredBy().getFirstName());
 
         // getting mail body
         String body = referMailBody(job, jobReferral, jobReferral.getReferredBy());
@@ -257,11 +325,11 @@ public class EmailService {
                 .filter(email -> !email.isEmpty())
                 .collect(Collectors.joining(","));
 
-
-//        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailsParse));
+        // msg.setRecipients(Message.RecipientType.TO,
+        // InternetAddress.parse(emailsParse));
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("skelireverbs@gmail.com"));
         msg.setSubject(subject);
-//        msg.setContent(body, "text/html");
+        // msg.setContent(body, "text/html");
         msg.setSentDate(new Date());
 
         MimeBodyPart messageBodyPart = new MimeBodyPart();
@@ -286,7 +354,7 @@ public class EmailService {
 
         String body = """
                  Hello All,
-                 <br> 
+                 <br>
                  <br>%s recommended  for the job position of %s.
                  <br>
                  <br><b>Job Title:</b> %s
@@ -322,13 +390,10 @@ public class EmailService {
                 hr.getContactNumber(),
                 hr.getContactNumber(),
                 hr.getUser().getEmail(),
-                hr.getUser().getEmail()
-        );
-
+                hr.getUser().getEmail());
 
         return body;
     }
-
 
     private Session createSession() {
         Properties props = new Properties();
