@@ -30,6 +30,8 @@ import CVView from "./components/job/CvView";
 import GamesPage from "./pages/game/GamesPage";
 import BookGameSlot from "./components/game/BookGameSlot";
 import MyBookingPage from "./pages/game/MyBookingPage";
+// ── Achievements ──────────────────────────────────────────────────────────────
+import AchievementsPage from "./pages/achievements/AchievementsPage";
 
 const router = createBrowserRouter([
   {
@@ -108,6 +110,11 @@ const router = createBrowserRouter([
       {
         path: "/my-slots",
         element: <MyBookingPage />,
+      },
+      // ── Achievements & Celebrations ──────────────────────────────────────
+      {
+        path: "/achievements",
+        element: <AchievementsPage />,
       },
     ],
   },

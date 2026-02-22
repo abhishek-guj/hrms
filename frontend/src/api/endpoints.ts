@@ -70,3 +70,17 @@ export const GAME_ENDPOINTS = {
 	bookSlot: (slotId: string) => `games/slots/${slotId}`,
 	cancelBooking: (slotBookingId: string) => `/games/slots/bookings/${slotBookingId}`
 }
+
+export const ACHIEVEMENT_ENDPOINTS = {
+	getFeed: (params?: string) => `/achievements${params ? `?${params}` : ""}`,
+	getById: (id: number) => `/achievements/${id}`,
+	create: () => `/achievements`,
+	update: (id: number) => `/achievements/${id}`,
+	delete: (id: number, reason?: string) =>
+		`/achievements/${id}${reason ? `?reason=${encodeURIComponent(reason)}` : ""}`,
+	toggleLike: (id: number) => `/achievements/${id}/like`,
+	addComment: (postId: number) => `/achievements/${postId}/comments`,
+	editComment: (commentId: number) => `/achievements/comments/${commentId}`,
+	deleteComment: (commentId: number, reason?: string) =>
+		`/achievements/comments/${commentId}${reason ? `?reason=${encodeURIComponent(reason)}` : ""}`,
+};
