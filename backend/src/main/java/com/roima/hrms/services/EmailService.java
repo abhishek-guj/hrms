@@ -34,6 +34,58 @@ public class EmailService {
         this.travelEmployeeRepository = travelEmployeeRepository;
     }
 
+    public void sendContentWarningEmail(String recipientEmail,
+            String employeeName,
+            String contentType,
+            String contentPreview,
+            String reason) {
+        try {
+            Session session = createSession();
+
+            String subject = "[HRMS] Content Removal Warning";
+
+            String body = "<html><body style='font-family:Arial,sans-serif;'>"
+                    + "<h2 style='color:#c0392b;'>⚠️ Content Removal Notice</h2>"
+                    + "<p>Dear <strong>" + employeeName + "</strong>,</p>"
+                    + "<p>This is to inform you that your <strong>" + contentType
+                    + "</strong> on the Achievements feed "
+                    + "has been removed by an HR administrator for violating the community guidelines.</p>"
+                    + "<table style='border-collapse:collapse;width:100%;margin:16px 0;'>"
+                    + "<tr><td style='padding:8px;background:#f8d7da;font-weight:bold;width:160px;'>Content Type</td>"
+                    + "<td style='padding:8px;background:#fff3cd;'>" + contentType + "</td></tr>"
+                    + "<tr><td style='padding:8px;background:#f8d7da;font-weight:bold;'>Content Preview</td>"
+                    + "<td style='padding:8px;background:#fff3cd;'>" + (contentPreview != null ? contentPreview : "—")
+                    + "</td></tr>"
+                    + "<tr><td style='padding:8px;background:#f8d7da;font-weight:bold;'>Reason</td>"
+                    + "<td style='padding:8px;background:#fff3cd;'>"
+                    + (reason != null && !reason.isBlank() ? reason : "Violation of community guidelines")
+                    + "</td></tr>"
+                    + "</table>"
+                    + "<p>Please ensure that all content you post complies with the organization's code of conduct. "
+                    + "Repeated violations may result in further action.</p>"
+                    + "<p>If you believe this was done in error, please contact your HR representative.</p>"
+                    + "<br><p>Regards,<br><strong>HRMS Administration</strong></p>"
+                    + "</body></html>";
+
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress("skelireverbs@gmail.com", false));
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            msg.setSubject(subject);
+            msg.setSentDate(new java.util.Date());
+
+            MimeBodyPart bodyPart = new MimeBodyPart();
+            bodyPart.setContent(body, "text/html");
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(bodyPart);
+            msg.setContent(multipart);
+
+            Transport.send(msg);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Async
     void sendGameMail(List<Long> ids, SlotBooking slotBooking) {
         List<EmployeeProfile> profiles = employeeProfileRepository.findAllById(ids);

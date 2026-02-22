@@ -1,6 +1,16 @@
 export const navLinksList = {
 	navMain: [
 		{
+			title: "Social",
+			url: "#",
+			items: [
+				{
+					title: "Achievements",
+					url: "/achievements",
+				},
+			],
+		},
+		{
 			title: "Travel",
 			url: "#",
 			items: [
@@ -8,14 +18,6 @@ export const navLinksList = {
 					title: "Travel Plans",
 					url: "/travel/plans",
 				},
-				// {
-				// 	title: "Travel Documents",
-				// 	url: "#",
-				// },
-				// {
-				// 	title: "Travel Expenses",
-				// 	url: "#",
-				// },
 			],
 		},
 		{
