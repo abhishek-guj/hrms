@@ -16,4 +16,7 @@ public class SlotDetailsDto {
     private List<Integer> slotSizes;
     private boolean inGroup;
     // queue in waiting list
+    private boolean hasActiveBooking;
+    private boolean inQueue;
+    private int queueSize;
 }

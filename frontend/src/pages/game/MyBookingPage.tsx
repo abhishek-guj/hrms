@@ -35,7 +35,9 @@ const MyBookingPage = () => {
             <BookingStatus
               status={booking?.status}
               groupOwner={booking?.groupOwner}
-              slotBookingId={booking?.id}
+              gameSlotId={booking?.gameSlot?.id}
+              inQueue={booking?.inQueue}
+              queueSize={booking?.queueSize}
             />
           </div>
         ))}
@@ -69,10 +71,10 @@ function BookingDetails({ slotDetails, slotSizes }) {
 function BookingGroupDetails({
   playerGroup,
   groupOwner,
-}: {
+}: Readonly<{
   playerGroup: PlayerGroupDto;
   groupOwner: EmployeeProfileDto;
-}) {
+}>) {
   return (
     <div className="flex flex-col gap-2">
       <div className="font-semibold text-lg">Players</div>
@@ -94,11 +96,13 @@ function BookingGroupDetails({
 function BookingStatus({
   status,
   groupOwner,
-  slotBookingId,
+  gameSlotId,
+  inQueue,
+  queueSize,
 }: Readonly<{
   status: string;
   groupOwner: EmployeeProfileDto;
-  slotBookingId: string;
+  gameSlotId: string;
 }>) {
   const cancelBooking = useCancelBooking();
 
@@ -110,7 +114,7 @@ function BookingStatus({
   const isOwner = Number(groupOwner?.id) === Number(RoleUtil.myId);
 
   const handleCancel = () => {
-    const res = cancelBooking.mutateAsync({ id: slotBookingId });
+    const res = cancelBooking.mutateAsync({ id: gameSlotId });
   };
 
   console.log(typeof groupOwner?.id, typeof RoleUtil.myId);
@@ -118,12 +122,18 @@ function BookingStatus({
     <div className="flex flex-col gap-2">
       <div className="font-semibold text-lg">Status</div>
       <div className="flex justify-between">
-        <Badge
-          variant="outline"
-          className={cn("border-0 text-base px-4 py-1", config?.className)}
-        >
-          {config?.label}
-        </Badge>
+        <div>
+          <Badge
+            variant="outline"
+            className={cn("border-0 text-base px-4 py-1", config?.className)}
+          >
+            {config?.label}
+          </Badge>
+          <div className="flex gap-8 p-4">
+            <div>In Queue : {inQueue ? "Yes" : "No"}</div>
+            <div>Queue size : {queueSize}</div>
+          </div>
+        </div>
         {!isCancelled && isOwner && (
           <Button variant={"outline"} onClick={handleCancel}>
             Cancel

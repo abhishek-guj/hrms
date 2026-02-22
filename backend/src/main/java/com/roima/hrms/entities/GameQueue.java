@@ -27,7 +27,7 @@ public class GameQueue {
     private PlayerGroup playerGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="booking_req_by")
+    @JoinColumn(name = "booking_req_by")
     private EmployeeProfile owner;
 
     @Column(name = "requested_on")

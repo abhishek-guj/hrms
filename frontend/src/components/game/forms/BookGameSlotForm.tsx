@@ -69,6 +69,8 @@ const BookGameSlotForm = () => {
   // derieved
   const disabled = countError;
   const alreadyBooked = slotDetails?.inGroup;
+  const cantBook = slotDetails?.canBook;
+  const isInQueue = slotDetails?.inQueue;
 
   const employees = [
     { id: "1", name: "ad" },
@@ -126,6 +128,11 @@ const BookGameSlotForm = () => {
               You are already Booked for this slot
             </div>
           )}
+          {isInQueue && (
+            <div className="flex justify-center">
+              You are already in Queue for this slot
+            </div>
+          )}
           {!alreadyBooked && (
             <>
               <FieldLabel>Select Players</FieldLabel>
@@ -162,7 +169,7 @@ const BookGameSlotForm = () => {
 
         <Button
           variant={"default"}
-          disabled={disabled || alreadyBooked}
+          disabled={disabled || alreadyBooked || !cantBook}
           onClick={onSubmit}
         >
           Request Slot

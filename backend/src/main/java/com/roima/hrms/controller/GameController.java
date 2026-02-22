@@ -56,9 +56,9 @@ public class GameController {
         @PostMapping("slots/{slotId}")
         public ResponseEntity<ApiResponse> bookSlot(@PathVariable Long slotId,
                         @RequestBody SlotBookingReqDto slotBookingReqDto) {
-                boolean slotBooked = gameSchedulingService.bookSlot(slotId, slotBookingReqDto);
+                gameSchedulingService.bookSLotNew(slotId, slotBookingReqDto);
                 ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
-                                "Fetched slot details successfully", slotBooked, null);
+                                "Fetched slot details successfully", true, null);
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
@@ -71,12 +71,13 @@ public class GameController {
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
-        @DeleteMapping("slots/bookings/{slotBookingId}")
-        public ResponseEntity<ApiResponse> cancelBooking(@PathVariable Long slotBookingId) {
-                boolean deleted = gameSchedulingService.deleteBookings(slotBookingId);
+        @DeleteMapping("slots/bookings/{slotId}")
+        public ResponseEntity<ApiResponse> cancelBooking(@PathVariable Long slotId) {
+
+                gameSchedulingService.deleteBookingOrQueue(slotId);
 
                 ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
-                                "Fetched slot details successfully", deleted, null);
+                                "Fetched slot details successfully", true, null);
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 

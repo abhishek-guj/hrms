@@ -35,4 +35,7 @@ public class SlotBookingDto {
 
     private List<Integer> slotSizes;
 
+    private boolean isInQueue;
+
+    private long queueSize;
 }
