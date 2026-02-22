@@ -29,4 +29,9 @@ public class AchievementPostDto {
     private Long commentCount;
     private List<CommentDto> comments;
     private Boolean likedByCurrentUser;
+
+    /**
+     * List of role names (strings) this post is visible to, if not visible to all.
+     */
+    private java.util.List<String> visibleRoles;
 }

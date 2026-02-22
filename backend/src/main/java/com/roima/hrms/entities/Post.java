@@ -67,13 +67,13 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PostTag> postTags = new HashSet<>();
 
-    /** If visibleToAll is false, specify who can view the post */
+    /** If visibleToAll is false, specify departments allowed to view */
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "post_viewers",
-        schema = "social",
-        joinColumns = @JoinColumn(name = "post_id"),
-        inverseJoinColumns = @JoinColumn(name = "employee_id")
-    )
-    private Set<EmployeeProfile> viewers = new HashSet<>();
+    @JoinTable(name = "post_departments", schema = "social", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "department_id"))
+    private Set<Department> visibleDepartments = new HashSet<>();
+
+    /** If visibleToAll is false, specify roles allowed to view */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "post_roles", schema = "social", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> visibleRoles = new HashSet<>();
 }

@@ -23,4 +23,10 @@ public class AchievementPostRequestDto {
 
     /** Defaults to true (visible to all employees) */
     private Boolean visibleToAll = true;
+
+    /** If visibleToAll is false, specify department IDs allowed to view */
+    private List<Long> departmentIds;
+
+    /** If visibleToAll is false, specify role IDs allowed to view */
+    private List<Long> roleIds;
 }

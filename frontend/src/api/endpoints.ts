@@ -1,3 +1,6 @@
+export const ROLE_ENDPOINTS = {
+	getAll: () => "/roles",
+};
 export const HEALTH_ENDPOINTS = {
 	checkHealth: () => "/health",
 };

@@ -28,7 +28,7 @@ public class TravelDocumentController {
     private final TravelDocumentService travelDocumentService;
 
     public TravelDocumentController(TravelPlanService travelPlanService, TravelEmployeeService travelEmployeeService,
-                                    FileService fileService, TravelDocumentService travelDocumentService) {
+            FileService fileService, TravelDocumentService travelDocumentService) {
         this.travelPlanService = travelPlanService;
         this.travelEmployeeService = travelEmployeeService;
         this.fileService = fileService;
@@ -44,7 +44,6 @@ public class TravelDocumentController {
                 "Successfully created Travel Document.", tt, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
-
 
     @GetMapping
     public ResponseEntity<ApiResponse> getTravelDocuments(@PathVariable Long travelPlanId) {
@@ -65,8 +64,8 @@ public class TravelDocumentController {
     @DeleteMapping("{docId}")
     public ResponseEntity<ApiResponse> deleteTravelDocument(@PathVariable Long docId) {
         travelDocumentService.deleteTravelDocument(docId);
-        ApiResponse<List<TravelDocumentDto>> res =
-                ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully deleted Travel Document.", null, null);
+        ApiResponse<List<TravelDocumentDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                "Successfully deleted Travel Document.", null, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 

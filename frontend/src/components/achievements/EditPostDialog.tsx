@@ -7,6 +7,9 @@ import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { useUpdateAchievementPost } from "./queries/achievements.queries";
 import type { AchievementPostDto } from "./types/achievements.types";
+import { useEffect } from "react";
+import { RoleService } from "./services/role.service";
+import type { RoleType } from "./types/role.types";
 
 interface Props {
   post: AchievementPostDto;
@@ -20,6 +23,14 @@ const EditPostDialog = ({ post, open, onOpenChange }: Props) => {
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>(post.tags ?? []);
   const [visibleToAll, setVisibleToAll] = useState(post.visibleToAll ?? true);
+  const [roleIds, setRoleIds] = useState<number[]>([]);
+  const [roles, setRoles] = useState<RoleType[]>([]);
+
+  useEffect(() => {
+    if (!visibleToAll) {
+      RoleService.getAllRoles().then(setRoles);
+    }
+  }, [visibleToAll]);
 
   const updatePost = useUpdateAchievementPost();
 
@@ -44,6 +55,7 @@ const EditPostDialog = ({ post, open, onOpenChange }: Props) => {
         description: description.trim(),
         tags,
         visibleToAll,
+        roleIds: visibleToAll ? undefined : roleIds,
       },
     });
     onOpenChange(false);
@@ -136,6 +148,29 @@ const EditPostDialog = ({ post, open, onOpenChange }: Props) => {
             </label>
           </div>
 
+          {/* Role selector if not visible to all */}
+          {!visibleToAll && (
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium">Visible to Roles</label>
+              <select
+                multiple
+                value={roleIds.map(String)}
+                onChange={(e) => {
+                  const selected = Array.from(e.target.selectedOptions).map(
+                    (opt) => Number(opt.value),
+                  );
+                  setRoleIds(selected);
+                }}
+                className="border rounded px-2 py-1"
+              >
+                {roles.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.role}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="flex justify-end gap-2 pt-1">
             <Button variant="outline" onClick={() => onOpenChange(false)}>
               Cancel

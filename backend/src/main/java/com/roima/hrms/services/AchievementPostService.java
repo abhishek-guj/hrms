@@ -30,6 +30,8 @@ public class AchievementPostService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final EmployeeProfileRepository employeeProfileRepository;
+    private final DepartmentRepository departmentRepository;
+    private final RoleRepository roleRepository;
     private final RoleUtil roleUtil;
     private final EmailService emailService;
 
@@ -39,6 +41,8 @@ public class AchievementPostService {
             TagRepository tagRepository,
             PostTagRepository postTagRepository,
             EmployeeProfileRepository employeeProfileRepository,
+            DepartmentRepository departmentRepository,
+            RoleRepository roleRepository,
             RoleUtil roleUtil,
             EmailService emailService) {
         this.postRepository = postRepository;
@@ -47,6 +51,8 @@ public class AchievementPostService {
         this.tagRepository = tagRepository;
         this.postTagRepository = postTagRepository;
         this.employeeProfileRepository = employeeProfileRepository;
+        this.departmentRepository = departmentRepository;
+        this.roleRepository = roleRepository;
         this.roleUtil = roleUtil;
         this.emailService = emailService;
     }
@@ -71,9 +77,20 @@ public class AchievementPostService {
         post.setDeletedBy(null);
         post.setDeleteReason(null);
         post.setVisibleToAll(req.getVisibleToAll() != null ? req.getVisibleToAll() : true);
-        // postType / mediaType – using 1L as default "achievement" type
         post.setPostType(1L);
         post.setMediaType(0L);
+
+        // Handle department/role visibility if not visible to all
+        if (Boolean.FALSE.equals(post.getVisibleToAll())) {
+            if (req.getDepartmentIds() != null && !req.getDepartmentIds().isEmpty()) {
+                List<Department> departments = departmentRepository.findAllById(req.getDepartmentIds());
+                post.getVisibleDepartments().addAll(departments);
+            }
+            if (req.getRoleIds() != null && !req.getRoleIds().isEmpty()) {
+                List<Role> roles = roleRepository.findAllById(req.getRoleIds());
+                post.getVisibleRoles().addAll(roles);
+            }
+        }
 
         post = postRepository.save(post);
         attachTags(post, req.getTags());
@@ -83,8 +100,23 @@ public class AchievementPostService {
     /** Get paginated achievement feed (reverse chronological). */
     public Page<AchievementPostDto> getFeed(int page, int size) {
         Long currentEmployeeId = roleUtil.getCurrentEmployeeId();
-        return postRepository.findAllActivePosts(PageRequest.of(page, size))
-                .map(p -> toDto(p, currentEmployeeId));
+        String currentRole = roleUtil.getRole();
+        Page<Post> allPosts = postRepository.findAllActivePosts(PageRequest.of(page, size));
+        List<AchievementPostDto> filtered = allPosts.getContent().stream()
+                .filter(post -> {
+                    if (Boolean.TRUE.equals(post.getVisibleToAll()))
+                        return true;
+                    if (post.getAuthorId() != null && post.getAuthorId().equals(currentEmployeeId))
+                        return true;
+                    if (post.getVisibleRoles() != null && !post.getVisibleRoles().isEmpty()) {
+                        return post.getVisibleRoles().stream().anyMatch(r -> r.getRole().name().equals(currentRole));
+                    }
+                    return false;
+                })
+                .map(p -> toDto(p, currentEmployeeId))
+                .collect(Collectors.toList());
+        return new org.springframework.data.domain.PageImpl<>(filtered, allPosts.getPageable(),
+                allPosts.getTotalElements());
     }
 
     /** Get posts filtered by author, tag, and/or date range. */
@@ -92,6 +124,7 @@ public class AchievementPostService {
             LocalDate from, LocalDate to,
             int page, int size) {
         Long currentEmployeeId = roleUtil.getCurrentEmployeeId();
+        String currentRole = roleUtil.getRole();
         PageRequest pageable = PageRequest.of(page, size);
         Page<Post> posts;
 
@@ -107,7 +140,20 @@ public class AchievementPostService {
             posts = postRepository.findAllActivePosts(pageable);
         }
 
-        return posts.map(p -> toDto(p, currentEmployeeId));
+        List<AchievementPostDto> filtered = posts.getContent().stream()
+                .filter(post -> {
+                    if (Boolean.TRUE.equals(post.getVisibleToAll()))
+                        return true;
+                    if (post.getAuthorId() != null && post.getAuthorId().equals(currentEmployeeId))
+                        return true;
+                    if (post.getVisibleRoles() != null && !post.getVisibleRoles().isEmpty()) {
+                        return post.getVisibleRoles().stream().anyMatch(r -> r.getRole().name().equals(currentRole));
+                    }
+                    return false;
+                })
+                .map(p -> toDto(p, currentEmployeeId))
+                .collect(Collectors.toList());
+        return new org.springframework.data.domain.PageImpl<>(filtered, posts.getPageable(), posts.getTotalElements());
     }
 
     /** Get a single post by ID. */
@@ -131,6 +177,19 @@ public class AchievementPostService {
         post.setUpdateDate(LocalDate.now());
         if (req.getVisibleToAll() != null) {
             post.setVisibleToAll(req.getVisibleToAll());
+        }
+        // Update department/role visibility if not visible to all
+        post.getVisibleDepartments().clear();
+        post.getVisibleRoles().clear();
+        if (Boolean.FALSE.equals(post.getVisibleToAll())) {
+            if (req.getDepartmentIds() != null && !req.getDepartmentIds().isEmpty()) {
+                List<Department> departments = departmentRepository.findAllById(req.getDepartmentIds());
+                post.getVisibleDepartments().addAll(departments);
+            }
+            if (req.getRoleIds() != null && !req.getRoleIds().isEmpty()) {
+                List<Role> roles = roleRepository.findAllById(req.getRoleIds());
+                post.getVisibleRoles().addAll(roles);
+            }
         }
 
         // Replace tags
@@ -400,6 +459,15 @@ public class AchievementPostService {
         List<Comment> comments = commentRepository.findActiveCommentsByPostId(post.getId());
         dto.setCommentCount((long) comments.size());
         dto.setComments(comments.stream().map(this::toCommentDto).collect(Collectors.toList()));
+
+        // Visible roles (as string names)
+        if (post.getVisibleRoles() != null && !post.getVisibleRoles().isEmpty()) {
+            dto.setVisibleRoles(post.getVisibleRoles().stream()
+                    .map(role -> role.getRole().name())
+                    .collect(Collectors.toList()));
+        } else {
+            dto.setVisibleRoles(null);
+        }
 
         return dto;
     }

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
@@ -6,6 +5,9 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { useCreateAchievementPost } from "./queries/achievements.queries";
+import { useEffect, useState } from "react";
+import { RoleService } from "./services/role.service";
+import type { RoleType } from "./types/role.types";
 
 const CreatePostButton = () => {
   const [open, setOpen] = useState(false);
@@ -37,6 +39,14 @@ export const CreatePostDialog = ({ open, onOpenChange }: DialogProps) => {
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [visibleToAll, setVisibleToAll] = useState(true);
+  const [roleIds, setRoleIds] = useState<number[]>([]);
+  const [roles, setRoles] = useState<RoleType[]>([]);
+
+  useEffect(() => {
+    if (!visibleToAll) {
+      RoleService.getAllRoles().then(setRoles);
+    }
+  }, [visibleToAll]);
 
   const createPost = useCreateAchievementPost();
 
@@ -67,6 +77,7 @@ export const CreatePostDialog = ({ open, onOpenChange }: DialogProps) => {
       description: description.trim(),
       tags,
       visibleToAll,
+      roleIds: visibleToAll ? undefined : roleIds,
     });
     reset();
     onOpenChange(false);
@@ -170,6 +181,29 @@ export const CreatePostDialog = ({ open, onOpenChange }: DialogProps) => {
             </label>
           </div>
 
+          {/* Role selector if not visible to all */}
+          {!visibleToAll && (
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium">Visible to Roles</label>
+              <select
+                multiple
+                value={roleIds.map(String)}
+                onChange={(e) => {
+                  const selected = Array.from(e.target.selectedOptions).map(
+                    (opt) => Number(opt.value),
+                  );
+                  setRoleIds(selected);
+                }}
+                className="border rounded px-2 py-1"
+              >
+                {roles.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.role}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           {/* Actions */}
           <div className="flex justify-end gap-2 pt-1">
             <Button

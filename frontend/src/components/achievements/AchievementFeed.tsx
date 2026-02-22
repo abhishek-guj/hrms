@@ -12,9 +12,9 @@ interface Props {
 
 const AchievementFeed = ({ filters, onFiltersChange }: Props) => {
   const { data, isLoading, error } = useAchievementFeed(filters);
-
+  console.log("Fetched achievements:", data);
   const handlePage = (delta: number) => {
-    onFiltersChange({ ...filters, page: (filters.page ?? 0) + delta });
+    // onFiltersChange({ ...filters, page: (filters.page ?? 0) + delta });
   };
 
   if (error) {
@@ -62,9 +62,25 @@ const AchievementFeed = ({ filters, onFiltersChange }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {data.content.map((post) => (
-        <AchievementPostCard key={post.id} post={post} />
-      ))}
+      {/* Role-based visibility filtering */}
+      {data.content
+        .filter((post) => {
+          // If visibleToAll, show to everyone
+          if (post.visibleToAll) return true;
+          // Always show if current user is the author
+          const employeeId = Number(localStorage.getItem("employeeId"));
+          if (post.authorId === employeeId) return true;
+          // Otherwise, check role-based visibility
+          const role = localStorage.getItem("role") ?? "";
+          if (post.visibleRoles && Array.isArray(post.visibleRoles)) {
+            return post.visibleRoles.includes(role);
+          }
+          // If not provided, fallback to show
+          return false;
+        })
+        .map((post) => (
+          <AchievementPostCard key={post.id} post={post} />
+        ))}
 
       {/* Pagination */}
       {data.totalPages > 1 && (
