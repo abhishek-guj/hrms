@@ -87,3 +87,8 @@ export const ACHIEVEMENT_ENDPOINTS = {
 	deleteComment: (commentId: number, reason?: string) =>
 		`/achievements/comments/${commentId}${reason ? `?reason=${encodeURIComponent(reason)}` : ""}`,
 };
+
+
+export const NOTIFICATION_ENDPOINTS = {
+	getAll: () =>'/notifications'
+}

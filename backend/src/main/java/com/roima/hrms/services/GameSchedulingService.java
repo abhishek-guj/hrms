@@ -377,7 +377,7 @@ public class GameSchedulingService {
 
             try {
                 emailService.sendGameMail(slotBookingReqDto.getPlayerIds(), newSlotBooking);
-
+                notificationService.sendGameNotification(newSlotBooking);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

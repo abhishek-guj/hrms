@@ -25,7 +25,10 @@ public class NotificationService {
     private final TravelEmployeeRepository travelEmployeeRepository;
     private final EmployeeProfileRepository employeeProfileRepository;
 
-    public NotificationService(NotificationRepository notificationRepository, JobHrRepository jobHrRepository, JobCvReviewerRepository jobCvReviewerRepository, JobRepository jobRepository, RoleUtil roleUtil, ModelMapper modelMapper, TravelEmployeeRepository travelEmployeeRepository, EmployeeProfileRepository employeeProfileRepository) {
+    public NotificationService(NotificationRepository notificationRepository, JobHrRepository jobHrRepository,
+            JobCvReviewerRepository jobCvReviewerRepository, JobRepository jobRepository, RoleUtil roleUtil,
+            ModelMapper modelMapper, TravelEmployeeRepository travelEmployeeRepository,
+            EmployeeProfileRepository employeeProfileRepository) {
         this.notificationRepository = notificationRepository;
         this.jobHrRepository = jobHrRepository;
         this.jobCvReviewerRepository = jobCvReviewerRepository;
@@ -37,14 +40,16 @@ public class NotificationService {
     }
 
     public List<NotificationDto> getAllNotifications() {
-        List<Notification> notifications = notificationRepository.findAllByEmployeeProfile(roleUtil.getCurrentEmployee());
+        List<Notification> notifications = notificationRepository
+                .findAllByEmployeeProfile(roleUtil.getCurrentEmployee());
 
         return notifications.stream().map(noti -> modelMapper.map(noti, NotificationDto.class)).toList();
     }
 
     @Transactional
     public void readNotification(Long notificationId) {
-        Notification notification = notificationRepository.findById(notificationId).orElseThrow(() -> new RuntimeException("Notification not found"));
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("Notification not found"));
         notification.setRead(true);
         notification.setReadAt(LocalDateTime.now());
 
@@ -66,9 +71,25 @@ public class NotificationService {
     }
 
     @Transactional
+    public void sendGameNotification(SlotBooking slotBooking) {
+        String s1 = "Game: " + slotBooking.getGameSlot().getGameType().getName();
+        String s2 = "Game Status: " + slotBooking.getStatus();
+        String s3 = "Game Start Time: " + slotBooking.getGameSlot().getSlotStart();
+        String s4 = "Game End Time: " + slotBooking.getGameSlot().getSlotEnd();
+        String s5 = "Booked By: " + slotBooking.getGroupOwner().getFirstName() + " "
+                + slotBooking.getGroupOwner().getLastName();
+        String body = s1 + s2 + s3 + s4 + s5;
+
+        for (EmployeeProfile ep : slotBooking.getPlayerGroup().getPlayers()) {
+            createNotification(ep, body);
+        }
+    }
+
+    @Transactional
     public void sendTravelPlanNotification(TravelPlan travelPlan) {
         // getting employees
-        Set<EmployeeProfile> employeeProfiles = travelEmployeeRepository.getAllEmployeeProfilesByTravelPlan_Id(travelPlan.getId());
+        Set<EmployeeProfile> employeeProfiles = travelEmployeeRepository
+                .getAllEmployeeProfilesByTravelPlan_Id(travelPlan.getId());
 
         String content = getTravelPlanContent(travelPlan);
 
@@ -96,9 +117,7 @@ public class NotificationService {
                 referer.getFirstName() + " " + referer.getLastName(),
                 referredName,
                 jobReferral.getJob().getJobTitle(),
-                jobReferral.getReferredOn()
-        );
-
+                jobReferral.getReferredOn());
 
         return content;
     }
@@ -108,8 +127,7 @@ public class NotificationService {
                 You are assigned to %s Travel: %s.
                 """.formatted(
                 travelPlan.getTravelType().getName(),
-                travelPlan.getPurpose()
-        );
+                travelPlan.getPurpose());
         return content;
     }
 

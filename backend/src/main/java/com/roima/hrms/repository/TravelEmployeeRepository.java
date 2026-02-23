@@ -23,7 +23,7 @@ public interface TravelEmployeeRepository extends JpaRepository<TravelEmployee, 
 
     void deleteAllByTravelPlan_Id(Long travelPlanId);
 
-    @Query("select ep from TravelEmployee te join fetch EmployeeProfile ep where te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted = false")
+    @Query("select ep from TravelEmployee te join fetch EmployeeProfile ep on te.employeeProfile = ep  where te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted = false")
     Set<EmployeeProfile> getAllEmployeeProfilesByTravelPlan_Id(Long travelPlanId);
 
     @Query("select t from TravelEmployee t where t.travelPlan.id = :travelPlanId and t.travelPlan.isDeleted = false")

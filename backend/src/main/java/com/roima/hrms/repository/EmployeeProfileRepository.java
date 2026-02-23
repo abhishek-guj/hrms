@@ -13,7 +13,7 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
 
     boolean existsByFirstName(String firstName);
 
-    @Query("select ep from EmployeeProfile ep where ep.user.email = :email")
+    @Query("select ep from EmployeeProfile ep join ep.user u where u.email = :email")
     EmployeeProfile getEmployeeProfileByUser_Email(String email);
 
     List<EmployeeProfile> getAllByManager_Id(Long managerId);

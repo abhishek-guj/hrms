@@ -29,7 +29,9 @@ public class TravelEmployeeService {
     private final NotificationService notificationService;
     private final EmailService emailService;
 
-    public TravelEmployeeService(TravelEmployeeRepository travelEmployeeRepository, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, ModelMapper modelMapper, NotificationService notificationService, EmailService emailService) {
+    public TravelEmployeeService(TravelEmployeeRepository travelEmployeeRepository,
+            TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository,
+            ModelMapper modelMapper, NotificationService notificationService, EmailService emailService) {
         this.travelEmployeeRepository = travelEmployeeRepository;
         this.travelPlanRepository = travelPlanRepository;
         this.employeeProfileRepository = employeeProfileRepository;
@@ -40,13 +42,16 @@ public class TravelEmployeeService {
 
     public List<TravelEmployeeDto> getTravelEmployees(Long travelPlanId) {
         List<TravelEmployee> travelEmployees = travelEmployeeRepository.findByTravelPlan_Id(travelPlanId);
-        return travelEmployees.stream().map(te -> modelMapper.map(te.getEmployeeProfile(), TravelEmployeeDto.class)).collect(Collectors.toList());
+        return travelEmployees.stream().map(te -> modelMapper.map(te.getEmployeeProfile(), TravelEmployeeDto.class))
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void addTravelEmployee(Long travelPlanId, Long employeeId) {
-        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId).orElseThrow(TravelPlanNotFoundException::new);
-        EmployeeProfile employeeProfile = employeeProfileRepository.findById(employeeId).orElseThrow(EmployeeNotFoundException::new);
+        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId)
+                .orElseThrow(TravelPlanNotFoundException::new);
+        EmployeeProfile employeeProfile = employeeProfileRepository.findById(employeeId)
+                .orElseThrow(EmployeeNotFoundException::new);
 
         TravelEmployee travelEmployee = new TravelEmployee();
         travelEmployee.setEmployeeProfile(employeeProfile);
@@ -55,12 +60,13 @@ public class TravelEmployeeService {
         travelEmployeeRepository.save(travelEmployee);
     }
 
-
     @Transactional
     public boolean addTravelEmployees(Long travelPlanId, List<Long> employeeIds) {
-        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId).orElseThrow(TravelPlanNotFoundException::new);
+        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId)
+                .orElseThrow(TravelPlanNotFoundException::new);
         employeeIds.forEach(employeeId -> {
-            EmployeeProfile employeeProfile = employeeProfileRepository.findById(employeeId).orElseThrow(EmployeeNotFoundException::new);
+            EmployeeProfile employeeProfile = employeeProfileRepository.findById(employeeId)
+                    .orElseThrow(EmployeeNotFoundException::new);
             if (travelEmployeeRepository.existsByTravelPlanAndEmployeeProfile(travelPlan, employeeProfile)) {
                 return;
             }
@@ -70,8 +76,8 @@ public class TravelEmployeeService {
             travelEmployeeRepository.save(travelEmployee);
 
             // todo: add email service here
-            notificationService.sendTravelPlanNotification(travelPlan);
             try {
+                notificationService.sendTravelPlanNotification(travelPlan);
                 emailService.sendTravelPlanMail(travelPlanId);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -82,7 +88,8 @@ public class TravelEmployeeService {
 
     @Transactional
     public void updateTravelEmployees(Long travelPlanId, List<Long> employeeIds) {
-        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId).orElseThrow(TravelPlanNotFoundException::new);
+        TravelPlan travelPlan = travelPlanRepository.findById(travelPlanId)
+                .orElseThrow(TravelPlanNotFoundException::new);
 
         // delete all already assigned employees
         travelEmployeeRepository.deleteAllByTravelPlan_Id((travelPlanId));
@@ -108,7 +115,8 @@ public class TravelEmployeeService {
     public boolean deleteTravelEmployees(Long travelPlanId, List<TravelEmployeeReqDto> dto) {
         dto.forEach(employee -> {
             try {
-                travelEmployeeRepository.removeTravelEmployeesByTravelPlan_IdAndEmployeeProfile_Id(travelPlanId, employee.getId());
+                travelEmployeeRepository.removeTravelEmployeesByTravelPlan_IdAndEmployeeProfile_Id(travelPlanId,
+                        employee.getId());
             } catch (Exception e) {
                 e.printStackTrace();
             }
