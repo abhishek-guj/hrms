@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -111,13 +112,14 @@ public class NotificationService {
     private String getReferContent(JobReferral jobReferral) {
         EmployeeProfile referer = jobReferral.getReferredBy();
         String referredName = jobReferral.getFirstName() + " " + jobReferral.getLastName();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         String content = """
                 %s referred %s for %s at %s.
                 """.formatted(
                 referer.getFirstName() + " " + referer.getLastName(),
                 referredName,
                 jobReferral.getJob().getJobTitle(),
-                jobReferral.getReferredOn());
+                jobReferral.getReferredOn().format(formatter));
 
         return content;
     }

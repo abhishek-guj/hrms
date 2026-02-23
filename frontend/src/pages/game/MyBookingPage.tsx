@@ -14,33 +14,63 @@ import { RoleUtil } from "../../auth/role.util";
 
 const MyBookingPage = () => {
   const { data } = useMySlotBookings();
+  const bookings = data && data[0];
+  const queues = data && data[1];
   console.log(data);
   return (
     <div className="flex flex-col p-8 gap-4">
-      <div className="text-xl font-bold">My Bookings</div>
-      <div className="flex flex-col gap-8 py-4">
-        {data?.map((booking) => (
-          <div key={booking?.id} className="flex flex-col gap-4 p-8 border">
-            <BookingDetails
-              key={booking.id}
-              slotDetails={booking?.gameSlot}
-              slotSizes={booking?.slotSizes}
-            />
-            <Separator />
-            <BookingGroupDetails
-              playerGroup={booking?.playerGroup}
-              groupOwner={booking?.groupOwner}
-            />
-            <Separator />
-            <BookingStatus
-              status={booking?.status}
-              groupOwner={booking?.groupOwner}
-              gameSlotId={booking?.gameSlot?.id}
-              inQueue={booking?.inQueue}
-              queueSize={booking?.queueSize}
-            />
-          </div>
-        ))}
+      <div className="flex gap-8 py-8 sm:gap-28 justify-center w-full">
+        <div className="flex flex-col gap-8 py-4 ">
+          <div className="text-xl font-bold">My Bookings</div>
+          {bookings?.map((booking) => (
+            <div key={booking?.id} className="flex flex-col gap-4 p-8 border">
+              <BookingDetails
+                key={booking.id}
+                slotDetails={booking?.gameSlot}
+                slotSizes={booking?.slotSizes}
+              />
+              <Separator />
+              <BookingGroupDetails
+                playerGroup={booking?.playerGroup}
+                groupOwner={booking?.groupOwner}
+              />
+              <Separator />
+              <BookingStatus
+                status={booking?.status}
+                groupOwner={booking?.groupOwner}
+                gameSlotId={booking?.gameSlot?.id}
+                inQueue={booking?.inQueue}
+                queueSize={booking?.queueSize}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-8 py-4">
+          <div className="text-xl font-bold">In Queues</div>
+          {queues?.map((booking) => (
+            <div key={booking?.id} className="flex flex-col gap-4 p-8 border">
+              <BookingDetails
+                key={booking.id}
+                slotDetails={booking?.gameSlot}
+                slotSizes={booking?.slotSizes}
+              />
+              <Separator />
+              <BookingGroupDetails
+                playerGroup={booking?.playerGroup}
+                groupOwner={booking?.groupOwner}
+              />
+              <Separator />
+              <BookingStatus
+                status={booking?.status}
+                groupOwner={booking?.groupOwner}
+                gameSlotId={booking?.gameSlot?.id}
+                inQueue={booking?.inQueue}
+                queueSize={booking?.queueSize}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -56,7 +86,7 @@ function BookingDetails({ slotDetails, slotSizes }) {
   return (
     <div className="flex flex-col gap-1">
       <div className="font-semibold text-lg">SLot Details</div>
-      <div className="grid grid-cols-5 gap-8 ">
+      <div className="flex justify-around gap-8 flex-wrap">
         <ViewField name={"Slot Id"} value={slotDetails?.id} />
         <ViewField name={"Game"} value={slotDetails?.gameTypeName} />
         <ViewField name={"Date"} value={startDate} />
@@ -131,7 +161,7 @@ function BookingStatus({
           </Badge>
           <div className="flex gap-8 p-4">
             <div>In Queue : {inQueue ? "Yes" : "No"}</div>
-            <div>Queue size : {queueSize}</div>
+            {/* <div>Queue size : {queueSize}</div> */}
           </div>
         </div>
         {!isCancelled && isOwner && (

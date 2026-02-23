@@ -40,7 +40,11 @@ public class JobService {
     private final NotificationService notificationService;
     private final ModelMapper modelMapper;
 
-    public JobService(JobRepository jobRepository, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, FileService fileService, ExpenseDocumentRepository expenseDocumentRepository, JobMapper jobMapper, EmailService emailService, JobShareRepository jobShareRepository, JobReferralRepository jobReferralRepository, NotificationService notificationService, ModelMapper modelMapper) {
+    public JobService(JobRepository jobRepository, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository,
+            EmployeeProfileRepository employeeProfileRepository, FileService fileService,
+            ExpenseDocumentRepository expenseDocumentRepository, JobMapper jobMapper, EmailService emailService,
+            JobShareRepository jobShareRepository, JobReferralRepository jobReferralRepository,
+            NotificationService notificationService, ModelMapper modelMapper) {
         this.jobRepository = jobRepository;
         this.roleUtil = roleUtil;
         this.travelPlanRepository = travelPlanRepository;
@@ -65,12 +69,13 @@ public class JobService {
     public JobDto getById(Long id) {
         Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job Not Found!"));
         // this will be returned f admin or hr
-//        if (roleUtil.isAdmin() || roleUtil.isHr() || roleUtil.isManager() || roleUtil.isEmployee()) {
-//            return jobMapper.toJobDto(job);
-//        } else {
-//            // for normal public
-//            JobDto jobDto = jobMapper.toJobDto(job);
-//        }
+        // if (roleUtil.isAdmin() || roleUtil.isHr() || roleUtil.isManager() ||
+        // roleUtil.isEmployee()) {
+        // return jobMapper.toJobDto(job);
+        // } else {
+        // // for normal public
+        // JobDto jobDto = jobMapper.toJobDto(job);
+        // }
         return jobMapper.toJobDto(job);
     }
 
@@ -79,17 +84,15 @@ public class JobService {
 
         EmployeeProfile submittedBy = roleUtil.getCurrentEmployee();
 
-//         check if files not null
+        // check if files not null
         if (dto.getJobJdFile() == null || dto.getJobJdFile().isEmpty()) {
             throw new RuntimeException("Please upload at least 1 document");
         }
 
         fileService.validateFile(dto.getJobJdFile());
 
-
         // converting to entity
         Job job = jobMapper.toEntity(dto);
-
 
         String filePath = fileService.store(dto.getJobJdFile(), "job");
 
@@ -114,13 +117,15 @@ public class JobService {
         }
     }
 
-    //    public void shareById(Long id, List<String> emails) {
+    // public void shareById(Long id, List<String> emails) {
     @Transactional
     @Async
     public void shareById(Long id, List<EmailShareReqDto> emails) {
         // TAKE EMAIL IN DTO
         for (EmailShareReqDto email : emails) {
-            JobShare jobShare = JobShare.builder().job(jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job Not Found!"))).sharedOn(LocalDateTime.now()).sharedBy(roleUtil.getCurrentEmployee()).build();
+            JobShare jobShare = JobShare.builder()
+                    .job(jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job Not Found!")))
+                    .sharedOn(LocalDateTime.now()).sharedBy(roleUtil.getCurrentEmployee()).build();
             try {
                 emailService.sendShareMail(email.getEmail(), id);
                 jobShare.setEmailSent(true);
@@ -133,9 +138,7 @@ public class JobService {
             }
         }
 
-
     }
-
 
     @Transactional
     public boolean referById(Long jobId, JobReferralReqDto jobReferralDto) {
@@ -192,7 +195,8 @@ public class JobService {
 
     @Transactional
     public void updateReferralStatus(Long referralId, ReferralStatusDto status) {
-        JobReferral jobReferral = jobReferralRepository.findById(referralId).orElseThrow(() -> new RuntimeException("Referral Not Found"));
+        JobReferral jobReferral = jobReferralRepository.findById(referralId)
+                .orElseThrow(() -> new RuntimeException("Referral Not Found"));
         if (roleUtil.isAdmin() || roleUtil.isHr()) {
             jobReferral.setStatus(status.getStatus());
             jobReferralRepository.save(jobReferral);

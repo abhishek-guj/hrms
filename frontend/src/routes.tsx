@@ -35,6 +35,7 @@ import AchievementsPage from "./pages/achievements/AchievementsPage";
 
 import { roles, RoleUtil } from "./auth/role.util";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import GameConfigPage from "./pages/game/GameConfigPage";
 
 const { admin, hr, manager, employee } = roles;
 
@@ -106,7 +107,7 @@ const router = createBrowserRouter([
         path: "/jobs",
         element: <JobsPage />,
         children: [
-          { path: "new", element: <JobView /> },
+          // { path: "new", element: <JobView /> },
           { path: ":jobId", element: <JobView /> },
           { path: ":jobId/share", element: <JobShare /> },
           { path: ":jobId/refer", element: <JobReferral /> },
@@ -124,6 +125,14 @@ const router = createBrowserRouter([
         path: "/games",
         element: <GamesPage />,
         children: [{ path: ":slotId", element: <BookGameSlot /> }],
+      },
+      {
+        path: "/game-config",
+        element: (
+          <ProtectedRoute allowedRoles={[admin, hr]}>
+            <GameConfigPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/my-slots",

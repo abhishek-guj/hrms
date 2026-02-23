@@ -20,7 +20,6 @@ public class GameOperationHour {
     @Column(name = "pk_game_operation_hour_id", nullable = false)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_type_id")
     private GameType gameType;
@@ -42,6 +41,5 @@ public class GameOperationHour {
 
     @Column(name = "updated_by")
     private Long updatedBy;
-
 
 }

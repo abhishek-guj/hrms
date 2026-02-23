@@ -1,18 +1,22 @@
 package com.roima.hrms.repository;
 
+import com.roima.hrms.entities.EmployeeProfile;
 import com.roima.hrms.entities.TravelExpense;
 import com.roima.hrms.entities.TravelPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface TravelExpenseRepository extends JpaRepository<TravelExpense, Long> {
 
     @Query(value = "select te from TravelExpense te where te.id = :id and te.travelPlan.isDeleted = false ")
     Optional<TravelExpense> findById(Long id);
-
 
     // GETTING ALL EXPENSES WITHOUT ANY TRAVEL ID
     // for admin hr
@@ -24,7 +28,7 @@ public interface TravelExpenseRepository extends JpaRepository<TravelExpense, Lo
     @Query(value = "select te from TravelExpense te join te.submittedBy ep where ep.manager.id = :managerId and te.travelPlan.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAllByManagerId(Long managerId);
 
-    //get all expenses of this employee
+    // get all expenses of this employee
     @Query("select te from TravelExpense te join te.submittedBy ep where ep.id = :employeeId and te.travelPlan.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAllByEmployeeId(Long employeeId);
     // GETTING ALL EXPENSES WITHOUT ANY TRAVEL ID
@@ -43,4 +47,12 @@ public interface TravelExpenseRepository extends JpaRepository<TravelExpense, Lo
     @Query("select te from TravelExpense te join te.submittedBy ep where ep.id = :employeeId and te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
     List<TravelExpense> findAllByEmployeeIdAndTravelId(Long employeeId, Long travelPlanId);
     // GETTING ALL EXPENSES BY ANY TRAVEL ID
+
+    @Query("""
+            select sum(te.expenseAmount)
+            from TravelExpense te
+            where te.submittedBy = :currentEmployee
+            and te.expenseDate = :expenseDate
+            """)
+    BigDecimal sumOfExpenseDateByEmployee(EmployeeProfile currentEmployee, LocalDate expenseDate);
 }

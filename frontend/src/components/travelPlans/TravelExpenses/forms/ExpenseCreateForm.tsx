@@ -6,6 +6,7 @@ import {
   useParams,
 } from "react-router-dom";
 import {
+  EmployeeExpenseSchema,
   type EmployeeExpenseSchemaType,
   type TravelPlanSchemaType,
 } from "../../../login/schema";
@@ -24,6 +25,7 @@ import TravelTypeSelect from "../../TravelplanDashboard/forms/TravelTypeSelect";
 import FormSelect from "./FormSelect";
 import { DatePickerInput } from "../../../ui/date-picker";
 import { Button } from "../../../ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const ExpenseCreateForm = () => {
   // navigate
@@ -49,6 +51,7 @@ const ExpenseCreateForm = () => {
   } = useForm<EmployeeExpenseSchemaType>({
     mode: "onBlur",
     defaultValues: { travelPlanId: id },
+    resolver: zodResolver(EmployeeExpenseSchema),
   });
   // react form
 
@@ -58,7 +61,9 @@ const ExpenseCreateForm = () => {
     const resData = await createTravelExpense.mutateAsync({ payload: data });
     console.log("save expense", resData);
   };
+  // handlers
 
+  // renders
   if (travel && new Date(travel.lastDateOfExpenseSubmission) <= new Date()) {
     return (
       <div className="w-96 h-96 flex flex-col justify-center items-center">
@@ -66,7 +71,6 @@ const ExpenseCreateForm = () => {
       </div>
     );
   }
-  // handlers
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>

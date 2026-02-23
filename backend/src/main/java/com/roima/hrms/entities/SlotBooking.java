@@ -24,7 +24,7 @@ public class SlotBooking {
     @JoinColumn(name = "player_group_id")
     private PlayerGroup playerGroup;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_slot_id", unique = true)
     private GameSlot gameSlot;
 

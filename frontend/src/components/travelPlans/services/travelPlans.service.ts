@@ -120,8 +120,8 @@ export const TravelPlansService = {
 					"content-type": "multipart/form-data",
 				},
 			},
-		);
-		return res.data.data;
+		)
+		return res.data;
 	},
 
 	async deleteTravelExpense(id: string) {

@@ -38,9 +38,8 @@ export const EmployeeExpenseSchema = z.object({
 		}),
 	expenseDate: z.date(),
 	// files: z.array(z.file()).min(1, { error: "atleast one file is requried" }),
-	files: z.array(z.instanceof(File))
-		.min(1, { message: "At least one file is required" })
-
+	files: z.instanceof(FileList).transform((fileList) => fileList[0])
+		.refine((file) => !!file, { message: "File is required" })
 });
 // used in creating expense
 

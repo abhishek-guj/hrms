@@ -17,8 +17,11 @@ const TravelExpenses = () => {
   const { id } = useParams<{ id: string }>();
 
   // query hook
+  console.log("id", id);
   const { data, error, isLoading } = useTravelExpenses(id!); // exclamation to supress undefined error
+  console.log("data", data);
   const { data: travel } = useOutletContext();
+
   // states
 
   if (error) {

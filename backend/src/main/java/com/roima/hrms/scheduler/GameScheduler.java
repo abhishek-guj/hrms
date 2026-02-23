@@ -26,9 +26,9 @@ import java.util.Optional;
 @Component
 public class GameScheduler {
 
-    private final int fixedDelay = 3000000;
+    private final int fixedDelay = 30000;
     private final int initialDelay = 3000;
-    private final long BUFFER_FOR_AUTO_CONFIRM = 30000; // using minutes directly
+    private final long BUFFER_FOR_AUTO_CONFIRM = 15; // using minutes directly
     private final GameTypeRepository gameTypeRepository;
     private final GameSlotRepository gameSlotRepository;
     private final GameOperationHourRepository gameOperationHourRepository;
@@ -94,12 +94,29 @@ public class GameScheduler {
 
             // check if in operational hours
             boolean timeConflict = opHrs.stream().filter(opHr -> opHr != null).anyMatch(opHr -> {
+
+                // after start time
+                // boolean afterTime = time.isAfter(opStartDateTime);
+                // boolean beforeTime = time.isBefore(opEndDateTime);
+
+                // if (afterTime && beforeTime) {
+                // return true;
+                // } else {
+                // return false;
+                // }
+
                 var opStartDateTime = LocalDateTime.of(time.toLocalDate(), opHr.getStartTime());
                 var opEndDateTime = LocalDateTime.of(time.toLocalDate(), opHr.getEndTime());
                 boolean afterTime = time.isAfter(opEndDateTime.minusMinutes(Long.valueOf(intervalMinuts)));
                 boolean beforeTime = time.isBefore(opStartDateTime);
                 return time.isAfter(opEndDateTime.minusMinutes(Long.valueOf(intervalMinuts)))
                         || time.isBefore(opStartDateTime);
+
+                // var opStartDateTime = LocalDateTime.of(time.toLocalDate(),
+                // opHr.getStartTime());
+                // var opEndDateTime = LocalDateTime.of(time.toLocalDate(), opHr.getEndTime());
+                // return time.isAfter(opEndDateTime.minusMinutes(Long.valueOf(intervalMinuts)))
+                // || time.isBefore(opStartDateTime);
             });
             // continue if time conflict
             if (timeConflict) {

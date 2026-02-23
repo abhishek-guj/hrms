@@ -19,9 +19,9 @@ export default function ProtectedRoute({
     return <Navigate to={redirectTo} state={{ from: location }} />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(role?.toLocaleLowerCase())) {
+  if (allowedRoles && !allowedRoles.includes(role)) {
     // alert(allowedRoles.includes(role?.toLocaleLowerCase()));
-    // return <Navigate to="/unauthorized" replace />;
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return <>{children}</>;

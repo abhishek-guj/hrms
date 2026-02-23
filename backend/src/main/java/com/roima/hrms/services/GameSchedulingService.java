@@ -1,7 +1,10 @@
 package com.roima.hrms.services;
 
+import com.roima.hrms.dtos.req.GameReqDto;
 import com.roima.hrms.dtos.req.SlotBookingReqDto;
 import com.roima.hrms.dtos.res.AllGameSlotsDto;
+import com.roima.hrms.dtos.res.EmployeeProfileDto;
+import com.roima.hrms.dtos.res.GameDetailsDto;
 import com.roima.hrms.dtos.res.GameSlotDto;
 import com.roima.hrms.dtos.res.PlayerGroupDto;
 import com.roima.hrms.dtos.res.SlotBookingDto;
@@ -16,7 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 import static javax.swing.UIManager.put;
@@ -36,6 +41,7 @@ public class GameSchedulingService {
     private final ModelMapper modelMapper;
     private final EmailService emailService;
     private final NotificationService notificationService;
+    private final GameOperationHourRepository gameOperationHourRepository;
 
     // constants
     private final long PRIORITY_CHECK_DAYS = 3L;
@@ -46,7 +52,8 @@ public class GameSchedulingService {
             GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository, ModelMapper modelMapper,
             GameQueueRepository gameQueueRepository, GameSlotSizeRepository gameSlotSizeRepository,
             NotificationService notificationService,
-            EmailService emailService) {
+            EmailService emailService,
+            GameOperationHourRepository gameOperationHourRepository) {
         this.roleUtil = roleUtil;
         this.employeeProfileRepository = employeeProfileRepository;
         this.playerGroupRepository = playerGroupRepository;
@@ -58,7 +65,73 @@ public class GameSchedulingService {
         this.gameSlotSizeRepository = gameSlotSizeRepository;
         this.notificationService = notificationService;
         this.emailService = emailService;
+        this.gameOperationHourRepository = gameOperationHourRepository;
 
+    }
+
+    @Transactional
+    public void addGame(GameReqDto gameReqDto) {
+        if (gameTypeRepository.existsByName(gameReqDto.getGameTypeName())) {
+            throw new RuntimeException("game already addded.");
+        }
+
+        GameType gameType = GameType.builder()
+                .name(gameReqDto.getGameTypeName())
+                .maxSlotDurationMinutes(gameReqDto.getMaxSlotDurationMinutes())
+                .build();
+
+        List<GameSlotSize> gameSlotSizes = gameReqDto.getSlotSizes().stream().map(slotSize -> {
+            GameSlotSize newSlotSize = GameSlotSize.builder()
+                    .slotSize(
+                            slotSize.intValue())
+                    .gameType(gameType)
+                    .build();
+            gameSlotSizeRepository.save(newSlotSize);
+            return newSlotSize;
+        }).toList();
+
+        GameOperationHour newHrs = GameOperationHour.builder()
+                .gameType(gameType)
+                .startTime(LocalTime.parse(gameReqDto.getStartTime()))
+                .endTime(LocalTime.parse(gameReqDto.getEndTime()))
+                .build();
+
+        gameOperationHourRepository.save(newHrs);
+
+        // initial slot
+        LocalTime startTime = LocalTime.parse(gameReqDto.getStartTime());
+        LocalDate today = LocalDate.now();
+        GameSlot initialGameSlot = GameSlot.builder()
+                .gameType(gameType)
+                .slotStart(LocalDateTime.of(today, startTime))
+                .slotEnd(LocalDateTime.of(today, startTime.plusMinutes(gameReqDto.getMaxSlotDurationMinutes())))
+                .build();
+
+        gameSlotRepository.save(initialGameSlot);
+
+        gameTypeRepository.save(gameType);
+
+    }
+
+    public List<GameDetailsDto> getGameList() {
+        List<GameType> gameTypes = gameTypeRepository.findAllGameTypes();
+
+        return gameTypes.stream()
+                .map(gameType -> {
+
+                    GameDetailsDto detailsDto = modelMapper.map(gameTypes, GameDetailsDto.class);
+
+                    GameOperationHour opHrs = gameOperationHourRepository
+                            .findAllByGameType(gameType).get(0);
+
+                    detailsDto.setStartTime(opHrs.getStartTime().toString());
+                    detailsDto.setEndTime(opHrs.getEndTime().toString());
+
+                    List<Integer> slotsizes = gameSlotSizeRepository.findAllByGameTypeOrderBySlotSize(gameType).stream()
+                            .map(t -> t.getSlotSize()).toList();
+                    detailsDto.setSlotSizes(slotsizes);
+                    return detailsDto;
+                }).toList();
     }
 
     public List<AllGameSlotsDto> getAllSlots() {
@@ -99,8 +172,9 @@ public class GameSchedulingService {
         return allGameSlotsDtoList;
     }
 
-    public List<SlotBookingDto> getBookings() {
+    public List<List<SlotBookingDto>> getBookings() {
         List<SlotBooking> slotBookings = slotBookingRepository.findAllByPlayer(roleUtil.getCurrentEmployeeId());
+        List<GameQueue> gameQueus = gameQueueRepository.findAllByPlayer(roleUtil.getCurrentEmployeeId());
 
         // List<SlotBookingDto> slotBookingDtos = slotBookings
         // .stream()
@@ -113,7 +187,7 @@ public class GameSchedulingService {
         // })
         // .toList();
         // return slotBookingDtos;
-        return slotBookings
+        List<SlotBookingDto> bookingDtos = slotBookings
                 .stream()
                 .map(booking -> {
                     Set<GameSlotSize> slotSizes = gameSlotSizeRepository
@@ -134,6 +208,23 @@ public class GameSchedulingService {
                     return dto;
                 })
                 .toList();
+
+        List<SlotBookingDto> queueDto = gameQueus.stream().map(queue -> {
+
+            PlayerGroupDto gdto = modelMapper.map(queue.getPlayerGroup(), PlayerGroupDto.class);
+
+            SlotBookingDto dto = SlotBookingDto.builder()
+                    .playerGroup(gdto)
+                    .gameSlot(modelMapper.map(queue.getSlot(), GameSlotDto.class))
+                    .status(SlotBookingStatusEnum.Waiting.toString())
+                    .groupOwner(modelMapper.map(queue.getOwner(), EmployeeProfileDto.class))
+                    .isInQueue(true)
+                    .build();
+            return dto;
+        }).toList();
+
+        return List.of(bookingDtos, queueDto);
+
     }
 
     public SlotDetailsDto getSlotDetails(Long slotId) {
@@ -215,6 +306,7 @@ public class GameSchedulingService {
             EmployeeProfile owner = slotBooking.getGroupOwner();
             if (owner.getId() == roleUtil.getCurrentEmployeeId()) {
                 slotBooking.setStatus(SlotBookingStatusEnum.Cancelled);
+                slotBookingRepository.save(slotBooking);
                 allocateFromQueue(gameSlot);
                 return;
             }
@@ -254,87 +346,6 @@ public class GameSchedulingService {
         playerGroupRepository.save(playerGroup);
 
         return playerGroup;
-    }
-
-    public boolean bookSlot(Long gameSlotId, SlotBookingReqDto slotBookingReqDto) {
-
-        // gameSlot
-        GameSlot gameSlot = gameSlotRepository.findById(gameSlotId)
-                .orElseThrow(() -> new RuntimeException("Game Slot not found."));
-        // player group
-        PlayerGroup playerGroup = createPlayerGroup(slotBookingReqDto.getPlayerIds());
-
-        // check already active booking for the player
-        boolean slotActive = checkActiveBooking(roleUtil.getCurrentEmployee(), gameSlot.getGameType());
-
-        if (slotActive) {
-            // todo: throw error
-            log.warn("active booking");
-        }
-
-        // todo: get priority
-        int priority = getPriority(
-                roleUtil.getCurrentEmployee(),
-                gameTypeRepository.findByName(gameSlot.getGameType().getName()).orElseThrow());
-
-        // todo: check priority
-        SlotBooking newSlotBooking = SlotBooking.builder()
-                .playerGroup(playerGroup)
-                .gameSlot(gameSlot)
-                .status(SlotBookingStatusEnum.Requested)
-                .groupOwner(roleUtil.getCurrentEmployee())
-                .build();
-
-        // if no one has already requested that slot
-        if (!slotBookingRepository.existsSlotBookingByGameSlot(gameSlot)) {
-            // dont check if no booking in that slot
-            // create booking here
-            slotBookingRepository.save(newSlotBooking);
-            return true;
-        }
-
-        // checking pririoty based on booked and new slotBooking request
-        SlotBooking oldSlotBooking = slotBookingRepository.findByGameSlot(gameSlot)
-                .orElseThrow(() -> new RuntimeException("Internal Logic error"));
-        boolean isNewPriorityHigh = compareNewHighPriority(newSlotBooking, oldSlotBooking);
-        // this will not null if swapped
-        GameSlot tmp = null;
-        if (isNewPriorityHigh) {
-            // swap slots as new request is of more priority
-            tmp = oldSlotBooking.getGameSlot();
-            oldSlotBooking.setGameSlot(newSlotBooking.getGameSlot());
-            newSlotBooking.setGameSlot(tmp);
-
-            // book slot to new person
-            slotBookingRepository.save(newSlotBooking);
-
-            // add the swapped one to queue until confirmed
-            GameQueue gameQueue = GameQueue.builder()
-                    .slot(oldSlotBooking.getGameSlot())
-                    .playerGroup(oldSlotBooking.getPlayerGroup())
-                    .owner(oldSlotBooking.getGroupOwner())
-                    .requestedOn(LocalDateTime.now())
-                    .priorityAtRequest(
-                            getPriority(oldSlotBooking.getGroupOwner(), oldSlotBooking.getGameSlot().getGameType()))
-                    .build();
-
-            gameQueueRepository.save(gameQueue);
-
-        } else {
-
-            // add in queue
-            GameQueue gameQueue = GameQueue.builder()
-                    .slot(newSlotBooking.getGameSlot())
-                    .playerGroup(newSlotBooking.getPlayerGroup())
-                    .owner(newSlotBooking.getGroupOwner())
-                    .requestedOn(LocalDateTime.now())
-                    .priorityAtRequest(priority)
-                    .build();
-
-            gameQueueRepository.save(gameQueue);
-        }
-
-        return false;
     }
 
     @Transactional
@@ -400,7 +411,6 @@ public class GameSchedulingService {
 
         if (newPriority < oldPriority) {
             slotBookingRepository.delete(oldSlotBooking);
-
             addToQueue(gameSlot, oldSlotBooking.getPlayerGroup(), oldSlotBooking.getGroupOwner(), oldPriority);
 
             SlotBooking newSlotBooking = SlotBooking.builder()

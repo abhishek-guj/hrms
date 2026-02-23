@@ -1,18 +1,15 @@
-import { useForm, type UseFormRegister } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { type UseFormRegister } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import type { LoginFormType } from "../../login/loginForm.types";
-import type { EmployeeExpenseSchemaType } from "../../login/schema";
-import { useCreateTravelExpense } from "../../travelPlans/queries/travelPlans.queries";
+import { RoleUtil } from "../../../auth/role.util";
+import AssignedEmployeeCard from "../../travelPlans/TravelEmployees/AssignedEmployeeCard";
+import AssignEmloyeeSelect from "../../travelPlans/TravelplanDashboard/forms/AssignEmloyeeSelect";
+import { Button } from "../../ui/button";
 import { Field, FieldError, FieldLabel } from "../../ui/field";
 import { Input } from "../../ui/input";
-import { useBookSlot, useSlotDetails } from "../queries/game.queries";
-import GameSlotDetails from "../GameSlotDetails";
-import AssignEmloyeeSelect from "../../travelPlans/TravelplanDashboard/forms/AssignEmloyeeSelect";
-import { useEffect, useEffectEvent, useState } from "react";
-import AssignedEmployeeCard from "../../travelPlans/TravelEmployees/AssignedEmployeeCard";
 import { Separator } from "../../ui/separator";
-import { Button } from "../../ui/button";
-import { RoleUtil } from "../../../auth/role.util";
+import GameSlotDetails from "../GameSlotDetails";
+import { useBookSlot, useSlotDetails } from "../queries/game.queries";
 
 const BookGameSlotForm = () => {
   // navigate
@@ -46,7 +43,7 @@ const BookGameSlotForm = () => {
   const onSubmit = async (e) => {
     console.log("submit", selected);
     e.preventDefault();
-    alert();
+    // alert();
     const resData = await bookSlot.mutateAsync({
       id: slotId,
       playerIds: selected,

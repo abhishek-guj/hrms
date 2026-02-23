@@ -134,7 +134,7 @@ export const useTravelExpenses = (
 	id: string,
 ): UseQueryResult<TravelExpenseDto[]> => {
 	return useQuery({
-		queryKey: ["getTravelExpenses"],
+		queryKey: ["getTravelExpensesByTravelPlanId", id],
 		queryFn: (): Promise<TravelExpenseDto[]> =>
 			TravelPlansService.getTravelExpensesByTravelPlanId(id),
 	});
@@ -145,7 +145,7 @@ export const useTravelExpenseById = (
 ): UseQueryResult<TravelExpenseDto> => {
 	console.log(id)
 	return useQuery({
-		queryKey: ["getTravelExpenses", id],
+		queryKey: ["getTravelExpensesById", id],
 		queryFn: (): Promise<TravelExpenseDto> =>
 			TravelPlansService.getTravelExpenseById(id),
 	});
@@ -168,12 +168,14 @@ export const useCreateTravelExpense = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
+			queryClient.invalidateQueries({ queryKey: ["getTravelExpensesByTravelPlanId"] });
 			// alert("expense created successfull");
 			showSuccess("expense created successfull");
 		},
 		onError: (err) => {
 			showError("error creating expense");
-			console.log("error status update ");
+			console.log(err, "error status update ");
+			// showError(err);
 		},
 	});
 };
@@ -187,6 +189,7 @@ export const useChangeStatus = () => {
 		},
 		onSuccess: (id) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
+			queryClient.invalidateQueries({ queryKey: ["getTravelExpensesByTravelPlanId"] });
 			showSuccess("status update successfull");
 		},
 		onError: () => {
@@ -206,6 +209,7 @@ export const useDeleteTravelExpense = () => {
 		onSuccess: (id) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses", id] });
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
+			queryClient.invalidateQueries({ queryKey: ["getTravelExpensesByTravelPlanId"] });
 			showSuccess("expense deleted successfull");
 
 		},

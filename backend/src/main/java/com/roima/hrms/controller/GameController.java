@@ -1,7 +1,9 @@
 package com.roima.hrms.controller;
 
+import com.roima.hrms.dtos.req.GameReqDto;
 import com.roima.hrms.dtos.req.SlotBookingReqDto;
 import com.roima.hrms.dtos.res.AllGameSlotsDto;
+import com.roima.hrms.dtos.res.GameDetailsDto;
 import com.roima.hrms.dtos.res.SlotBookingDto;
 import com.roima.hrms.dtos.res.SlotDetailsDto;
 import com.roima.hrms.enums.ApiResponseType;
@@ -11,6 +13,8 @@ import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.GameSchedulingService;
 import com.roima.hrms.utils.RoleUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,9 +68,9 @@ public class GameController {
 
         @GetMapping("slots/bookings")
         public ResponseEntity<ApiResponse> getBookings() {
-                List<SlotBookingDto> slotDetailsDto = gameSchedulingService.getBookings();
+                List<List<SlotBookingDto>> slotDetailsDto = gameSchedulingService.getBookings();
 
-                ApiResponse<List<SlotBookingDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                ApiResponse<List<List<SlotBookingDto>>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
                                 "Fetched slot details successfully", slotDetailsDto, null);
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
@@ -78,6 +82,22 @@ public class GameController {
 
                 ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
                                 "Fetched slot details successfully", true, null);
+                return ResponseEntity.status(HttpStatus.OK).body(res);
+        }
+
+        @PostMapping("add")
+        public ResponseEntity<ApiResponse> addGame(@Valid @RequestBody GameReqDto gameReqDto) {
+                gameSchedulingService.addGame(gameReqDto);
+                ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                                "created game successfully", true, null);
+                return ResponseEntity.status(HttpStatus.OK).body(res);
+        }
+
+        @GetMapping("list")
+        public ResponseEntity<ApiResponse> getGameList() {
+                List<GameDetailsDto> dtos = gameSchedulingService.getGameList();
+                ApiResponse<List<GameDetailsDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                                "created game successfully", dtos, null);
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
