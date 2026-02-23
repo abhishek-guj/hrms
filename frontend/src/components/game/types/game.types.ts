@@ -43,3 +43,23 @@ export interface PlayerGroupDto {
 
 
 // my bookings
+
+// {
+//     "gameTypeId": 1,
+//         "gameTypeName": "",
+//             "maxSlotDurationMinutes": 1,
+//                 "slotSizes": [
+//                     1
+//                 ],
+//                     "startTime": "",
+//                         "endTime": ""
+// }
+
+export interface GameReqDto {
+    gameTypeId: string;
+    gameTypeName: string;
+    maxSlotDurationMinutes: number;
+    slotSizes: number[];
+    startTime: string;
+    endTime: string;
+}

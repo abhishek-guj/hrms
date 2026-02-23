@@ -1,7 +1,7 @@
 import { api } from "../../../api/apiClient";
 import type { IApiResponse } from "../../../api/apiResponse.types";
 import { GAME_ENDPOINTS } from "../../../api/endpoints";
-import type { AllGameSlotsDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
+import type { AllGameSlotsDto, GameReqDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
 
 
 export const GameService = {
@@ -30,6 +30,11 @@ export const GameService = {
 
     async cancelBooking(slotBookingId: string) {
         const res = await api.delete<IApiResponse<SlotDetailsDto>>(GAME_ENDPOINTS.cancelBooking(slotBookingId));
+    },
+
+    async createGame(dto: GameReqDto) {
+        const res = await api.post<IApiResponse<boolean>>(GAME_ENDPOINTS.createGame(), { dto });
+        return res.data.data;
     }
 
 }

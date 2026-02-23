@@ -19,7 +19,7 @@ const MyBookingPage = () => {
   console.log(data);
   return (
     <div className="flex flex-col p-8 gap-4">
-      <div className="flex gap-8 py-8 sm:gap-28 justify-center w-full">
+      <div className="grid grid-cols-2 gap-8 p-4 sm:px-10 justify-center w-full">
         <div className="flex flex-col gap-8 py-4 ">
           <div className="text-xl font-bold">My Bookings</div>
           {bookings?.map((booking) => (

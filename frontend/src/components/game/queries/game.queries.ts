@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import { GameService } from "../services/game.service";
-import type { AllGameSlotsDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
+import type { AllGameSlotsDto, GameReqDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
 import { showError, showSuccess } from "../../ui/toast";
 
 
@@ -52,8 +52,6 @@ export const useBookSlot = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: async ({ id, playerIds }: { id: string, playerIds: string[] }) => {
-            alert()
-            console.log("bookslot", playerIds)
             const response = await GameService.bookSlot(id, playerIds);
             return id;
         },
@@ -66,6 +64,27 @@ export const useBookSlot = () => {
         onError: (err, payload) => {
             console.log(`Error requesting  ${payload.id} slot`, payload)
             showError(`Error requesting  ${payload.id} slot`)
+
+        }
+    })
+};
+
+
+export const useCreateGame = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async ({ dto }: { dto: GameReqDto }) => {
+            const response = await GameService.createGame(dto);
+        },
+        onSuccess: (id) => {
+            showSuccess(`Succefully created game`)
+            queryClient.invalidateQueries({ queryKey: ["getAllTimeSlots"] })
+            queryClient.invalidateQueries({ queryKey: ["getSlotDetails"] })
+            queryClient.invalidateQueries({ queryKey: ["getMySlotBookings"] })
+        },
+        onError: (err, payload) => {
+            console.log(`Error created game`, payload)
+            showError(`Error creating game`)
 
         }
     })

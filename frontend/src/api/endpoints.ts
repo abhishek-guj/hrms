@@ -71,7 +71,8 @@ export const GAME_ENDPOINTS = {
 	getAllSlotBookings: () => `/games/slots/bookings`,
 	getSlotDetails: (slotId: string) => `/games/slots/${slotId}`,
 	bookSlot: (slotId: string) => `games/slots/${slotId}`,
-	cancelBooking: (slotBookingId: string) => `/games/slots/bookings/${slotBookingId}`
+	cancelBooking: (slotBookingId: string) => `/games/slots/bookings/${slotBookingId}`,
+	createGame: () => `/games/add`,
 }
 
 export const ACHIEVEMENT_ENDPOINTS = {
