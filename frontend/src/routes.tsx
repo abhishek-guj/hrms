@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import TravelDocumentsPage from "./components/travelPlans/TravelDocuments/TravelDocumentsPage";
 import App from "./App";
 import JobShare from "./components/job/JobShare";
@@ -33,16 +33,34 @@ import MyBookingPage from "./pages/game/MyBookingPage";
 // ── Achievements ──────────────────────────────────────────────────────────────
 import AchievementsPage from "./pages/achievements/AchievementsPage";
 
+import { roles, RoleUtil } from "./auth/role.util";
+import ProtectedRoute from "./auth/ProtectedRoute";
+
+const { admin, hr, manager, employee } = roles;
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     children: [
-      { index: true, path: "/", element: <App /> },
+      { index: true, path: "/", element: <Navigate to={"/travel/plans"} /> },
       {
         path: "/travel/plans",
         element: <TravelPlanPage />,
-        children: [{ path: "new", element: <TravelPlanCreate /> }],
+        children: [
+          {
+            path: "new",
+            element: (
+              <ProtectedRoute allowedRoles={[admin, hr]}>
+                <TravelPlanCreate />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
       {
         path: "/travel/plans/:id",

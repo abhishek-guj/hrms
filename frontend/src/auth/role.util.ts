@@ -1,5 +1,5 @@
 
-const roles = {
+export const roles = {
     admin: "Admin",
     hr: "Hr",
     manager: "Manager",
