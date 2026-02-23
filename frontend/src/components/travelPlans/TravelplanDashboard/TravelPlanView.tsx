@@ -7,12 +7,28 @@ import { roles, RoleUtil } from "../../../auth/role.util";
 const TravelPlanView = () => {
   // getting id of open travel plan
   const { id } = useParams<{ id: string }>();
-  const access = RoleUtil.isEmplpoyee && !data?.assigned;
 
   // query hook
   const { data, error, isLoading } = useTravelPlan(id!);
-  console.log(data);
-  if (access) {
+
+  const access = RoleUtil.isEmplpoyee && !data?.assigned;
+
+  if (isLoading) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        Loading
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        No Data Found...
+      </div>
+    );
+  }
+
+  if (access ?? false) {
     return <Navigate to={"/unauthorized"} />;
   }
   return (

@@ -1,38 +1,38 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "../../ui/dialog";
 import ProofView from "../TravelExpenses/ProofView";
 import { useTravelDocumentById } from "../queries/travelDocuments.queries";
 
 const TravelDocumentView = () => {
-	const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(true);
 
-	const navigate = useNavigate();
-	const { id, documentId } = useParams<{ id: string; documentId: string }>();
+  const navigate = useNavigate();
+  const { id, documentId } = useParams<{ id: string; documentId: string }>();
 
-	const { data } = useTravelDocumentById(id, documentId);
+  const { data } = useTravelDocumentById(id, documentId);
 
-	console.log(data);
+  console.log(data);
 
-	const handleClose = () => {
-		navigate(`/travel/plans/${id}/documents`);
-	};
+  const handleClose = () => {
+    navigate(`/travel/plans/${id}/documents`);
+  };
 
-	return (
-		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent className="sm:max-w-1/2 sm:w-1/2 sm:max-h-10/12 sm:h-screen/50  flex flex-col overflow-hidden">
-				<DialogHeader>
-					<DialogTitle>Travel Document</DialogTitle>
-				</DialogHeader>
-				<ProofView filePath={data?.filePath} docType={"doc"} />
-			</DialogContent>
-		</Dialog>
-	);
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-1/2 sm:w-1/2 sm:max-h-10/12 sm:h-screen/50  flex flex-col overflow-hidden">
+        <DialogHeader>
+          <DialogTitle>Travel Document</DialogTitle>
+        </DialogHeader>
+        <ProofView filePath={data?.filePath} docType={"doc"} />
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export default TravelDocumentView;

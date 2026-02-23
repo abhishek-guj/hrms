@@ -1,14 +1,19 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
 import {
-	type EmployeeExpenseSchemaType,
-	type TravelPlanSchemaType,
+  useNavigate,
+  useOutlet,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
+import {
+  type EmployeeExpenseSchemaType,
+  type TravelPlanSchemaType,
 } from "../../../login/schema";
 import type { LoginFormType } from "../../loginForm.types";
 import {
-	useCreateTravelExpense,
-	useCreateTravelPlan,
-	useExpenseTypes,
+  useCreateTravelExpense,
+  useCreateTravelPlan,
+  useExpenseTypes,
 } from "../../queries/travelPlans.queries";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -21,110 +26,119 @@ import { DatePickerInput } from "../../../ui/date-picker";
 import { Button } from "../../../ui/button";
 
 const ExpenseCreateForm = () => {
-	// navigate
-	const navigate = useNavigate();
-	// navigate
+  // navigate
+  const navigate = useNavigate();
+  // navigate
 
-	const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
 
-	// query hooks
-	const createTravelExpense = useCreateTravelExpense();
-	// query hooks
+  // query hooks
+  const createTravelExpense = useCreateTravelExpense();
+  // query hooks
+  const { data, travel } = useOutletContext();
+  console.log(data, travel);
+  //
+  const { data: expenseData } = useExpenseTypes();
 
-	//
-	const { data: expenseData } = useExpenseTypes();
+  // react form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm<EmployeeExpenseSchemaType>({
+    mode: "onBlur",
+    defaultValues: { travelPlanId: id },
+  });
+  // react form
 
-	// react form
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		control,
-	} = useForm<EmployeeExpenseSchemaType>({
-		mode: "onBlur",
-		defaultValues: { travelPlanId: id },
-	});
-	// react form
+  // handlers
+  const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
+    console.log("before save expense", data);
+    const resData = await createTravelExpense.mutateAsync({ payload: data });
+    console.log("save expense", resData);
+  };
 
-	// handlers
-	const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
-		console.log("before save expense", data);
-		const resData = await createTravelExpense.mutateAsync({ payload: data });
-		console.log("save expense", resData);
-	};
-	// handlers
-	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<FieldGroup>
-				{/*  */}
-				<FieldSet className="grid grid-cols-2">
-					<Field>
-						<FieldLabel htmlFor="expenseTypeId">Expense Type</FieldLabel>
-						<Controller
-							name="expenseTypeId"
-							control={control}
-							render={({ field, fieldState }) => (
-								<FormSelect
-									data={expenseData}
-									name={"expenseTypeId"}
-									value={field.value}
-									onValueChange={field.onChange}
-								/>
-							)}
-						/>
-						{errors.expenseTypeId && (
-							<FieldError errors={[errors.expenseTypeId]} />
-						)}
-					</Field>
-					<Field>
-						<FieldLabel htmlFor="expenseAmount">Expense aaAmount</FieldLabel>
-						<Input
-							id="expenseAmount"
-							type="number"
-							placeholder="100..."
-							{...register("expenseAmount")}
-						/>
-						{errors.expenseAmount && (
-							<FieldError errors={[errors.expenseAmount]} />
-						)}
-					</Field>
-				</FieldSet>
-				<Separator />
+  if (travel && new Date(travel.lastDateOfExpenseSubmission) <= new Date()) {
+    return (
+      <div className="w-96 h-96 flex flex-col justify-center items-center">
+        Cant add after submission date
+      </div>
+    );
+  }
+  // handlers
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FieldGroup>
+        {/*  */}
+        <FieldSet className="grid grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="expenseTypeId">Expense Type</FieldLabel>
+            <Controller
+              name="expenseTypeId"
+              control={control}
+              render={({ field, fieldState }) => (
+                <FormSelect
+                  data={expenseData}
+                  name={"expenseTypeId"}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                />
+              )}
+            />
+            {errors.expenseTypeId && (
+              <FieldError errors={[errors.expenseTypeId]} />
+            )}
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="expenseAmount">Expense aaAmount</FieldLabel>
+            <Input
+              id="expenseAmount"
+              type="number"
+              placeholder="100..."
+              {...register("expenseAmount")}
+            />
+            {errors.expenseAmount && (
+              <FieldError errors={[errors.expenseAmount]} />
+            )}
+          </Field>
+        </FieldSet>
+        <Separator />
 
-				<FieldSet>
-					<Field>
-						<FieldLabel htmlFor="expenseDate">Expense Date</FieldLabel>
-						<DatePickerInput
-							id="expenseDate"
-							type="text"
-							placeholder="Expense Date"
-							control={control}
-							{...register("expenseDate")}
-						/>
-						{errors.expenseDate && <FieldError errors={[errors.expenseDate]} />}
-					</Field>
-				</FieldSet>
-				<Separator />
+        <FieldSet>
+          <Field>
+            <FieldLabel htmlFor="expenseDate">Expense Date</FieldLabel>
+            <DatePickerInput
+              id="expenseDate"
+              type="text"
+              placeholder="Expense Date"
+              control={control}
+              {...register("expenseDate")}
+            />
+            {errors.expenseDate && <FieldError errors={[errors.expenseDate]} />}
+          </Field>
+        </FieldSet>
+        <Separator />
 
-				{/* files */}
-				<FieldSet>
-					<Field>
-						<FieldLabel htmlFor="files">Expense Proof</FieldLabel>
-						<Input id="files" type="file" multiple {...register("files")} />
-						{errors.files && <FieldError errors={[errors.files]} />}
-					</Field>
-				</FieldSet>
+        {/* files */}
+        <FieldSet>
+          <Field>
+            <FieldLabel htmlFor="files">Expense Proof</FieldLabel>
+            <Input id="files" type="file" multiple {...register("files")} />
+            {errors.files && <FieldError errors={[errors.files]} />}
+          </Field>
+        </FieldSet>
 
-				<Separator />
+        <Separator />
 
-				<FieldSet className="grid grid-cols-1">
-					<Field>
-						<Button type="submit">Save</Button>
-					</Field>
-				</FieldSet>
-			</FieldGroup>
-		</form>
-	);
+        <FieldSet className="grid grid-cols-1">
+          <Field>
+            <Button type="submit">Save</Button>
+          </Field>
+        </FieldSet>
+      </FieldGroup>
+    </form>
+  );
 };
 
 export default ExpenseCreateForm;
