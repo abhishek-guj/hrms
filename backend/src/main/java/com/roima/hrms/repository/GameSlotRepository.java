@@ -19,8 +19,16 @@ public interface GameSlotRepository extends JpaRepository<GameSlot, Long> {
     @Query("select gs from GameSlot gs where gs.gameType.id = :gameTypeId and gs.slotEnd>:currentDateTime")
     List<GameSlot> findAllByGameTypeFromNow(Long gameTypeId, LocalDateTime currentDateTime);
 
+    // @Query("select gs from GameSlot gs where gs.gameType.id = :gameTypeId and
+    // gs.slotEnd>:currentDateTime")
+    // List<GameSlot> findAllByGameSlotAfterByEndTime(Long gameTypeId, LocalDateTime
+    // currentDateTime);
+
     GameSlot findBySlotStartAndGameType_Name(LocalDateTime slotStart, String gameTypeName);
 
     @Query("select gs from GameSlot gs where gs.gameType = :gameType and gs.slotStart>=:startDateTime order by gs.slotStart")
     List<GameSlot> findAllByGameSlotAfter(GameType gameType, LocalDateTime startDateTime);
+
+    @Query("select gs from GameSlot gs where gs.gameType = :gameType and gs.slotEnd>=:startDateTime order by gs.slotStart")
+    List<GameSlot> findAllByGameSlotAfterByEndTime(GameType gameType, LocalDateTime startDateTime);
 }

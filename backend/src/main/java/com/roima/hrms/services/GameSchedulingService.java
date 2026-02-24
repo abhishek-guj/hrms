@@ -140,6 +140,9 @@ public class GameSchedulingService {
         List<GameOperationHour> deleteHrs = gameOperationHourRepository.findAllByGameType(gameType);
         deleteHrs.forEach(gameOperationHourRepository::delete);
 
+        List<GameSlot> gameSlots = gameSlotRepository.findAllByGameSlotAfterByEndTime(gameType, LocalDateTime.now());
+        gameSlots.forEach(gameSlotRepository::delete);
+
         GameOperationHour newHrs = GameOperationHour.builder()
                 .gameType(gameType)
                 .startTime(LocalTime.parse(gameReqDto.getStartTime()))
@@ -153,41 +156,11 @@ public class GameSchedulingService {
     }
 
     @Transactional
-    public void deleteGame(Long gameId, GameReqDto gameReqDto) {
+    public void deleteGame(Long gameId) {
 
         GameType gameType = gameTypeRepository.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
-        gameType.setName(gameReqDto.getGameTypeName());
-        gameType.setMaxSlotDurationMinutes(gameReqDto.getMaxSlotDurationMinutes());
-
-        // delete already there
-        Set<GameSlotSize> deleteSlotSizes = gameSlotSizeRepository.findAllByGameTypeOrderBySlotSize(gameType);
-        deleteSlotSizes.forEach(gameSlotSizeRepository::delete);
-
-        // creating new ones
-        List<GameSlotSize> gameSlotSizes = gameReqDto.getSlotSizes().stream().map(slotSize -> {
-            GameSlotSize newSlotSize = GameSlotSize.builder()
-                    .slotSize(
-                            slotSize.intValue())
-                    .gameType(gameType)
-                    .build();
-            gameSlotSizeRepository.save(newSlotSize);
-            return newSlotSize;
-        }).toList();
-
-        // deleting old hours
-        List<GameOperationHour> deleteHrs = gameOperationHourRepository.findAllByGameType(gameType);
-        deleteHrs.forEach(gameOperationHourRepository::delete);
-
-        GameOperationHour newHrs = GameOperationHour.builder()
-                .gameType(gameType)
-                .startTime(LocalTime.parse(gameReqDto.getStartTime()))
-                .endTime(LocalTime.parse(gameReqDto.getEndTime()))
-                .build();
-
-        gameOperationHourRepository.save(newHrs);
-
-        gameTypeRepository.save(gameType);
+        gameTypeRepository.delete(gameType);
 
     }
 
