@@ -69,20 +69,18 @@ public class GameScheduler {
         }
 
         // create slots from now upto the last slot + 1 less then 24
-        long slotBufferSizeInHours = 24L;
+        int slotBufferSize = 24;
         int intervalMinuts = gameType.getMaxSlotDurationMinutes();
 
         // Operational hours
         List<GameOperationHour> opHrs = gameOperationHourRepository.findAllByGameType(gameType);
 
-        // LocalDateTime currentTime = lastSlot != null
-        // ?
-        // lastSlot.getSlotEnd().minusMinutes(Long.valueOf(gameType.getMaxSlotDurationMinutes()))
-        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime currentTime = lastSlot != null
+                ? lastSlot.getSlotEnd().minusMinutes(Long.valueOf(gameType.getMaxSlotDurationMinutes()))
+                : LocalDateTime.now();
 
-        var currentNewSlotTime = roundUpToNextInterval(LocalDateTime.now().plusHours(
-                slotBufferSizeInHours), intervalMinuts);
-        var interval = ChronoUnit.MINUTES.between(currentNewSlotTime, LocalDateTime.now());
+        var currentNewSlotTime = roundUpToNextInterval(LocalDateTime.now().plusHours(24L), intervalMinuts);
+        var interval = ChronoUnit.MINUTES.between(currentNewSlotTime, currentTime);
 
         var totalSlots = (interval / gameType.getMaxSlotDurationMinutes());
         // var remainBuffer = Math.abs(totalSlots % slotBufferSize);
@@ -111,10 +109,9 @@ public class GameScheduler {
                 var opEndDateTime = LocalDateTime.of(time.toLocalDate(), opHr.getEndTime());
                 boolean afterTime = time.isAfter(opEndDateTime.minusMinutes(Long.valueOf(intervalMinuts)));
                 boolean beforeTime = time.isBefore(opStartDateTime);
-                return time.isAfter(opEndDateTime)
+                return time.isAfter(opEndDateTime.minusMinutes(Long.valueOf(intervalMinuts)))
                         || time.isBefore(opStartDateTime);
 
-                // return time.isAfter(opEndDateTime.minusMinutes(Long.valueOf(intervalMinuts)))
                 // var opStartDateTime = LocalDateTime.of(time.toLocalDate(),
                 // opHr.getStartTime());
                 // var opEndDateTime = LocalDateTime.of(time.toLocalDate(), opHr.getEndTime());

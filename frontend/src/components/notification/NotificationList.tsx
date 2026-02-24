@@ -42,9 +42,11 @@ const NotificationList = () => {
       <DialogTrigger className="w-full flex justify-start h-full  ">
         <div className="flex justify-between gap-10 items-center">
           <div>Notifications</div>
-          <Badge className="bg-red-500 text-white h-4 w-4 rounded-full">
-            {data?.length}
-          </Badge>
+          {data && data.length > 0 && (
+            <Badge className="bg-red-500 text-white h-4 w-4 rounded-full">
+              {data?.length}
+            </Badge>
+          )}
         </div>
       </DialogTrigger>
       <DialogContent className="w-fit min-w-96 max-w-4/5">

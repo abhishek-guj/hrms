@@ -1,6 +1,5 @@
 package com.roima.hrms.controller.job;
 
-
 import com.roima.hrms.dtos.req.*;
 import com.roima.hrms.dtos.res.JobDto;
 import com.roima.hrms.dtos.res.JobReferralDto;
@@ -34,15 +33,16 @@ public class JobController {
     @GetMapping
     public ResponseEntity<ApiResponse> getAllJobs() {
         List<JobDto> jobDtoList = jobService.getAllJobs();
-        ApiResponse<List<JobDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Jobs successfully", jobDtoList, null);
+        ApiResponse<List<JobDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                "Fetched all Jobs successfully", jobDtoList, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
-
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> createJob(@ModelAttribute JobRequestDto dto) {
         JobDto jobDto = jobService.createJob(dto);
-        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Job.", jobDto, null);
+        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Job.",
+                jobDto, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
@@ -50,25 +50,29 @@ public class JobController {
     @GetMapping("{jobId}")
     public ResponseEntity<ApiResponse> getJobsById(@PathVariable Long jobId) {
         JobDto jobDto = jobService.getById(jobId);
-        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Jobs successfully", jobDto, null);
+        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                "Fetched all Jobs successfully", jobDto, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     //
-//    @PutMapping("{jobId}")
-//    public ResponseEntity<ApiResponse> updateJob(@PathVariable Long id, @RequestBody JobRequestDto dto) {
-//        JobDto job = jobService.updateJob(id, dto);
-//        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully updated Job", job, null);
-//        return ResponseEntity.status(HttpStatus.OK).body(res);
-//    }
-//
+    // @PutMapping("{jobId}")
+    // public ResponseEntity<ApiResponse> updateJob(@PathVariable Long id,
+    // @RequestBody JobRequestDto dto) {
+    // JobDto job = jobService.updateJob(id, dto);
+    // ApiResponse<JobDto> res =
+    // ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully updated
+    // Job", job, null);
+    // return ResponseEntity.status(HttpStatus.OK).body(res);
+    // }
+    //
     @DeleteMapping("{jobId}")
     public ResponseEntity<ApiResponse> deleteJob(@PathVariable Long jobId) {
         jobService.deleteJob(jobId);
-        ApiResponse<Void> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully deleted Job", null, null);
+        ApiResponse<Void> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully deleted Job", null,
+                null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
-
 
     // -----------------------------------------------------------
     // OPERATIONS ON TRAVEL EXPENSES [NO REFERNCE TO TRAVELPLAN]
@@ -77,28 +81,34 @@ public class JobController {
     @PostMapping("{jobId}/share")
     public ResponseEntity<ApiResponse> shareJobById(@PathVariable Long jobId, @RequestBody EmailShareReqDto email) {
         jobService.shareById(jobId, List.of(email));
-        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Shared Job successfully", null, null);
+        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Shared Job successfully",
+                null, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @PostMapping(value = "{jobId}/refer", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse> referJobById(@PathVariable Long jobId, @ModelAttribute JobReferralReqDto jobReferralReqDto) {
-        boolean createReferral = jobService.referById(jobId,jobReferralReqDto);
-        ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Referred successfully", createReferral, null);
+    public ResponseEntity<ApiResponse> referJobById(@PathVariable Long jobId,
+            @ModelAttribute JobReferralReqDto jobReferralReqDto) {
+        boolean createReferral = jobService.referById(jobId, jobReferralReqDto);
+        ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Referred successfully",
+                createReferral, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("referrals")
     public ResponseEntity<ApiResponse> getAllRefers() {
         List<JobReferralDto> jobDtoList = jobService.getReferrals();
-        ApiResponse<List<JobReferralDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Fetched all Referrals successfully", jobDtoList, null);
+        ApiResponse<List<JobReferralDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                "Fetched all Referrals successfully", jobDtoList, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @PutMapping("referrals/{referralId}")
-    public ResponseEntity<ApiResponse> updateReferralStatus(@PathVariable Long referralId, @RequestBody ReferralStatusDto status) {
-        jobService.updateReferralStatus(referralId,status);
-        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Shared Job successfully", null, null);
+    public ResponseEntity<ApiResponse> updateReferralStatus(@PathVariable Long referralId,
+            @RequestBody ReferralStatusDto status) {
+        jobService.updateReferralStatus(referralId, status);
+        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Shared Job successfully",
+                null, null);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 }
