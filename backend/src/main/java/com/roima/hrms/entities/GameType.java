@@ -7,6 +7,9 @@ import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -45,5 +48,14 @@ public class GameType {
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
+
+    @OneToMany(mappedBy = "gameType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<GameOperationHour> gameOperationHours = new HashSet<>();
+
+    @OneToMany(mappedBy = "gameType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<GameSlot> gameSlots;
+
+    @OneToMany(mappedBy = "gameType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<GameSlotSize> gameSlotSize;
 
 }

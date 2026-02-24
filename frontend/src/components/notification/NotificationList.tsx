@@ -47,9 +47,9 @@ const NotificationList = () => {
           </Badge>
         </div>
       </DialogTrigger>
-      <DialogContent className="w-fit max-w-4/5">
+      <DialogContent className="w-fit min-w-96 max-w-4/5">
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>All unread Notifications.</DialogTitle>
           <DialogDescription>
             <NotficationBox notifications={data} />
           </DialogDescription>

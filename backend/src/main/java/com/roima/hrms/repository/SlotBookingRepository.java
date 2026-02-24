@@ -56,8 +56,11 @@ public interface SlotBookingRepository extends JpaRepository<SlotBooking, Long> 
         @Query("select sb from SlotBooking sb where sb.gameSlot = :gameSlot and (sb.status = 'Requested' or sb.status = 'Waiting') ")
         List<SlotBooking> findAllByGameSlot(GameSlot gameSlot);
 
-        @Query("select sb from SlotBooking sb where sb.gameSlot = :gameSlot and (sb.status = 'Requested' or sb.status = 'Waiting') ")
+        @Query("select sb from SlotBooking sb where sb.gameSlot = :gameSlot and (sb.status = 'Requested') ")
         Optional<SlotBooking> findByGameSlot(GameSlot gameSlot);
+
+        @Query("select sb from SlotBooking sb where sb.gameSlot=:gameSlot and (sb.status = 'Confirmed')")
+        Optional<SlotBooking> checkConfirmedSlot(GameSlot gameSlot);
 
         @Query("select sb from SlotBooking sb where sb.gameSlot = :gameSlot and (sb.status = 'Requested' or sb.status = 'Waiting' or sb.status = 'Confirmed') ")
         Optional<SlotBooking> findByGameSlotDelete(GameSlot gameSlot);

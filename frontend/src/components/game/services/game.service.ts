@@ -1,7 +1,7 @@
 import { api } from "../../../api/apiClient";
 import type { IApiResponse } from "../../../api/apiResponse.types";
 import { GAME_ENDPOINTS } from "../../../api/endpoints";
-import type { AllGameSlotsDto, GameReqDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
+import type { AllGameSlotsDto, GameDetailsDto, GameReqDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
 
 
 export const GameService = {
@@ -33,8 +33,22 @@ export const GameService = {
     },
 
     async createGame(dto: GameReqDto) {
-        const res = await api.post<IApiResponse<boolean>>(GAME_ENDPOINTS.createGame(), { dto });
+        const res = await api.post<IApiResponse<boolean>>(GAME_ENDPOINTS.createGame(), dto);
         return res.data.data;
-    }
+    },
+    async updateGame(gameId: string, dto: GameReqDto) {
+        const res = await api.put<IApiResponse<boolean>>(GAME_ENDPOINTS.updateGame(gameId), dto);
+        return res.data.data;
+    },
+
+    async deleteGame(gameId: string) {
+        const res = await api.delete<IApiResponse<boolean>>(GAME_ENDPOINTS.deleteGame(gameId));
+        return res.data.data;
+    },
+
+    async getGames() {
+        const res = await api.get<IApiResponse<GameDetailsDto[]>>(GAME_ENDPOINTS.getGames());
+        return res.data.data;
+    },
 
 }

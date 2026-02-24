@@ -191,6 +191,27 @@ export function FieldInput({
   displayName: string;
   errors: { message?: string } | undefined;
 }>) {
+  if (props.type === "time") {
+    return (
+      <Field>
+        <FieldLabel htmlFor={name}>{displayName}</FieldLabel>
+
+        <Input
+          type="time"
+          id={name}
+          step="60"
+          defaultValue="00:00"
+          required
+          pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          {...register(name)}
+          {...props}
+        />
+        {errors && <FieldError errors={[errors]} />}
+      </Field>
+    );
+  }
+
   return (
     <Field>
       <FieldLabel htmlFor={name}>{displayName}</FieldLabel>

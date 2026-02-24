@@ -74,9 +74,9 @@ export const useUpdateTravelPlan = () => {
 			showSuccess("travel plan updated successfully");
 
 		},
-		onError: () => {
-			showError("error travel plan updating");
-			console.log("error updaeting travel plan");
+		onError: (error) => {
+			showError(error?.message);
+			console.log("error updating travel plan",);
 		},
 	});
 };

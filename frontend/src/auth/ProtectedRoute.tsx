@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-function getAuthState() {
+export function getAuthState() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
   const employeeId = localStorage.getItem("employeeId");

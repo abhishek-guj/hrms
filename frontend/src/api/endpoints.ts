@@ -72,7 +72,10 @@ export const GAME_ENDPOINTS = {
 	getSlotDetails: (slotId: string) => `/games/slots/${slotId}`,
 	bookSlot: (slotId: string) => `games/slots/${slotId}`,
 	cancelBooking: (slotBookingId: string) => `/games/slots/bookings/${slotBookingId}`,
-	createGame: () => `/games/add`,
+	createGame: () => `/games`,
+	updateGame: (gameId: string) => `/games/${gameId}`,
+	deleteGame: (gameId: string) => `/games/${gameId}`,
+	getGames: () => `/games`,
 }
 
 export const ACHIEVEMENT_ENDPOINTS = {

@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
                                 errors.toString(),
                                 null,
                                 null);
-                return new ResponseEntity<>(apiError, HttpStatus.OK);
+                return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
                                 "IDENTIFIER not provided OR provided wrong!",
                                 null,
                                 null);
-                return new ResponseEntity<>(apiError, HttpStatus.OK);
+                return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         @ExceptionHandler(MaxUploadSizeExceededException.class)
@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
                                 "File to large!",
                                 null,
                                 null);
-                return new ResponseEntity<>(apiError, HttpStatus.OK);
+                return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         @ExceptionHandler(RuntimeException.class)

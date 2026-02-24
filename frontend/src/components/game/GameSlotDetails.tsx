@@ -49,7 +49,11 @@ const GameSlotDetails = ({
 
 export default GameSlotDetails;
 
-export function ViewField({ name, value }: Readonly<{ name: string; value: string }>) {
+export function ViewField({
+  name,
+  value,
+}: Readonly<{ name: string; value: string }>) {
+  console.log(value)
   return (
     <div className="flex flex-col gap-0.5">
       <div className="text-black/70 text-sm">{name}</div>

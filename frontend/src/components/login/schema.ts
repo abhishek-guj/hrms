@@ -69,8 +69,23 @@ export const TravelDocumentSchema = z.object({
 
 // used in referring job form
 
+
+export const GameCreateSchema = z.object({
+	gameTypeId: z.any(),
+	gameTypeName: z.string().min(2, "need to add name here"),
+	maxSlotDurationMinutes: z.coerce.number().min(5, { error: "minimium 5 minutes" }),
+	slotSizes: z.string()
+		.regex(/^\d+(?:\s*,\s*\d+)*$/, {
+			message: "Must be a comma-separated list of numbers",
+		}),
+	startTime: z.string(),
+	endTime: z.string(),
+})
+
+
 export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>;
 export type TravelPlanSchemaType = z.infer<typeof TravelPlanSchema>;
 export type EmployeeExpenseSchemaType = z.infer<typeof EmployeeExpenseSchema>;
 export type JobReferralSchemaType = z.infer<typeof JobReferralSchema>;
 export type TravelDocumentSchemaType = z.infer<typeof TravelDocumentSchema>;
+export type GameCreateSchemaType = z.infer<typeof GameCreateSchema>;

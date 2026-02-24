@@ -63,3 +63,12 @@ export interface GameReqDto {
     startTime: string;
     endTime: string;
 }
+export interface GameDetailsDto {
+    gameTypeId: string;
+    gameTypeName: string;
+    maxSlotDurationMinutes: number;
+    slotSizes: number[];
+    startTime: string;
+    endTime: string;
+
+}

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import { GameService } from "../services/game.service";
-import type { AllGameSlotsDto, GameReqDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
+import type { AllGameSlotsDto, GameDetailsDto, GameReqDto, SlotBookingDto, SlotDetailsDto } from "../types/game.types";
 import { showError, showSuccess } from "../../ui/toast";
 
 
@@ -81,11 +81,59 @@ export const useCreateGame = () => {
             queryClient.invalidateQueries({ queryKey: ["getAllTimeSlots"] })
             queryClient.invalidateQueries({ queryKey: ["getSlotDetails"] })
             queryClient.invalidateQueries({ queryKey: ["getMySlotBookings"] })
+            queryClient.invalidateQueries({ queryKey: ["getAllGames"] })
         },
         onError: (err, payload) => {
             console.log(`Error created game`, payload)
             showError(`Error creating game`)
-
         }
     })
+};
+export const useUpdateGame = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async ({ gameId, dto }: { gameId: string, dto: GameReqDto }) => {
+            console.log(gameId)
+            const response = await GameService.updateGame(gameId, dto);
+        },
+        onSuccess: (id) => {
+            showSuccess(`Succefully updated game`)
+            queryClient.invalidateQueries({ queryKey: ["getAllTimeSlots"] })
+            queryClient.invalidateQueries({ queryKey: ["getSlotDetails"] })
+            queryClient.invalidateQueries({ queryKey: ["getMySlotBookings"] })
+            queryClient.invalidateQueries({ queryKey: ["getAllGames"] })
+        },
+        onError: (err, payload) => {
+            console.log(`Error updating game`, payload)
+            showError(`Error updating game`)
+        }
+    })
+};
+export const useDeleteGame = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async ({ gameId }: { gameId: string }) => {
+            const response = await GameService.deleteGame(gameId);
+        },
+        onSuccess: (id) => {
+            showSuccess(`Succefully deleted game`)
+            queryClient.invalidateQueries({ queryKey: ["getAllTimeSlots"] })
+            queryClient.invalidateQueries({ queryKey: ["getSlotDetails"] })
+            queryClient.invalidateQueries({ queryKey: ["getMySlotBookings"] })
+            queryClient.invalidateQueries({ queryKey: ["getAllGames"] })
+        },
+        onError: (err, payload) => {
+            console.log(`Error deleting game`, payload)
+            showError(`Error deleting game`)
+        }
+    })
+};
+
+
+export const useGetGames = (): UseQueryResult<GameDetailsDto[]> => {
+    return useQuery({
+        queryKey: ["getAllGames"],
+        queryFn: (): Promise<GameDetailsDto[]> =>
+            GameService.getGames(),
+    });
 };

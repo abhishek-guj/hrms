@@ -13,6 +13,7 @@ const GameSlot = ({ slot }) => {
   const startDayName = format(slot.slotStart.toString(), "EEEE");
 
   const slotColor = getSlotColor(slot);
+  const confirmed = slot?.confirmed;
 
   // hoooks
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const GameSlot = ({ slot }) => {
       className={`w-fit p-3 h-fit flex flex-col gap-0 items-center rounded-2xl ${slotColor}`}
       //   className=
       onClick={handleOpenSlotBooking}
+      disabled={confirmed}
     >
       <div className="text-sm font-bold text-black/50 pt-4">{startDate}</div>
       <div className="text-base font-bold">{startDayName}</div>
@@ -43,6 +45,8 @@ const getSlotColor = (slot) => {
     return "bg-amber-100";
   } else if (slot.booked) {
     return "bg-red-100";
+  } else if (slot.confirmed) {
+    return "bg-white-100";
   } else {
     return "bg-neutral-100";
   }

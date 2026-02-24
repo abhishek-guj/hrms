@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,4 +30,9 @@ public class GameSlot {
     @Column(name = "slot_end")
     private LocalDateTime slotEnd;
 
+    @OneToMany(mappedBy = "slot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<GameQueue> gameQueues;
+
+    @OneToMany(mappedBy = "gameSlot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SlotBooking> slotBookings;
 }

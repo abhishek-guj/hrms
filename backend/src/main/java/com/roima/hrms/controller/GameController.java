@@ -85,7 +85,7 @@ public class GameController {
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
-        @PostMapping("add")
+        @PostMapping
         public ResponseEntity<ApiResponse> addGame(@Valid @RequestBody GameReqDto gameReqDto) {
                 gameSchedulingService.addGame(gameReqDto);
                 ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
@@ -93,7 +93,24 @@ public class GameController {
                 return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
-        @GetMapping("list")
+        @PutMapping("{gameId}")
+        public ResponseEntity<ApiResponse> updateGame(@PathVariable Long gameId,
+                        @Valid @RequestBody GameReqDto gameReqDto) {
+                gameSchedulingService.updateGame(gameId, gameReqDto);
+                ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                                "created game successfully", true, null);
+                return ResponseEntity.status(HttpStatus.OK).body(res);
+        }
+
+        @DeleteMapping("{gameId}")
+        public ResponseEntity<ApiResponse> deleteGame(@PathVariable Long gameId) {
+                gameSchedulingService.deleteGame(gameId);
+                ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
+                                "created game successfully", true, null);
+                return ResponseEntity.status(HttpStatus.OK).body(res);
+        }
+
+        @GetMapping
         public ResponseEntity<ApiResponse> getGameList() {
                 List<GameDetailsDto> dtos = gameSchedulingService.getGameList();
                 ApiResponse<List<GameDetailsDto>> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,

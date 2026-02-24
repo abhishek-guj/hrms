@@ -31,9 +31,25 @@ api.interceptors.response.use(
 			}
 		}
 		return response;
+
+
 	},
 	(error) => {
-		console.log("error in api interceptoprs", error);
-		return Promise.reject(error);
+		let message = "An error occurred."
+
+		if (error.response) {
+			const status = error.response.status;
+			const data = error.response.data;
+			message = data?.message || `Request failed with status ${status}`;
+		}
+		else if (error.request) {
+			message = 'No response from server. Please check your network.';
+		}
+		else {
+			message = error.message || 'Request setup error';
+		}
+		return Promise.reject({
+			message: message,
+		});
 	},
 );

@@ -17,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class GameReqDto {
+
     private Long gameTypeId;
 
     @NotEmpty

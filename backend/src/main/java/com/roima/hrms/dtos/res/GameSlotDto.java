@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GameSlotDto{
+public class GameSlotDto {
     private Long id;
     private Long gameTypeId;
     private String gameTypeName;
@@ -17,5 +17,5 @@ public class GameSlotDto{
     private LocalDateTime slotEnd;
     private boolean isBooked;
     private boolean isLowPriority;
+    private boolean isConfirmed;
 }
-

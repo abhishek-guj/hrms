@@ -113,14 +113,95 @@ public class GameSchedulingService {
 
     }
 
+    @Transactional
+    public void updateGame(Long gameId, GameReqDto gameReqDto) {
+
+        GameType gameType = gameTypeRepository.findById(gameId)
+                .orElseThrow(() -> new RuntimeException("Game not found"));
+        gameType.setName(gameReqDto.getGameTypeName());
+        gameType.setMaxSlotDurationMinutes(gameReqDto.getMaxSlotDurationMinutes());
+
+        // delete already there
+        Set<GameSlotSize> deleteSlotSizes = gameSlotSizeRepository.findAllByGameTypeOrderBySlotSize(gameType);
+        deleteSlotSizes.forEach(gameSlotSizeRepository::delete);
+
+        // creating new ones
+        List<GameSlotSize> gameSlotSizes = gameReqDto.getSlotSizes().stream().map(slotSize -> {
+            GameSlotSize newSlotSize = GameSlotSize.builder()
+                    .slotSize(
+                            slotSize.intValue())
+                    .gameType(gameType)
+                    .build();
+            gameSlotSizeRepository.save(newSlotSize);
+            return newSlotSize;
+        }).toList();
+
+        // deleting old hours
+        List<GameOperationHour> deleteHrs = gameOperationHourRepository.findAllByGameType(gameType);
+        deleteHrs.forEach(gameOperationHourRepository::delete);
+
+        GameOperationHour newHrs = GameOperationHour.builder()
+                .gameType(gameType)
+                .startTime(LocalTime.parse(gameReqDto.getStartTime()))
+                .endTime(LocalTime.parse(gameReqDto.getEndTime()))
+                .build();
+
+        gameOperationHourRepository.save(newHrs);
+
+        gameTypeRepository.save(gameType);
+
+    }
+
+    @Transactional
+    public void deleteGame(Long gameId, GameReqDto gameReqDto) {
+
+        GameType gameType = gameTypeRepository.findById(gameId)
+                .orElseThrow(() -> new RuntimeException("Game not found"));
+        gameType.setName(gameReqDto.getGameTypeName());
+        gameType.setMaxSlotDurationMinutes(gameReqDto.getMaxSlotDurationMinutes());
+
+        // delete already there
+        Set<GameSlotSize> deleteSlotSizes = gameSlotSizeRepository.findAllByGameTypeOrderBySlotSize(gameType);
+        deleteSlotSizes.forEach(gameSlotSizeRepository::delete);
+
+        // creating new ones
+        List<GameSlotSize> gameSlotSizes = gameReqDto.getSlotSizes().stream().map(slotSize -> {
+            GameSlotSize newSlotSize = GameSlotSize.builder()
+                    .slotSize(
+                            slotSize.intValue())
+                    .gameType(gameType)
+                    .build();
+            gameSlotSizeRepository.save(newSlotSize);
+            return newSlotSize;
+        }).toList();
+
+        // deleting old hours
+        List<GameOperationHour> deleteHrs = gameOperationHourRepository.findAllByGameType(gameType);
+        deleteHrs.forEach(gameOperationHourRepository::delete);
+
+        GameOperationHour newHrs = GameOperationHour.builder()
+                .gameType(gameType)
+                .startTime(LocalTime.parse(gameReqDto.getStartTime()))
+                .endTime(LocalTime.parse(gameReqDto.getEndTime()))
+                .build();
+
+        gameOperationHourRepository.save(newHrs);
+
+        gameTypeRepository.save(gameType);
+
+    }
+
     public List<GameDetailsDto> getGameList() {
         List<GameType> gameTypes = gameTypeRepository.findAllGameTypes();
 
         return gameTypes.stream()
                 .map(gameType -> {
 
-                    GameDetailsDto detailsDto = modelMapper.map(gameTypes, GameDetailsDto.class);
-
+                    GameDetailsDto detailsDto = GameDetailsDto.builder()
+                            .gameTypeId(gameType.getId())
+                            .gameTypeName(gameType.getName())
+                            .maxSlotDurationMinutes(gameType.getMaxSlotDurationMinutes())
+                            .build();
                     GameOperationHour opHrs = gameOperationHourRepository
                             .findAllByGameType(gameType).get(0);
 
@@ -128,7 +209,7 @@ public class GameSchedulingService {
                     detailsDto.setEndTime(opHrs.getEndTime().toString());
 
                     List<Integer> slotsizes = gameSlotSizeRepository.findAllByGameTypeOrderBySlotSize(gameType).stream()
-                            .map(t -> t.getSlotSize()).toList();
+                            .map(GameSlotSize::getSlotSize).toList();
                     detailsDto.setSlotSizes(slotsizes);
                     return detailsDto;
                 }).toList();
@@ -146,7 +227,17 @@ public class GameSchedulingService {
                     .map(gameSlot -> {
                         // making dto
                         GameSlotDto gameSlotDto = modelMapper.map(gameSlot, GameSlotDto.class);
+                        SlotBooking confirmedSlot = slotBookingRepository.checkConfirmedSlot(gameSlot).orElse(null);
                         SlotBooking slotsBooked = slotBookingRepository.findByGameSlot(gameSlot).orElse(null);
+
+                        // check confirmed
+                        if (confirmedSlot != null) {
+                            gameSlotDto.setConfirmed(true);
+                        } else {
+                            gameSlotDto.setConfirmed(false);
+                        }
+
+                        // check booking [req,wait]
                         if (slotsBooked != null) {
                             gameSlotDto.setBooked(true);
                             // getting priority less or high
@@ -387,7 +478,7 @@ public class GameSchedulingService {
             slotBookingRepository.save(newSlotBooking);
 
             try {
-                emailService.sendGameMail(slotBookingReqDto.getPlayerIds(), newSlotBooking);
+                // emailService.sendGameMail(slotBookingReqDto.getPlayerIds(), newSlotBooking);
                 notificationService.sendGameNotification(newSlotBooking);
             } catch (Exception ex) {
                 ex.printStackTrace();

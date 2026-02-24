@@ -1,139 +1,174 @@
-import React from "react";
+import { format } from "date-fns";
+import GameConfigForm from "../../components/game/forms/GameConfigForm";
+import { ViewField } from "../../components/game/GameSlotDetails";
 import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldSet,
-} from "../../components/ui/field";
-import { Input } from "../../components/ui/input";
-import { useCreateGame } from "../../components/game/queries/game.queries";
-import type { GameReqDto } from "../../components/game/types/game.types";
-import { useForm, type SubmitHandler } from "react-hook-form";
-import { Separator } from "../../components/ui/separator";
-import { FieldInput } from "../../components/game/forms/BookGameSlotForm";
+  useDeleteGame,
+  useGetGames,
+} from "../../components/game/queries/game.queries";
+import type { GameDetailsDto } from "../../components/game/types/game.types";
 import { Button } from "../../components/ui/button";
+import { Separator } from "../../components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog";
+import { Input } from "../../components/ui/input";
+import { Pencil, Plus, Trash } from "lucide-react";
 
 const GameConfigPage = () => {
   return (
     <div>
-      <GameAddForm />
+      <GamesList />
     </div>
   );
 };
 
 export default GameConfigPage;
 
-const GameAddForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<GameReqDto>({
-    mode: "onBlur",
-  });
+const GamesList = () => {
+  const { data, isLoading, error } = useGetGames();
 
-  const createGame = useCreateGame();
+  if (isLoading) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        Loading
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        No Data Found...
+      </div>
+    );
+  }
 
-  const onSubmit: SubmitHandler<GameReqDto> = async (data) => {
-    const resData = await createGame.mutateAsync({ dto: data });
-  };
+  console.log(data);
 
   return (
-    <div className="flex justify-center p-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-2 py-2 p-10 border"
-      >
-        <div className="w-96 flex flex-col gap-4 ">
-          <FieldGroup>
-            <div className="text-lg font-black">Add Game</div>
-          </FieldGroup>
-          <Separator />
-          <FieldGroup className="flex">
-            <FieldSet>
-              <FieldInput
-                displayName={"Game Name"}
-                name="gameTypeName"
-                errors={errors.gameTypeName}
-                type="text"
-                register={register}
-                placeholder="Ex. PS5"
-              />
-            </FieldSet>
-          </FieldGroup>
-          <Separator />
-          <FieldGroup className="flex flex-row w-full gap-4">
-            <FieldSet>
-              <FieldInput
-                displayName={"Slot Duration"}
-                name="maxSlotDurationMinutes"
-                errors={errors.maxSlotDurationMinutes}
-                register={register}
-                type="text"
-                placeholder="In Minutes: 10,20,30..."
-              />
-            </FieldSet>
-            <FieldSet>
-              <FieldInput
-                displayName={"Slot Sizes"}
-                name="slotSizes"
-                errors={errors.slotSizes}
-                register={register}
-                type="text"
-                placeholder="list of commas = 2,4,6"
-              />
-            </FieldSet>
-          </FieldGroup>
-          <Separator />
-          <FieldGroup className="flex flex-row gap-4">
-            <FieldSet>
-              <FieldInput
-                displayName={"Start Time"}
-                name="startTime"
-                errors={errors.startTime}
-                register={register}
-                type="text"
-                placeholder="list of commas = 2,4,6"
-              />
-            </FieldSet>
-            <FieldSet>
-              <FieldInput
-                displayName={"End Time"}
-                name="endTime"
-                errors={errors.endTime}
-                register={register}
-                type="text"
-                placeholder="list of commas = 2,4,6"
-              />
-            </FieldSet>
-          </FieldGroup>
-          <Separator />
-          <Field>
-            <Button>Create</Button>
-          </Field>
+    <div className="flex flex-col p-8 gap-4">
+      <div className="grid grid-cols-1 gap-8 p-4 sm:px-10 justify-center w-full">
+        <div className="flex flex-col gap-4 py-2 ">
+          <div className="flex justify-between">
+            <div className="text-xl font-bold">Games</div>
+            <AddGameForm />
+          </div>
+          {data?.map((game) => {
+            return <GameDetailCard key={game.gameTypeId} game={game} />;
+          })}
         </div>
-      </form>
+      </div>
     </div>
   );
 };
 
-// export function FieldInput({
-//   name,
-//   displayName,
-//   errors,
-//   ...props
-// }: Readonly<{
-//   register: UseFormRegister<any>;
-//   name: string;
-//   displayName: string;
-//   errors: { message?: string } | undefined;
-// }>) {
-//   return (
-//     <Field>
-//       <FieldLabel htmlFor={name}>{displayName}</FieldLabel>
-//       <Input id={name} {...props} />
-//       {errors && <FieldError errors={[errors]} />}
-//     </Field>
-//   );
-// }
+const GameDetailCard = ({ game }: { game: GameDetailsDto }) => {
+  console.log(game);
+  const slotSizes = game?.slotSizes?.join(", ");
+
+  return (
+    <div className="flex flex-col gap-4 border p-4">
+      <div className="flex justify-around gap-8 flex-wrap">
+        <ViewField name={"Game"} value={game?.gameTypeName} />
+        <ViewField
+          name={"Slot Duration"}
+          value={game?.maxSlotDurationMinutes}
+        />
+        <ViewField name={"Operational Hours Start"} value={game?.startTime} />
+        <ViewField name={"Operational Hours End"} value={game?.endTime} />
+        <ViewField name={"Slot Sizes"} value={slotSizes} />
+      </div>
+      <Separator />
+      <div className="flex gap-3 justify-end w-full">
+        <EditGameForm data={game} />
+        <DeleteGameForm data={game} />
+      </div>
+    </div>
+  );
+};
+
+const AddGameForm = () => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size="sm" className="flex items-center gap-1.5">
+          <Plus className="h-4 w-4" />
+          New
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-fit">
+        <DialogHeader>
+          <DialogTitle>Add Details</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
+
+        <GameConfigForm />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const EditGameForm = ({ data }: { data: GameDetailsDto }) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button
+          size="sm"
+          variant={"secondary"}
+          className="flex items-center gap-1.5"
+        >
+          <Pencil className="h-4 w-4" />
+          Edit
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-fit">
+        <DialogHeader>
+          <DialogTitle>Add Details</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
+
+        <GameConfigForm isEdit={true} gameData={data} />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const DeleteGameForm = ({ data }: { data: GameDetailsDto }) => {
+  const deleteGame = useDeleteGame();
+  const handleDelete = async () => {
+    await deleteGame.mutateAsync({ gameId: data?.gameTypeId });
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button
+          size="sm"
+          variant={"secondary"}
+          className="flex items-center gap-1.5"
+        >
+          <Trash className="h-4 w-4" />
+          Delete
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-fit">
+        <DialogHeader>
+          <DialogTitle>Delete Game</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete this game?
+            <br />
+            {data?.gameTypeName}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex w-full justify-end">
+          <Button onClick={handleDelete}>Delete</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
