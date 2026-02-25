@@ -1,6 +1,5 @@
 package com.roima.hrms.dtos.res;
 
-
 import com.roima.hrms.entities.EmployeeProfile;
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
@@ -13,6 +12,7 @@ import org.hibernate.annotations.Nationalized;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.time.LocalDateTime;
 
 @Getter
@@ -33,15 +33,16 @@ public class JobDto {
     private String status; // active or close
     private LocalDateTime statusChangedOn;
     private JobJdFileDto jobJdFile;
+    private List<String> hrIds;
+    private List<String> cvReviewerIds;
 }
-
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-class JobJdFileDto{
+class JobJdFileDto {
     private Long id;
     private String filePath;
     private LocalDateTime uploadedOn;

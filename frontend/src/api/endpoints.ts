@@ -56,6 +56,8 @@ export const ORGCHART_ENDPOINTS = {
 
 export const JOB_ENDPOINTS = {
 	getAll: () => "/jobs",
+	create: () => `/jobs`,
+	update: (id: string) => `/jobs/${id}`,
 	getById: (id: string) => `/jobs/${id}`,
 	delete: (id: string) => `/jobs/${id}`,
 	share: (id: string) => `jobs/${id}/share`,
@@ -95,4 +97,9 @@ export const ACHIEVEMENT_ENDPOINTS = {
 
 export const NOTIFICATION_ENDPOINTS = {
 	getAll: () => '/notifications'
+}
+
+
+export const EMPLOYEES = {
+	getAll: () => `/employees`
 }

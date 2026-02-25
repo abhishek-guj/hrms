@@ -16,14 +16,10 @@ import DataTableFooter from "../travelPlans/TravelplanDashboard/Shared/DataTable
 import DataTableHeader from "../travelPlans/TravelplanDashboard/Shared/DataTableHeader";
 import DataTableOptions from "../travelPlans/TravelplanDashboard/Shared/DataTableOptions";
 
-import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
+import { RoleUtil } from "../../auth/role.util";
 import { JobsTableColumns } from "./JobsTableStructure";
 import { useJobsAll } from "./queries/job.queries";
-import JobCreateForm from "./forms/JobCreateForm";
-import { RoleUtil } from "../../auth/role.util";
-import JobCreate from "./forms/JobCreateForm";
+import JobCreate from "./JobCreate";
 
 const JobsViewTable = () => {
   // states

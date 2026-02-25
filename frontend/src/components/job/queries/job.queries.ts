@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
-import type { JobDto, JobReferralDto, JobReferralReqDto } from "../types/job.types";
+import type { JobDto, JobReferralDto, JobReferralReqDto, JobRequestDto } from "../types/job.types";
 import { JobService } from "../service/job.service";
 import { showError, showSuccess } from "../../ui/toast";
 
@@ -42,6 +42,46 @@ export const useDeleteJob = () => {
         onError: (err, payload) => {
             console.log(`Error deleting ${payload.id} Job`, payload)
             showError(`Error deleting Job id: ${payload?.id} `)
+
+        }
+    })
+};
+
+export const useCreateJob = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ dto }: { dto: JobRequestDto }) => {
+            const response = await JobService.createJob(dto);
+            return response;
+        },
+        onSuccess: (id) => {
+            queryClient.invalidateQueries({ queryKey: ["getAllJobs"] })
+            queryClient.invalidateQueries({ queryKey: ["getAllJobs", id] })
+            showSuccess(`Successfully created job`)
+        },
+        onError: (err, payload) => {
+            console.log(`Error creating`, payload)
+            showError(`Error creating Job`)
+
+        }
+    })
+};
+
+export const useUpdateJob = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, dto }: { id: string, dto: JobRequestDto }) => {
+            const response = await JobService.updateJob(id,dto);
+            return response;
+        },
+        onSuccess: (id) => {
+            queryClient.invalidateQueries({ queryKey: ["getAllJobs"] })
+            queryClient.invalidateQueries({ queryKey: ["getAllJobs", id] })
+            showSuccess(`Successfully updated job`)
+        },
+        onError: (err, payload) => {
+            console.log(`Error updating`, payload)
+            showError(`Error updating Job`)
 
         }
     })

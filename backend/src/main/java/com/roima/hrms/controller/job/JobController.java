@@ -56,15 +56,14 @@ public class JobController {
     }
 
     //
-    // @PutMapping("{jobId}")
-    // public ResponseEntity<ApiResponse> updateJob(@PathVariable Long id,
-    // @RequestBody JobRequestDto dto) {
-    // JobDto job = jobService.updateJob(id, dto);
-    // ApiResponse<JobDto> res =
-    // ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully updated
-    // Job", job, null);
-    // return ResponseEntity.status(HttpStatus.OK).body(res);
-    // }
+    @PutMapping(value = "{jobId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> updateJob(@PathVariable Long jobId, @ModelAttribute JobRequestDto dto) {
+        JobDto job = jobService.updateJob(jobId, dto);
+        ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully updated Job",
+                job, null);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
     //
     @DeleteMapping("{jobId}")
     public ResponseEntity<ApiResponse> deleteJob(@PathVariable Long jobId) {

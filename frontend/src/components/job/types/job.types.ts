@@ -11,6 +11,8 @@ export interface JobDto {
     status: string; // active or close
     statusChangedOn: string;
     jobJdFile: JobJdFileDto;
+    hrIds: string[];
+    cvReviewerIds: string[];
 }
 
 
@@ -63,9 +65,9 @@ export interface JobReferralDto {
 export interface JobRequestDto {
     jobTitle: string,
     jobDetails: string,
-    experienceYears: number,
-    numberOfVaccancy: number,
+    experienceYears: string,
+    numberOfVaccancy: string,
     hrIds: string[],
     cvReviewerIds: string[],
-    jobJdFile: File,
+    jobJdFile: FileList,
 }

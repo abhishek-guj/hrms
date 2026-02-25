@@ -1,9 +1,10 @@
 import { IconShare3 } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Eye, Pencil, PlusIcon, Trash, Trash2 } from "lucide-react";
+import { Eye, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import DataTableBadge from "../travelPlans/TravelplanDashboard/Shared/DataTableBadge";
 import { Button } from "../ui/button";
+import { JobDelete, JobUpdate } from "./JobCreate";
 import type { JobDto } from "./types/job.types";
 
 export const DEFAULT_STATUS = {
@@ -111,28 +112,21 @@ export const JobsTableColumns: ColumnDef<JobDto>[] = [
   },
 
   {
+    accessorFn: (row) => {
+      return { id: row.id, title: row.jobTitle };
+    },
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
-    cell: ({ row }) => (
-      <div className="text-right space-x-1">
+    cell: ({ row, getValue }) => (
+      <div className="text-right space-x-1 w-full flex justify-center gap-2">
         <Button asChild variant={"outline"}>
           <Link to={`${row.getValue("id")}`} className="border">
             <Eye className="h-4 w-4" />
             <span className="hidden lg:block">View</span>
           </Link>
         </Button>
-        <Button asChild variant={"outline"}>
-          <Link to={`${row.getValue("id")}/refer`} className="border">
-            <Pencil className="h-4 w-4" />
-            <span className="hidden lg:block">Edit</span>
-          </Link>
-        </Button>
-        <Button asChild variant={"outline"}>
-          <Link to={`${row.getValue("id")}/share`} className="border">
-            <Trash2 className="h-4 w-4" />
-            <span className="hidden lg:block">Delete</span>
-          </Link>
-        </Button>
+        <JobUpdate jobId={getValue()} />
+        <JobDelete jobId={getValue()} />
       </div>
     ),
   },

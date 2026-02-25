@@ -35,5 +35,4 @@ public class JobJdFile {
     @JoinColumn(name = "uploaded_by")
     private EmployeeProfile uploadedBy;
 
-
 }

@@ -7,11 +7,20 @@ import EmployeeSelect from "../../travelPlans/TravelExpenses/forms/EmployeeSelec
 import { Button } from "../../ui/button";
 import { Field, FieldError, FieldLabel, FieldSet } from "../../ui/field";
 import { Input } from "../../ui/input";
-import { useCreateJob } from "../queries/job.queries";
+import {
+  useCreateJob,
+  useJobsById,
+  useUpdateJob,
+} from "../queries/job.queries";
 
-export const JobCreateForm = () => {
-  const [selectedHr, setSelectedHr] = useState([]);
-  const [selectedCV, setSelectedCV] = useState([]);
+export const JobUpdateForm = ({ jobId, data }) => {
+  console.log(data);
+
+  const [selectedHr, setSelectedHr] = useState(data?.hrIds ?? []);
+  const [selectedCV, setSelectedCV] = useState(data?.cvReviewerIds ?? []);
+
+  const newData = { ...data };
+
   // react form
   const {
     register,
@@ -22,19 +31,22 @@ export const JobCreateForm = () => {
     watch,
   } = useForm<JobCreateSchemaType>({
     mode: "all",
-    defaultValues: { hrIds: [] },
+    defaultValues: { ...newData },
     resolver: zodResolver(JobCreateSchema),
   });
   // react form
 
+  // putting data after fetching
+  useEffect(() => {
+    reset({ ...newData });
+  }, []);
+
   //
-  const createJob = useCreateJob();
+  const updateJob = useUpdateJob();
 
   const onSubmit: SubmitHandler<JobCreateSchemaType> = async (data) => {
-    await createJob.mutateAsync({ dto: data });
-    reset();
-    setSelectedCV([]);
-    setSelectedHr([]);
+    console.log("submit", data);
+    await updateJob.mutateAsync({ id: jobId, dto: data });
   };
 
   // watch
@@ -111,6 +123,7 @@ export const JobCreateForm = () => {
             />
           )}
         />
+        {console.log(errors)}
       </FieldSet>
       <FieldSet>
         <Field>
@@ -123,3 +136,5 @@ export const JobCreateForm = () => {
     </form>
   );
 };
+
+export default JobUpdateForm;

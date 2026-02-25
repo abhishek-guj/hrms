@@ -1,4 +1,4 @@
-import type { JobReferralDto, JobReferralReqDto } from './../types/job.types';
+import type { JobReferralDto, JobReferralReqDto, JobRequestDto } from './../types/job.types';
 import { api } from "../../../api/apiClient";
 import type { IApiResponse } from "../../../api/apiResponse.types";
 import { JOB_ENDPOINTS } from "../../../api/endpoints";
@@ -48,5 +48,28 @@ export const JobService = {
         );
         return res.data.data;
     },
+
+    async createJob(dto: JobRequestDto) {
+        const res = await api.post(JOB_ENDPOINTS.create(),
+            dto,
+            {
+                headers: {
+                    "content-type": "multipart/form-data",
+                },
+            },)
+        return res.data.data;
+    },
+
+
+    async updateJob(id: string, dto: JobRequestDto) {
+        const res = await api.put(JOB_ENDPOINTS.update(id),
+            dto,
+            {
+                headers: {
+                    "content-type": "multipart/form-data",
+                },
+            },)
+        return res.data.data;
+    }
 
 }

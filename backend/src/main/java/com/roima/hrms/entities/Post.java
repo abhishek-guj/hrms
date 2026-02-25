@@ -45,7 +45,7 @@ public class Post {
     @Column(name = "media_type", nullable = false)
     private Long mediaType;
 
-    @Column(name = "is_system_generated", nullable = false)
+    @Column(name = "is_system_generated")
     private Boolean isSystemGenerated;
 
     @ColumnDefault("false")

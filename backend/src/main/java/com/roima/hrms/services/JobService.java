@@ -24,9 +24,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class JobService {
+
+    private final JobHrRepository jobHrRepository;
     private final JobRepository jobRepository;
     private final RoleUtil roleUtil;
     private final TravelPlanRepository travelPlanRepository;
@@ -37,14 +42,18 @@ public class JobService {
     private final EmailService emailService;
     private final JobShareRepository jobShareRepository;
     private final JobReferralRepository jobReferralRepository;
+    private final JobCvReviewerRepository jobCvReviewerRepository;
     private final NotificationService notificationService;
     private final ModelMapper modelMapper;
+    private final JobJdFileRepository jobJdFileRepository;
 
     public JobService(JobRepository jobRepository, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository,
             EmployeeProfileRepository employeeProfileRepository, FileService fileService,
             ExpenseDocumentRepository expenseDocumentRepository, JobMapper jobMapper, EmailService emailService,
             JobShareRepository jobShareRepository, JobReferralRepository jobReferralRepository,
-            NotificationService notificationService, ModelMapper modelMapper) {
+            NotificationService notificationService, ModelMapper modelMapper, JobHrRepository jobHrRepository,
+            JobCvReviewerRepository jobCvReviewerRepository,
+            JobJdFileRepository jobJdFileRepository) {
         this.jobRepository = jobRepository;
         this.roleUtil = roleUtil;
         this.travelPlanRepository = travelPlanRepository;
@@ -57,13 +66,28 @@ public class JobService {
         this.jobReferralRepository = jobReferralRepository;
         this.notificationService = notificationService;
         this.modelMapper = modelMapper;
+        this.jobHrRepository = jobHrRepository;
+        this.jobCvReviewerRepository = jobCvReviewerRepository;
+        this.jobJdFileRepository = jobJdFileRepository;
     }
 
     public List<JobDto> getAllJobs() {
         // if admin or hr then show all expenses
         List<Job> jobs = jobRepository.findAll();
 
-        return jobMapper.toJobDtoList(jobs);
+        List<JobDto> dtos = jobMapper.toJobDtoList(jobs);
+
+        dtos.forEach(dto -> {
+            Job j = jobRepository.findById(dto.getId()).orElse(null);
+            List<String> hrs = jobHrRepository.findAllByJob(j).stream().map(hr -> hr.getHr().getId().toString())
+                    .toList();
+            List<String> reviewers = jobCvReviewerRepository.findAllByJob(j).stream()
+                    .map(rev -> rev.getReviewer().getId().toString()).toList();
+            dto.setHrIds(hrs);
+            dto.setCvReviewerIds(reviewers);
+        });
+
+        return dtos;
     }
 
     public JobDto getById(Long id) {
@@ -76,13 +100,29 @@ public class JobService {
         // // for normal public
         // JobDto jobDto = jobMapper.toJobDto(job);
         // }
-        return jobMapper.toJobDto(job);
+        List<String> hrs = jobHrRepository.findAllByJob(
+                job).stream().map(hr -> hr.getHr().getId().toString())
+                .toList();
+        List<String> reviewers = jobCvReviewerRepository.findAllByJob(
+                job).stream()
+                .map(rev -> rev.getReviewer().getId().toString()).toList();
+
+        JobDto dto = jobMapper.toJobDto(job);
+
+        dto.setHrIds(hrs);
+        dto.setCvReviewerIds(reviewers);
+
+        return dto;
     }
 
     @Transactional
     public JobDto createJob(JobRequestDto dto) {
 
         EmployeeProfile submittedBy = roleUtil.getCurrentEmployee();
+
+        EmployeeProfile defaultHr = employeeProfileRepository.getEmployeeProfileByUser_Email("hr1@exp.com");
+
+        dto.getHrIds().add(defaultHr.getId());
 
         // check if files not null
         if (dto.getJobJdFile() == null || dto.getJobJdFile().isEmpty()) {
@@ -99,6 +139,9 @@ public class JobService {
         JobJdFile jdFile = JobJdFile.builder().job(job).filePath(filePath).build();
 
         job.setJobJdFile(jdFile);
+        job.setCreatedOn(LocalDateTime.now());
+        job.setCreatedBy(roleUtil.getCurrentEmployee());
+        job.setIsDeleted(false);
 
         // saving
         jobRepository.save(job);
@@ -107,11 +150,63 @@ public class JobService {
         return jobMapper.toJobDto(job);
     }
 
+    @Transactional
+    public JobDto updateJob(Long jobId, JobRequestDto dto) {
+
+        if (!roleUtil.isAdmin() && !roleUtil.isHr()) {
+            throw new UnauthorizedException("You cant update this.");
+        }
+
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
+
+        // check if files not null
+        if (dto.getJobJdFile() == null || dto.getJobJdFile().isEmpty()) {
+            throw new RuntimeException("Please upload at least 1 document");
+        }
+
+        fileService.validateFile(dto.getJobJdFile());
+
+        String filePath = fileService.store(dto.getJobJdFile(), "job");
+
+        // converting to entity
+        job.setJobTitle(dto.getJobTitle());
+        job.setJobDetails(dto.getJobDetails());
+        job.setExperienceYears(dto.getExperienceYears());
+        job.setNumberOfVaccancy(dto.getNumberOfVaccancy());
+
+        job.getJobCvReviewers().clear();
+        job.getJobHrs().clear();
+
+        Set<JobHr> newHrs = dto.getHrIds().stream().map(
+                hr -> {
+                    return JobHr.builder().job(job)
+                            .hr(employeeProfileRepository.findById(Long.valueOf(hr)).orElse(null)).build();
+                }).collect(Collectors.toSet());
+
+        Set<JobCvReviewer> newRevs = dto.getCvReviewerIds().stream().map(
+                rev -> {
+                    return JobCvReviewer.builder().job(job)
+                            .reviewer(employeeProfileRepository.findById(Long.valueOf(rev)).orElse(null)).build();
+                }).collect(Collectors.toSet());
+
+        job.getJobCvReviewers().addAll(newRevs);
+        job.getJobHrs().addAll(newHrs);
+
+        // saving
+        jobRepository.save(job);
+
+        return jobMapper.toJobDto(job);
+    }
+
     //
+    @Transactional
     public void deleteJob(Long id) {
         Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job Not Found!"));
         if (roleUtil.isAdmin() || roleUtil.isHr()) {
-            jobRepository.delete(job);
+            job.setIsDeleted(true);
+            job.setDeletedBy(roleUtil.getCurrentEmployee());
+
+            jobRepository.save(job);
         } else {
             throw new UnauthorizedException("You are not allowed to delete this.");
         }

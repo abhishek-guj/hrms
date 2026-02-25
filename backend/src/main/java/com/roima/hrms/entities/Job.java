@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import org.hibernate.annotations.Mutability;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
@@ -69,7 +71,6 @@ public class Job {
     @Column(name = "status_changed_on")
     private LocalDateTime statusChangedOn;
 
-
     // mapppings
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<JobHr> jobHrs = new HashSet<>();
@@ -81,11 +82,10 @@ public class Job {
     private Set<JobReferral> jobReferrals = new HashSet<>();
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    private  Set<JobCvReviewer> jobCvReviewers = new HashSet<>();
+    private Set<JobCvReviewer> jobCvReviewers = new HashSet<>();
 
-
-    public void addJdFile(JobJdFile file){
-
+    public void addJdFile(JobJdFile file) {
         file.setJob(this);
     }
+
 }

@@ -12,5 +12,4 @@ public interface JobReferralRepository extends JpaRepository<JobReferral, Long> 
 
     @Query("select jr from JobReferral jr where jr.referredBy.id = :employeeId order by jr.referredOn desc")
     List<JobReferral> getJobReferrals(Long employeeId);
-
 }

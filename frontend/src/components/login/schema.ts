@@ -118,8 +118,8 @@ export const JobCreateSchema = z.object({
 		.refine((num) => Number(num) <= 60, { message: "Experience cant be above 60" }),
 	numberOfVaccancy: z.string().regex(/^-?\d+(\.\d+)?$/, "Must be a valid number")
 		.refine((num) => !isNaN(Number(num)), { message: "Invalid number" }),
-	hrIds: z.array(z.string()),
-	cvReviewerIds: z.array(z.string()),
+	hrIds: z.array(z.string()).min(1, { error: "At least 1 hr needed" }),
+	cvReviewerIds: z.array(z.string()).min(1, { error: "At least 1 reviewer needed" }),
 	jobJdFile: z.instanceof(FileList)
 		.refine((file) => !!file[0], { message: "File is required" })
 
