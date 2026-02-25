@@ -58,3 +58,14 @@ export interface JobReferralDto {
     status: string;
     statusChangedOn: string;
 }
+
+
+export interface JobRequestDto {
+    jobTitle: string,
+    jobDetails: string,
+    experienceYears: number,
+    numberOfVaccancy: number,
+    hrIds: string[],
+    cvReviewerIds: string[],
+    jobJdFile: File,
+}

@@ -10,7 +10,7 @@ export interface DataTabelItem {
 }
 
 export interface TravelTypeDto {
-	id: number;
+	id: string;
 	name: string;
 }
 
@@ -18,18 +18,18 @@ export interface TravelPlanDto {
 	id: number;
 	purpose: string;
 	travelType: TravelTypeDto;
-	startDate: string;
-	endDate: string;
+	startDate: Date;
+	endDate: Date;
 	destinationCity: string;
 	destinationState: string;
 	destinationCountry: string;
-	lastDateOfExpenseSubmission: string;
+	lastDateOfExpenseSubmission: Date;
 	maxAmountPerDay: number;
 }
 
 export interface TravelPlanCreateDto {
 	purpose: string;
-	travelTypeId: number;
+	travelTypeId: string;
 	startDate: string;
 	endDate: string;
 	destinationCity: string;
@@ -41,13 +41,13 @@ export interface TravelPlanCreateDto {
 
 export interface TravelPlanUpdateDto {
 	purpose: string;
-	travelTypeId: number;
-	startDate: string;
-	endDate: string;
+	travelTypeId: string;
+	startDate: Date;
+	endDate: Date;
 	destinationCity: string;
 	destinationState: string;
 	destinationCountry: string;
-	lastDateOfExpenseSubmission: string;
+	lastDateOfExpenseSubmission: Date;
 	maxAmountPerDay: number;
 }
 

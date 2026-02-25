@@ -37,12 +37,11 @@ const TravelPlanCreateForm = () => {
     mode: "onBlur",
     defaultValues: {},
     resolver: zodResolver(TravelPlanSchema),
-    // defaultValues: JSON.parse(sessionStorage.getItem("prod")),
   });
   // react form
 
   // handlers
-  const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
+  const onSubmit: SubmitHandler<TravelPlanSchemaType> = async (data) => {
     const resData = await create.mutateAsync({ payload: data });
     navigate("/travel/plans");
   };
@@ -54,18 +53,6 @@ const TravelPlanCreateForm = () => {
       <FieldGroup>
         {/*  */}
         <FieldSet className="grid grid-cols-2">
-          {/* <Field>
-            <FieldLabel htmlFor="email">Purpose</FieldLabel>
-            <Input
-              id="purpose"
-              type="text"
-              placeholder="To finallize deal....."
-              {...register("purpose")}
-            />
-            {console.log(errors)}
-            {errors.purpose && <FieldError errors={[errors.purpose]} />}
-          </Field> */}
-
           <FieldInput
             displayName={"Purpose"}
             name="purpose"
@@ -76,7 +63,6 @@ const TravelPlanCreateForm = () => {
           />
 
           <Field>
-            {/* <FieldLabel htmlFor="password">Travel type</FieldLabel> */}
             <FieldLabel htmlFor="travelTypeId">Travel Type</FieldLabel>
             <Controller
               name="travelTypeId"

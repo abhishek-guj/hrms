@@ -1,11 +1,11 @@
 import {
-	type SortingState,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getGroupedRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
+  type SortingState,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getGroupedRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
@@ -21,75 +21,74 @@ import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { JobsTableColumns } from "./JobsTableStructure";
 import { useJobsAll } from "./queries/job.queries";
+import JobCreateForm from "./forms/JobCreateForm";
+import { RoleUtil } from "../../auth/role.util";
+import JobCreate from "./forms/JobCreateForm";
 
 const JobsViewTable = () => {
-	// states
-	const [sorting, setSorting] = useState<SortingState>([]);
-	const [rowSelection, setRowSelection] = useState({});
-	const [globalFilter, setGlobalFilter] = useState("");
-	// states
+  // states
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [globalFilter, setGlobalFilter] = useState("");
+  // states
 
-	const { data, error, isLoading } = useJobsAll(); // exclamation to supress undefined error
+  const { data, error, isLoading } = useJobsAll(); // exclamation to supress undefined error
 
-	// defining react table
+  // defining react table
 
-	const table = useReactTable({
-		data: data ? data : [],
-		columns: JobsTableColumns,
-		getCoreRowModel: getCoreRowModel(),
-		getGroupedRowModel: getGroupedRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		onSortingChange: setSorting,
-		onRowSelectionChange: setRowSelection,
-		onGlobalFilterChange: setGlobalFilter,
-		globalFilterFn: "includesString",
-		state: {
-			sorting,
-			rowSelection,
-			globalFilter,
-		},
-		initialState: {
-			pagination: { pageSize: 5 },
-		},
-	});
-	// defining react table
+  const table = useReactTable({
+    data: data ? data : [],
+    columns: JobsTableColumns,
+    getCoreRowModel: getCoreRowModel(),
+    getGroupedRowModel: getGroupedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: "includesString",
+    state: {
+      sorting,
+      rowSelection,
+      globalFilter,
+    },
+    initialState: {
+      pagination: { pageSize: 5 },
+    },
+  });
+  // defining react table
 
-	// getting footer details, currently not used
-	const pageCount = table.getPageCount();
-	const currentPage = table.getState().pagination.pageIndex + 1;
-	// getting footer details, currently not used
+  // getting footer details, currently not used
+  const pageCount = table.getPageCount();
+  const currentPage = table.getState().pagination.pageIndex + 1;
+  // getting footer details, currently not used
 
-	return (
-		<div className="w-full space-y-4">
-			<div className="flex justify-between gap-8 px-4">
-				<DataTableOptions
-					table={table}
-					globalFilter={globalFilter}
-					setGlobalFilter={setGlobalFilter}
-				/>
-				<Button disabled={true}>
-					<Link to={"new"} className="flex gap-1">
-						New <Plus />
-					</Link>
-				</Button>
-			</div>
+  return (
+    <div className="w-full space-y-4">
+      <div className="flex justify-between gap-8 px-4">
+        <DataTableOptions
+          table={table}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+        {(RoleUtil.isAdmin || RoleUtil.isHr) && <JobCreate />}
+      </div>
 
-			<div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
-				<Table className="w-full">
-					<DataTableHeader table={table} />
-					<DataTableBody table={table} columns={JobsTableColumns} />
-				</Table>
-			</div>
+      <div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
+        <Table className="w-full">
+          <DataTableHeader table={table} />
+          <DataTableBody table={table} columns={JobsTableColumns} />
+        </Table>
+      </div>
 
-			<DataTableFooter
-				table={table}
-				pageCount={pageCount}
-				currentPage={currentPage}
-			/>
-		</div>
-	);
+      <DataTableFooter
+        table={table}
+        pageCount={pageCount}
+        currentPage={currentPage}
+      />
+    </div>
+  );
 };
 
 export default JobsViewTable;

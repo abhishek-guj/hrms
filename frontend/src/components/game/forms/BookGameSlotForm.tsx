@@ -184,18 +184,31 @@ export function FieldInput({
   name,
   displayName,
   errors,
+  type,
   ...props
 }: Readonly<{
   register: UseFormRegister<any>;
   name: string;
   displayName: string;
   errors: { message?: string } | undefined;
+  type?: string;
 }>) {
-  if (props.type === "time") {
+  // types
+
+  if (type === "file") {
     return (
       <Field>
         <FieldLabel htmlFor={name}>{displayName}</FieldLabel>
+        <Input id={name} type="file" multiple={false} {...register(name)} />
+        {errors && <FieldError errors={[errors]} />}
+      </Field>
+    );
+  }
 
+  if (type === "time") {
+    return (
+      <Field>
+        <FieldLabel htmlFor={name}>{displayName}</FieldLabel>
         <Input
           type="time"
           id={name}
@@ -215,7 +228,7 @@ export function FieldInput({
   return (
     <Field>
       <FieldLabel htmlFor={name}>{displayName}</FieldLabel>
-      <Input id={name} {...register(name)} {...props} />
+      <Input id={name} type={type} {...register(name)} {...props} />
       {errors && <FieldError errors={[errors]} />}
     </Field>
   );

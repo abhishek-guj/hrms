@@ -9,7 +9,6 @@ import { RoleUtil } from "../../auth/role.util";
 
 const GamesPage = () => {
   const { data, error, isLoading } = useTimeSlotsAll(); // exclamation to supress undefined error
-  console.log(data);
 
   //
   //
@@ -30,10 +29,13 @@ const GamesPage = () => {
       )}
       {data?.map((game) => {
         return (
-          <>
+          <div
+            key={game.gameTypeId}
+            className="w-full h-full flex flex-col items-end"
+          >
             <GameSlotSelector game={game} />
             <Separator />
-          </>
+          </div>
         );
       })}
       <Outlet />

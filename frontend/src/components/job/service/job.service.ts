@@ -49,5 +49,4 @@ export const JobService = {
         return res.data.data;
     },
 
-
 }

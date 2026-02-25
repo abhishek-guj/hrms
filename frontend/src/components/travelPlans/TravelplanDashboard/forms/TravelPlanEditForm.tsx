@@ -3,32 +3,25 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { type TravelPlanSchemaType } from "../../../login/schema";
+import {
+  TravelPlanUpdateSchema,
+  type TravelPlanUpdateSchemaType,
+} from "../../../login/schema";
 import { DatePickerInput } from "../../../ui/date-picker";
 import { FieldError, FieldSet } from "../../../ui/field";
 import { Separator } from "../../../ui/separator";
-import type { LoginFormType } from "../../loginForm.types";
 import {
-  useCreateTravelPlan,
   useTravelPlan,
   useUpdateTravelPlan,
 } from "../../queries/travelPlans.queries";
-import type {
-  TravelPlanCreateDto,
-  TravelPlanDto,
-  TravelPlanUpdateDto,
-} from "../../types/TravelPlan.types";
 import TravelTypeSelect from "./TravelTypeSelect";
-import { flattenBy } from "@tanstack/react-table";
-import { flatten } from "flat";
-import { useEffect } from "react";
 const TravelPlanEditForm = () => {
   // getting id of open travel plan
   const { id } = useParams<{ id: string }>();
 
-  console.log(id);
   // query hook
   const { data, error, isLoading } = useTravelPlan(id!);
 
@@ -40,8 +33,19 @@ const TravelPlanEditForm = () => {
   const updateTravelPlan = useUpdateTravelPlan();
   // query hooks
 
-  const { travelType, ...otherData } = data;
-  const newData = { ...otherData, travelTypeId: travelType.id };
+  const travelType = data?.travelType;
+  const startDate = data?.startDate;
+  const endDate = data?.endDate;
+  const lastDateOfExpenseSubmission = data?.lastDateOfExpenseSubmission;
+  const newData = {
+    ...data,
+    id: `${data?.id}`,
+    travelTypeId: `${travelType.id}`,
+    startDate: new Date(startDate),
+    endDate: new Date(endDate),
+    lastDateOfExpenseSubmission: new Date(lastDateOfExpenseSubmission),
+  };
+
   // react form
   const {
     register,
@@ -49,28 +53,14 @@ const TravelPlanEditForm = () => {
     formState: { errors },
     control,
     reset,
-  } = useForm<TravelPlanUpdateDto>({
-    // mode: "onBlur",
+  } = useForm<TravelPlanUpdateSchemaType>({
+    mode: "onBlur",
     defaultValues: { ...newData },
-    // values: {
-    // 	...data,
-    // },
-    // resolver: zodResolver(TravelPlanSchema),
-    // defaultValues: JSON.parse(sessionStorage.getItem("prod")),
+    resolver: zodResolver(TravelPlanUpdateSchema),
   });
-  console.log(data);
-  useEffect(() => {
-    if (!data) return;
-    const { travelType, ...otherData } = data;
-    const newData = { ...otherData, travelTypeId: `${travelType.id}` };
-    console.log("newdata", newData);
-    reset(newData);
-  }, [data]);
-  // react form
 
   // handlers
-  const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
-    console.log("data update", data);
+  const onSubmit: SubmitHandler<TravelPlanUpdateSchemaType> = async (data) => {
     const { id, ...reqData } = data;
 
     await updateTravelPlan.mutateAsync({
@@ -96,7 +86,6 @@ const TravelPlanEditForm = () => {
               placeholder="To finallize deal....."
               {...register("purpose")}
             />
-            {console.log(errors)}
             {errors.purpose && <FieldError errors={[errors.purpose]} />}
           </Field>
           <Field>
@@ -128,22 +117,7 @@ const TravelPlanEditForm = () => {
               {...register("startDate")}
               control={control}
             />
-            {errors.purpose && <FieldError errors={[errors.purpose]} />}
-            {/*  */}
-
-            {/* <Controller
-							name="startDate" // The name of the field in your form data
-							control={control} // The control object from useForm
-							rules={{ required: "Please select a date." }} // Validation rules
-							render={({ field }) => (
-								<Calendar
-									mode="single" // Use "single" mode for a single date selection
-									selected={field.value} // Pass the form's value to the date picker
-									onSelect={field.onChange} // Update the form value when a date is selected
-								/>
-							)}
-						/> */}
-            {/*  */}
+            {errors.startDate && <FieldError errors={[errors.startDate]} />}
           </Field>
           <Field>
             <FieldLabel htmlFor="endDate">End Date</FieldLabel>
@@ -154,7 +128,7 @@ const TravelPlanEditForm = () => {
               control={control}
               {...register("endDate")}
             />
-            {errors.purpose && <FieldError errors={[errors.purpose]} />}
+            {errors.endDate && <FieldError errors={[errors.endDate]} />}
           </Field>
         </FieldSet>
 

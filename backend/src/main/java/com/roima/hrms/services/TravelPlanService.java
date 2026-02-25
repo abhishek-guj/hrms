@@ -33,7 +33,9 @@ public class TravelPlanService {
     private final RoleUtil roleUtil;
 
     @Autowired
-    public TravelPlanService(TravelPlanRepository travelPlanRepository, TravelPlanMapper travelPlanMapper, TravelTypeRepository travelTypeRepository, TravelTypeMapper travelTypeMapper, ModelMapper modelMapper, RoleUtil roleUtil) {
+    public TravelPlanService(TravelPlanRepository travelPlanRepository, TravelPlanMapper travelPlanMapper,
+            TravelTypeRepository travelTypeRepository, TravelTypeMapper travelTypeMapper, ModelMapper modelMapper,
+            RoleUtil roleUtil) {
         this.travelPlanRepository = travelPlanRepository;
         this.travelPlanMapper = travelPlanMapper;
         this.travelTypeRepository = travelTypeRepository;
@@ -50,10 +52,8 @@ public class TravelPlanService {
             throw new UnauthorizedException("User not authenticated");
         }
 
-
         // getting employee profile
         List<TravelPlan> travelPlans;
-
 
         if (roleUtil.isEmployee()) {
             var employeeId = roleUtil.getCurrentEmployeeId();
@@ -71,22 +71,23 @@ public class TravelPlanService {
 
     public TravelPlanDto getById(Long id) {
         TravelPlan tp = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
-        boolean assigned = tp.getTravelEmployees().stream().anyMatch(travelEmployee -> travelEmployee.getEmployeeProfile().getId() == roleUtil.getCurrentEmployeeId());
+        boolean assigned = tp.getTravelEmployees().stream().anyMatch(
+                travelEmployee -> travelEmployee.getEmployeeProfile().getId() == roleUtil.getCurrentEmployeeId());
         var dto = travelPlanMapper.toTravelPlanDto(tp);
         dto.setAssigned(assigned);
         return dto;
     }
 
-
     @Transactional
     public TravelPlanDto createTravelPlan(TravelPlanRequestDto dto) {
 
-        if (!roleUtil.isAdmin() || !roleUtil.isHr()) {
+        if (roleUtil.isEmployee() || roleUtil.isManager()) {
             throw new RuntimeException("Not Authorised to create");
         }
 
         // getting travel type
-        TravelType travelType = travelTypeRepository.findById(dto.getTravelTypeId()).orElseThrow(TravelTypeNotFoundException::new);
+        TravelType travelType = travelTypeRepository.findById(dto.getTravelTypeId())
+                .orElseThrow(TravelTypeNotFoundException::new);
 
         // converting to entity
         TravelPlan tp = travelPlanMapper.toEntity(dto);
@@ -101,17 +102,17 @@ public class TravelPlanService {
         return travelPlanMapper.toTravelPlanDto(tp);
     }
 
-
     @Transactional
     public TravelPlanDto updateTravelPlan(Long id, TravelPlanRequestDto dto) {
 
-        if (!roleUtil.isAdmin() && !roleUtil.isHr()) {
+        if (roleUtil.isEmployee() && roleUtil.isAdmin()) {
             throw new RuntimeException("Not Authorised to update");
         }
 
         TravelPlan travelPlan = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
 
-        TravelType travelType = travelTypeRepository.findById(dto.getTravelTypeId()).orElseThrow(TravelTypeNotFoundException::new);
+        TravelType travelType = travelTypeRepository.findById(dto.getTravelTypeId())
+                .orElseThrow(TravelTypeNotFoundException::new);
 
         // setting values of travelplan dto to travelplan enitity directly
         travelPlan.setTravelType(travelType);
@@ -125,9 +126,11 @@ public class TravelPlanService {
 
     @Transactional
     public void deleteTravelPlan(Long id) {
+        if (roleUtil.isEmployee() || roleUtil.isManager()) {
+            throw new RuntimeException("Not Authorised to delete");
+        }
         TravelPlan tp = travelPlanRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
         travelPlanRepository.deleteById(tp.getId());
     }
-
 
 }
