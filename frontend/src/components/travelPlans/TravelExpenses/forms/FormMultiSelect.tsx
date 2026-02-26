@@ -48,7 +48,7 @@ const FormMultiSelect = ({
       if (!prev) return data;
 
       if (filterKey !== "") {
-        prev = prev?.filter((p) =>
+        prev = data?.filter((p) =>
           `${p?.firstName} ${p?.lastName}`.includes(filterKey),
         );
         return prev;

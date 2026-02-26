@@ -45,7 +45,7 @@ public class EmailService {
             String subject = "[HRMS] Content Removal Warning";
 
             String body = "<html><body style='font-family:Arial,sans-serif;'>"
-                    + "<h2 style='color:#c0392b;'>⚠️ Content Removal Notice</h2>"
+                    + "<h2 style='color:#c0392b;'>Content Removal Notice</h2>"
                     + "<p>Dear <strong>" + employeeName + "</strong>,</p>"
                     + "<p>This is to inform you that your <strong>" + contentType
                     + "</strong> on the Achievements feed "
@@ -69,7 +69,7 @@ public class EmailService {
 
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress("skelireverbs@gmail.com", false));
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("skelireverbs@gmail.com"));
             msg.setSubject(subject);
             msg.setSentDate(new java.util.Date());
 

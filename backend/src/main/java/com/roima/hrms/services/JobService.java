@@ -160,13 +160,13 @@ public class JobService {
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
 
         // check if files not null
-        if (dto.getJobJdFile() == null || dto.getJobJdFile().isEmpty()) {
-            throw new RuntimeException("Please upload at least 1 document");
-        }
+        // if (dto.getJobJdFile() == null || dto.getJobJdFile().isEmpty()) {
+        // throw new RuntimeException("Please upload at least 1 document");
+        // }
 
-        fileService.validateFile(dto.getJobJdFile());
+        // fileService.validateFile(dto.getJobJdFile());
 
-        String filePath = fileService.store(dto.getJobJdFile(), "job");
+        // String filePath = fileService.store(dto.getJobJdFile(), "job");
 
         // converting to entity
         job.setJobTitle(dto.getJobTitle());
@@ -266,8 +266,8 @@ public class JobService {
 
         try {
             notificationService.sendJobReferNotification(jobReferral);
-            emailService.sendReferMail(jobReferral, jobId);
             jobReferralRepository.save(jobReferral);
+            emailService.sendReferMail(jobReferral, jobId);
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();

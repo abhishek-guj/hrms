@@ -2,7 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { FieldInput } from "../../game/forms/BookGameSlotForm";
-import { JobCreateSchema, type JobCreateSchemaType } from "../../login/schema";
+import {
+  JobCreateSchema,
+  JobUpdateSchema,
+  type JobCreateSchemaType,
+  type JobUpdateSchemaType,
+} from "../../login/schema";
 import EmployeeSelect from "../../travelPlans/TravelExpenses/forms/EmployeeSelect";
 import { Button } from "../../ui/button";
 import { Field, FieldError, FieldLabel, FieldSet } from "../../ui/field";
@@ -29,10 +34,10 @@ export const JobUpdateForm = ({ jobId, data }) => {
     control,
     reset,
     watch,
-  } = useForm<JobCreateSchemaType>({
+  } = useForm<JobUpdateSchemaType>({
     mode: "all",
     defaultValues: { ...newData },
-    resolver: zodResolver(JobCreateSchema),
+    resolver: zodResolver(JobUpdateSchema),
   });
   // react form
 
@@ -44,7 +49,7 @@ export const JobUpdateForm = ({ jobId, data }) => {
   //
   const updateJob = useUpdateJob();
 
-  const onSubmit: SubmitHandler<JobCreateSchemaType> = async (data) => {
+  const onSubmit: SubmitHandler<JobUpdateSchemaType> = async (data) => {
     console.log("submit", data);
     await updateJob.mutateAsync({ id: jobId, dto: data });
   };

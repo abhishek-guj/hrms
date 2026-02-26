@@ -21,7 +21,17 @@ public interface TravelPlanRepository extends JpaRepository<TravelPlan, Long> {
     List<TravelPlan> findByEmployeeId(Long employeeId);
 
     // find by manager
-    @Query("select distinct tp from TravelPlan tp join tp.travelEmployees te join te.employeeProfile ep where ep.manager.id = :managerId and tp.isDeleted = false order by tp.id desc")
+    @Query("""
+                select distinct
+                tp
+                from TravelPlan tp
+                join tp.travelEmployees te
+                join te.employeeProfile ep
+                where (ep.manager.id = :managerId or ep.id = :managerId)
+                and tp.isDeleted = false
+                order by
+                tp.id desc
+            """)
     List<TravelPlan> findByManagerId(Long managerId);
 
     @Override

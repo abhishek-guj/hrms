@@ -13,8 +13,8 @@ import java.util.List;
 
 /**
  * Daily scheduler that auto-creates system posts for:
- *  1. Employee birthdays
- *  2. Employee work anniversaries (1+ years)
+ * 1. Employee birthdays
+ * 2. Employee work anniversaries (1+ years)
  *
  * Runs every day at 08:00 AM server time.
  */
@@ -27,7 +27,7 @@ public class CelebrationScheduler {
     private final AchievementPostService achievementPostService;
 
     public CelebrationScheduler(EmployeeProfileRepository employeeProfileRepository,
-                                 AchievementPostService achievementPostService) {
+            AchievementPostService achievementPostService) {
         this.employeeProfileRepository = employeeProfileRepository;
         this.achievementPostService = achievementPostService;
     }
@@ -36,7 +36,8 @@ public class CelebrationScheduler {
      * Runs daily at 08:00 AM.
      * Checks all active employees for birthday or work anniversary today.
      */
-    @Scheduled(cron = "0 0 8 * * *")
+    // @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 40 16 * * ?")
     public void generateDailyCelebrationPosts() {
         LocalDate today = LocalDate.now();
         int todayMonth = today.getMonthValue();
@@ -49,7 +50,8 @@ public class CelebrationScheduler {
 
         for (EmployeeProfile employee : allEmployees) {
             // Skip deleted employees
-            if (Boolean.TRUE.equals(employee.getIsDeleted())) continue;
+            if (Boolean.TRUE.equals(employee.getIsDeleted()))
+                continue;
 
             // ── Birthday check ──
             if (employee.getBirthDate() != null) {
@@ -57,9 +59,11 @@ public class CelebrationScheduler {
                 if (bd.getMonthValue() == todayMonth && bd.getDayOfMonth() == todayDay) {
                     try {
                         achievementPostService.createBirthdayPost(employee);
-                        log.info("Birthday post created for employee: {} {}", employee.getFirstName(), employee.getLastName());
+                        log.info("Birthday post created for employee: {} {}", employee.getFirstName(),
+                                employee.getLastName());
                     } catch (Exception e) {
-                        log.error("Failed to create birthday post for employee id={}: {}", employee.getId(), e.getMessage());
+                        log.error("Failed to create birthday post for employee id={}: {}", employee.getId(),
+                                e.getMessage());
                     }
                 }
             }
@@ -75,7 +79,8 @@ public class CelebrationScheduler {
                             log.info("Work anniversary post created for employee: {} {} - {} year(s)",
                                     employee.getFirstName(), employee.getLastName(), yearsCompleted);
                         } catch (Exception e) {
-                            log.error("Failed to create anniversary post for employee id={}: {}", employee.getId(), e.getMessage());
+                            log.error("Failed to create anniversary post for employee id={}: {}", employee.getId(),
+                                    e.getMessage());
                         }
                     }
                 }

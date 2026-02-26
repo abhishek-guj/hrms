@@ -114,7 +114,10 @@ public class TravelExpenseService {
         // checking amount for the day
         BigDecimal totalAmountForExpenseDate = travelExpenseRepository
                 .sumOfExpenseDateByEmployee(roleUtil.getCurrentEmployee(),
-                        LocalDate.parse(dto.getExpenseDate().substring(0, 10)));
+                        LocalDate.parse(dto.getExpenseDate().substring(0, 10))
+                    ,
+                travelPlan
+                );
 
         BigDecimal tmpTotal = null;
         if (totalAmountForExpenseDate != null) {

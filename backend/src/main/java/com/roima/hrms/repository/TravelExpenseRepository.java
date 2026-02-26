@@ -53,6 +53,8 @@ public interface TravelExpenseRepository extends JpaRepository<TravelExpense, Lo
             from TravelExpense te
             where te.submittedBy = :currentEmployee
             and te.expenseDate = :expenseDate
+            and te.travelPlan = :travelPlan
             """)
-    BigDecimal sumOfExpenseDateByEmployee(EmployeeProfile currentEmployee, LocalDate expenseDate);
+    BigDecimal sumOfExpenseDateByEmployee(EmployeeProfile currentEmployee, LocalDate expenseDate,
+            TravelPlan travelPlan);
 }

@@ -28,11 +28,11 @@ public class Post {
     @Column(name = "author_id", nullable = false)
     private Long authorId;
 
-    @Lob
+    // @Lob
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Lob
+    // @Lob
     @Column(name = "text", nullable = false)
     private String text;
 

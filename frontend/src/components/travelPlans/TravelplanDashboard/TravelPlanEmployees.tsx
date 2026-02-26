@@ -59,12 +59,12 @@ const TravelPlanEmployeesOLD = () => {
         {(RoleUtil.isAdmin || RoleUtil.isHr) && (
           <div className="w-1/2">
             <TravelEmployeeSelect
-              name={"hrIds"}
+              name={"Travel Employee"}
               onValueChange={setSelected}
               multiSelectValues={selected}
               multiSelectValuesChange={setSelected}
               // errors={errors.hrIds}
-              displayName={"HRs"}
+              displayName={"Travel Employee"}
               data={travelEmployees}
               isLoading={travelEmployeesLoading}
             />

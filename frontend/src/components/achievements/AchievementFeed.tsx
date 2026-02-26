@@ -12,7 +12,6 @@ interface Props {
 
 const AchievementFeed = ({ filters, onFiltersChange }: Props) => {
   const { data, isLoading, error } = useAchievementFeed(filters);
-  console.log("Fetched achievements:", data);
   const handlePage = (delta: number) => {
     onFiltersChange({ ...filters, page: (filters.page ?? 0) + delta });
   };

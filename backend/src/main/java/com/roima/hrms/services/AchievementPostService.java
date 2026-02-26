@@ -347,7 +347,7 @@ public class AchievementPostService {
      */
     @Transactional
     public void createBirthdayPost(EmployeeProfile employee) {
-        String title = "🎂 Birthday Celebration";
+        String title = "Birthday Celebration";
         if (postRepository.existsSystemPostForToday(employee.getId(), LocalDate.now(), title + "%")) {
             return; // already posted today
         }
@@ -355,13 +355,13 @@ public class AchievementPostService {
         Post post = buildSystemPost(
                 employee.getId(),
                 title,
-                "🎉 Today is " + name + "'s birthday! Wish them a wonderful day! 🎂");
+                "Today is " + name + "'s birthday! Wish them a wonderful day! 🎂");
         postRepository.save(post);
     }
 
     @Transactional
     public void createWorkAnniversaryPost(EmployeeProfile employee, int years) {
-        String title = "🏆 Work Anniversary";
+        String title = "Work Anniversary";
         if (postRepository.existsSystemPostForToday(employee.getId(), LocalDate.now(), title + "%")) {
             return;
         }
@@ -369,8 +369,8 @@ public class AchievementPostService {
         Post post = buildSystemPost(
                 employee.getId(),
                 title,
-                "🎊 Congratulations to " + name + " for completing " + years + " year" + (years > 1 ? "s" : "")
-                        + " at the organization! 🏆");
+                "Congratulations to " + name + " for completing " + years + " year" + (years > 1 ? "s" : "")
+                        + " at the organization!");
         postRepository.save(post);
     }
 

@@ -25,7 +25,7 @@ public class SlotBooking {
     private PlayerGroup playerGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "game_slot_id", unique = true)
+    @JoinColumn(name = "game_slot_id", unique = false)
     private GameSlot gameSlot;
 
     @Enumerated(EnumType.STRING)
