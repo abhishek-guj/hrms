@@ -9,13 +9,6 @@ import { RoleUtil } from "../../../auth/role.util";
 // date checking for status of travel
 const checkOngoing = (startDate, endDate) => {
   const today = new Date();
-  console.log(
-    today,
-    new Date(endDate),
-    today > new Date(endDate),
-    today >= new Date(startDate),
-    new Date(startDate),
-  );
 
   const startDateNew = new Date(new Date(startDate).setHours(0, 0, 0));
   const endDateNew = new Date(new Date(endDate).setHours(23, 59, 59));

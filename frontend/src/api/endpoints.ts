@@ -18,7 +18,12 @@ export const TRAVEL_PLAN_ENDPOINTS = {
 
 	getTravelEmployeesByTravelPlanId: (id: string) =>
 		`/travel-plans/${id}/employees`,
+
+	createTravelEmployees: (id: string) => `/travel-plans/${id}/employees`,
+
 	updateTravelEmployees: (id: string) => `/travel-plans/${id}/employees`,
+
+	deleteTravelEmployees: (id: string, employeeId: string) => `/travel-plans/${id}/employees/${employeeId}`,
 
 	getTravelExpensesByTravelPlanId: (id: string) =>
 		`/travel-plans/${id}/expenses`,
@@ -101,5 +106,6 @@ export const NOTIFICATION_ENDPOINTS = {
 
 
 export const EMPLOYEES = {
-	getAll: () => `/employees`
+	getAll: () => `/employees`,
+	getTravelPlanEmployees: (id: string) => `/employees/travel/${id}`
 }

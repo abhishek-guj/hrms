@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Component
 public class TravelDocumentTypeMapper {
 
@@ -18,15 +17,15 @@ public class TravelDocumentTypeMapper {
         this.modelMapper = modelMapper;
     }
 
-    public TravelDocumentType toEntity(TravelDocumentTypeDto dto){
-        return modelMapper.map(dto,TravelDocumentType.class);
+    public TravelDocumentType toEntity(TravelDocumentTypeDto dto) {
+        return modelMapper.map(dto, TravelDocumentType.class);
     }
 
-    public TravelDocumentTypeDto toTravelDocumentTypeDto(TravelDocumentType travelDocumentType){
+    public TravelDocumentTypeDto toTravelDocumentTypeDto(TravelDocumentType travelDocumentType) {
         return modelMapper.map(travelDocumentType, TravelDocumentTypeDto.class);
     }
 
-    public List<TravelDocumentTypeDto> toTravelDocumentTypeDtoList(List<TravelDocumentType> travelDocumentTypeList){
+    public List<TravelDocumentTypeDto> toTravelDocumentTypeDtoList(List<TravelDocumentType> travelDocumentTypeList) {
         return travelDocumentTypeList.stream().map(this::toTravelDocumentTypeDto).collect(Collectors.toList());
     }
 }

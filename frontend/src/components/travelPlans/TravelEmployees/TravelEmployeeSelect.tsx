@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from "react";
-import MultipleSelector from "../../../ui/multi";
-import FormMultiSelect from "./FormMultiSelect";
-import { useExpenseTypes } from "../../queries/travelPlans.queries";
-import { useEmployeesAll } from "../../../shared/services/employee.queries";
-import SearchInput from "../../TravelplanDashboard/Shared/SearchInput";
+import { useParams } from "react-router-dom";
+import {
+  useEmployeesAll,
+  useEmployeesTravelPlan,
+} from "../../shared/services/employee.queries";
+import FormMultiSelect from "../TravelExpenses/forms/FormMultiSelect";
 
-const EmployeeSelect = ({
+const TravelEmployeeSelect = ({
   name,
-  value,
   onValueChange,
   type,
   multiSelectValues,
   multiSelectValuesChange,
   errors,
   displayName,
+  isLoading,
+  data,
   ...props
+}: {
+  data?: any;
+  name?: any;
+  onValueChange?: any;
+  type?: any;
+  multiSelectValues?: any;
+  multiSelectValuesChange?: any;
+  errors?: any;
+  displayName?: any;
+  isLoading?: any;
 }) => {
-  const { data, isLoading } = useEmployeesAll();
-
   if (isLoading) {
     <div className="flex flex-row justify-center items-center min-w-30 border">
       Loading employees
@@ -27,7 +36,6 @@ const EmployeeSelect = ({
     <FormMultiSelect
       data={data}
       name={name}
-      value={value || []}
       onValueChange={onValueChange}
       multiSelectValues={multiSelectValues}
       multiSelectValuesChange={multiSelectValuesChange}
@@ -38,4 +46,4 @@ const EmployeeSelect = ({
   );
 };
 
-export default EmployeeSelect;
+export default TravelEmployeeSelect;

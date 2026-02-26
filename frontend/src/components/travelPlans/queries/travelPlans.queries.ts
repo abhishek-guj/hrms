@@ -110,12 +110,51 @@ export const useTravelEmployees = (
 	});
 };
 
+export const useCreateTravelEmployees = () => {
+	console.log("useCreateTravelEmployees");
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ id, payload }: { id: string; payload: number[] }) => {
+			const response = TravelPlansService.createTravelEmployees(id, payload);
+			return response;
+		},
+		onSuccess: (_, { id }) => {
+			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees", id] });
+			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees"] });
+			showSuccess("employees assigned successfully");
+		},
+		onError: () => {
+			console.log("error updaeting travel plan");
+			showError("error assgining employees");
+		},
+	});
+};
 export const useUpdateTravelEmployees = () => {
 	console.log("useUpdateTravelEmployees");
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ({ id, payload }: { id: string; payload: number[] }) => {
 			const response = TravelPlansService.updateTravelEmployees(id, payload);
+			return response;
+		},
+		onSuccess: (_, { id }) => {
+			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees", id] });
+			queryClient.invalidateQueries({ queryKey: ["getTravelEmployees"] });
+			showSuccess("employees assigned successfully");
+		},
+		onError: () => {
+			console.log("error updaeting travel plan");
+			showError("error assgining employees");
+		},
+	});
+};
+
+export const useDeleteTravelEmployees = () => {
+	console.log("useDeleteTravelEmployees");
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ id, employeeId }: { id: string; employeeId: string }) => {
+			const response = TravelPlansService.deleteTravelEmployees(id, employeeId);
 			return response;
 		},
 		onSuccess: (_, { id }) => {

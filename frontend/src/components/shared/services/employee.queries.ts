@@ -7,7 +7,17 @@ export const useEmployeesAll = (): UseQueryResult<EmployeeProfileDto[]> => {
         queryKey: ["getAllEmployees"],
         queryFn: async (): Promise<EmployeeProfileDto[]> => {
             const res = await EmployeeService.getAll();
-            return res.data;
+            return res;
+        },
+    });
+};
+
+export const useEmployeesTravelPlan = (id: string): UseQueryResult<EmployeeProfileDto[]> => {
+    return useQuery({
+        queryKey: ["useEmployeesTravelPlan"],
+        queryFn: async (): Promise<EmployeeProfileDto[]> => {
+            const res = await EmployeeService.getTravelPlanEmployees(id);
+            return res;
         },
     });
 };

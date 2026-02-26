@@ -69,12 +69,14 @@ export const TravelPlansService = {
 		return res.data.data;
 	},
 
-	// async getAllEmployees(): Promise<EmployeeDto[]> {
-	// 	const res = await api.get<IApiResponse<EmployeeDto[]>>(
-	// 		TRAVEL_PLAN_ENDPOINTS.getAllEmployees(),
-	// 	);
-	// 	return res.data.data;
-	// },
+	async createTravelEmployees(id: string, data: number[]) {
+		console.log("createTravelEmployees");
+		const res = await api.post<IApiResponse>(
+			TRAVEL_PLAN_ENDPOINTS.createTravelEmployees(id),
+			data,
+		);
+		return res.data.data;
+	},
 
 	async updateTravelEmployees(id: string, data: number[]) {
 		console.log("updateTravelEmployees");
@@ -82,6 +84,13 @@ export const TravelPlansService = {
 			TRAVEL_PLAN_ENDPOINTS.updateTravelEmployees(id),
 			data,
 		);
+		return res.data.data;
+	},
+
+	async deleteTravelEmployees(id: string, employeeId: string) {
+		console.log("deleteTravelEmployees");
+		const res = await api.delete<IApiResponse>(
+			TRAVEL_PLAN_ENDPOINTS.deleteTravelEmployees(id, employeeId));
 		return res.data.data;
 	},
 

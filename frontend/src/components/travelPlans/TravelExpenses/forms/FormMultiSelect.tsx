@@ -9,6 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../ui/select";
+import { useEffect, useState } from "react";
+import type { EmployeeProfileDto } from "../../../job/types/job.types";
+import SearchInput from "../../TravelplanDashboard/Shared/SearchInput";
 
 const FormMultiSelect = ({
   data,
@@ -37,10 +40,32 @@ const FormMultiSelect = ({
     multiSelectValuesChange(ids);
   };
 
+  const [filterKey, setFilterKey] = useState("");
+  const [filterData, setFilterData] = useState<EmployeeProfileDto[]>([]);
+
+  useEffect(() => {
+    setFilterData((prev) => {
+      if (!prev) return data;
+
+      if (filterKey !== "") {
+        prev = prev?.filter((p) =>
+          `${p?.firstName} ${p?.lastName}`.includes(filterKey),
+        );
+        return prev;
+      }
+
+      return data;
+    });
+  }, [filterKey]);
+
+  useEffect(() => {
+    setFilterData(data);
+  }, [data]);
+
   return (
     <Field orientation="responsive">
       <FieldLabel htmlFor={name}>{displayName}</FieldLabel>
-
+      <SearchInput globalFilter={filterKey} setGlobalFilter={setFilterKey} />
       <Select
         name={name}
         onValueChange={(event) => {
@@ -52,13 +77,13 @@ const FormMultiSelect = ({
         {...props}
       >
         <SelectTrigger id="form-rhf-select-language" className="min-w-[120px]">
-          <SelectValue placeholder="Select" />
+          <SelectValue placeholder={"Select"} />
         </SelectTrigger>
         <SelectContent position="item-aligned">
-          {data?.map((d) => {
+          {filterData?.map((d) => {
             return (
               <SelectItem key={d?.id} value={`${d?.id}`}>
-                {d?.firstName}
+                {`${d?.firstName} ${d?.lastName}`}
               </SelectItem>
             );
           })}
@@ -72,7 +97,7 @@ const FormMultiSelect = ({
               key={selected}
               className="flex gap-2 justify-center items-center text-sm"
             >
-              {`${result?.firstName} ${result?.firstName}`}
+              {`${result?.firstName} ${result?.lastName}`}
               <Button
                 variant={"outline"}
                 className="p-0 w-4 h-6"

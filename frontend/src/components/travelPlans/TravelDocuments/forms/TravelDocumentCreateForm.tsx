@@ -67,13 +67,10 @@ const TravelDocumentCreateForm = () => {
               name="uploadedForEmployeeId"
               control={control}
               render={({ field, fieldState }) => (
-                <MultiSelect
-                  options={ROLES}
-                  value={value ? value : []}
-                  onChange={onChange}
-                  labelledBy="Select"
-                  disableSearch
-                  hasSelectAll={false}
+                <AssignEmloyeeSelect
+                  name={"uploadedForEmployeeId"}
+                  value={field.value}
+                  onValueChange={field.onChange}
                 />
               )}
             />

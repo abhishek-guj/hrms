@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
+  useCreateTravelEmployees,
+  useDeleteTravelEmployees,
   useTravelEmployees,
   useUpdateTravelEmployees,
 } from "../queries/travelPlans.queries";
@@ -9,9 +11,12 @@ import AssignEmloyeeSelect from "./forms/AssignEmloyeeSelect";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { api } from "../../../api/apiClient";
-import { Trash2 } from "lucide-react";
+import { Trash, Trash2 } from "lucide-react";
 import AssignedEmployeeCard from "../TravelEmployees/AssignedEmployeeCard";
 import { RoleUtil } from "../../../auth/role.util";
+import TravelEmployeeSelect from "../TravelEmployees/TravelEmployeeSelect";
+import { Controller } from "react-hook-form";
+import { useEmployeesAll } from "../../shared/services/employee.queries";
 
 const TravelPlanEmployeesOLD = () => {
   // getting id of open travel plan
@@ -19,49 +24,24 @@ const TravelPlanEmployeesOLD = () => {
 
   // query hook
   const { data, error, isLoading } = useTravelEmployees(id!); // exclamation to supress undefined error
+  const { data: travelEmployees, isLoading: travelEmployeesLoading } =
+    useEmployeesAll(id);
 
-  const updateTravelEmployees = useUpdateTravelEmployees();
+  const createTravelEmployees = useCreateTravelEmployees();
+  const deleteTravelEmployees = useDeleteTravelEmployees();
 
   // stats
   const [selected, setSelected] = useState([]);
 
-  console.log(data);
+  const handleRemove = async (data) => {
+    console.log(data);
 
-  const employees = [
-    { id: "1", name: "ad" },
-    { id: "2", name: "man" },
-    { id: "3", name: "man2" },
-    { id: "4", name: "emp" },
-    { id: "5", name: "employee" },
-    { id: "6", name: "employee3" },
-    { id: "7", name: "employee4" },
-    { id: "8", name: "employee05" },
-    { id: "9", name: "employee06" },
-    { id: "10", name: "employee07" },
-    { id: "11", name: "employee08" },
-    { id: "12", name: "employee09" },
-  ];
-
-  useEffect(() => {
-    if (!data) return;
-    const ids = data?.map((d) => d.id);
-    setSelected((prev) => [...prev, ...ids]);
-  }, [data]);
-
-  // handlers
-  const handleChange = (value) => {
-    const id = Number(value);
-    if (!selected.includes(id)) {
-      setSelected((prev) => [...prev, id]);
-    }
+    await deleteTravelEmployees.mutateAsync({ id: id, employeeId: data });
   };
 
-  const handleRemove = (id) => {
-    setSelected((prev) => prev.filter((pid) => pid !== Number(id)));
-  };
-
-  const handleSubmit = () => {
-    updateTravelEmployees.mutateAsync({ id: id, payload: selected });
+  const handleSubmit = async () => {
+    await createTravelEmployees.mutateAsync({ id: id, payload: selected });
+    setSelected([]);
   };
 
   if (error) {
@@ -75,26 +55,46 @@ const TravelPlanEmployeesOLD = () => {
       <CardHeader>
         <CardTitle>Travel Employees</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-wrap gap-5 justify-center">
         {(RoleUtil.isAdmin || RoleUtil.isHr) && (
-          <AssignEmloyeeSelect onValueChange={handleChange} />
+          <div className="w-1/2">
+            // <AssignEmloyeeSelect onValueChange={handleChange} />
+            <>
+              <TravelEmployeeSelect
+                name={"hrIds"}
+                onValueChange={setSelected}
+                multiSelectValues={selected}
+                multiSelectValuesChange={setSelected}
+                // errors={errors.hrIds}
+                displayName={"HRs"}
+                data={travelEmployees}
+                isLoading={travelEmployeesLoading}
+              />
+
+              <Button onClick={handleSubmit}>Add</Button>
+            </>
+          </div>
         )}
-        <div className="py-4 flex flex-wrap gap-1.5">
-          {employees
-            ?.filter((emp) => selected.includes(Number(emp.id)))
-            .map((emp) => {
-              return (
-                <AssignedEmployeeCard
-                  key={emp.id}
-                  handleRemove={handleRemove}
-                  emp={emp}
-                />
-              );
-            })}
+        <div className="border p-4 flex flex-col gap-1 grow max-h-max h-full overflow-auto">
+          {data?.map((d) => (
+            <div
+              key={d.id}
+              className="flex border-b p-2 justify-between items-center"
+            >
+              <div>{d.firstName}</div>
+              {(RoleUtil.isAdmin || RoleUtil.isHr) && (
+                <Button
+                  size={"xs"}
+                  onClick={() => {
+                    handleRemove(d.id);
+                  }}
+                >
+                  <Trash />
+                </Button>
+              )}
+            </div>
+          ))}
         </div>
-        {(RoleUtil.isAdmin || RoleUtil.isHr) && (
-          <Button onClick={handleSubmit}>Update</Button>
-        )}
       </CardContent>
     </Card>
   );

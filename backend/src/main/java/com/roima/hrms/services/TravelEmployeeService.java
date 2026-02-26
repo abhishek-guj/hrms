@@ -112,15 +112,11 @@ public class TravelEmployeeService {
     }
 
     @Transactional
-    public boolean deleteTravelEmployees(Long travelPlanId, List<TravelEmployeeReqDto> dto) {
-        dto.forEach(employee -> {
-            try {
-                travelEmployeeRepository.removeTravelEmployeesByTravelPlan_IdAndEmployeeProfile_Id(travelPlanId,
-                        employee.getId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+    public boolean deleteTravelEmployees(Long travelPlanId, Long employeeId) {
+        travelEmployeeRepository
+                .removeTravelEmployeesByTravelPlan_IdAndEmployeeProfile_Id(
+                        travelPlanId,
+                        employeeId);
         return true;
     }
 

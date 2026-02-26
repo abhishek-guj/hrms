@@ -42,8 +42,30 @@ const TravelPlanCreateForm = () => {
 
   // handlers
   const onSubmit: SubmitHandler<TravelPlanSchemaType> = async (data) => {
-    const resData = await create.mutateAsync({ payload: data });
-    navigate("/travel/plans");
+    const strStartDate = data?.startDate;
+    strStartDate.setTime(
+      strStartDate.getTime() - strStartDate.getTimezoneOffset() * 60000,
+    );
+    const strEndDate = data?.endDate;
+    strEndDate.setTime(
+      strEndDate.getTime() - strEndDate.getTimezoneOffset() * 60000,
+    );
+    const strSubmissionDate = data?.lastDateOfExpenseSubmission;
+    strSubmissionDate.setTime(
+      strSubmissionDate.getTime() -
+        strSubmissionDate.getTimezoneOffset() * 60000,
+    );
+
+    const newData = {
+      ...data,
+      startDate: strStartDate.toISOString(),
+      endDate: strEndDate.toISOString(),
+      lastDateOfExpenseSubmission: strSubmissionDate.toISOString(),
+    };
+
+    console.log();
+    const resData = await create.mutateAsync({ payload: newData });
+    // navigate("/travel/plans");
   };
   // handlers
 
