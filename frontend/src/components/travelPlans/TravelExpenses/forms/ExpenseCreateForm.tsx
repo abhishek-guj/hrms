@@ -26,6 +26,7 @@ import FormSelect from "./FormSelect";
 import { DatePickerInput } from "../../../ui/date-picker";
 import { Button } from "../../../ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { TravelPlanDto } from "../../types/TravelPlan.types";
 
 const ExpenseCreateForm = () => {
   // navigate
@@ -37,8 +38,7 @@ const ExpenseCreateForm = () => {
   // query hooks
   const createTravelExpense = useCreateTravelExpense();
   // query hooks
-  const { data, travel } = useOutletContext();
-  console.log(data, travel);
+  const { travel } = useOutletContext<{ travel: TravelPlanDto }>();
   //
   const { data: expenseData } = useExpenseTypes();
 
@@ -57,9 +57,7 @@ const ExpenseCreateForm = () => {
 
   // handlers
   const onSubmit: SubmitHandler<LoginFormType> = async (data) => {
-    console.log("before save expense", data);
     const resData = await createTravelExpense.mutateAsync({ payload: data });
-    console.log("save expense", resData);
   };
   // handlers
 
@@ -100,7 +98,12 @@ const ExpenseCreateForm = () => {
               id="expenseAmount"
               type="number"
               placeholder="100..."
-              {...register("expenseAmount")}
+              {...register("expenseAmount", {
+                max: {
+                  value: travel?.maxAmountPerDay,
+                  message: "cant be more than max amount of day",
+                },
+              })}
             />
             {errors.expenseAmount && (
               <FieldError errors={[errors.expenseAmount]} />

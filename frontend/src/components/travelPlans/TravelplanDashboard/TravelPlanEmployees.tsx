@@ -58,21 +58,18 @@ const TravelPlanEmployeesOLD = () => {
       <CardContent className="flex flex-wrap gap-5 justify-center">
         {(RoleUtil.isAdmin || RoleUtil.isHr) && (
           <div className="w-1/2">
-            // <AssignEmloyeeSelect onValueChange={handleChange} />
-            <>
-              <TravelEmployeeSelect
-                name={"hrIds"}
-                onValueChange={setSelected}
-                multiSelectValues={selected}
-                multiSelectValuesChange={setSelected}
-                // errors={errors.hrIds}
-                displayName={"HRs"}
-                data={travelEmployees}
-                isLoading={travelEmployeesLoading}
-              />
+            <TravelEmployeeSelect
+              name={"hrIds"}
+              onValueChange={setSelected}
+              multiSelectValues={selected}
+              multiSelectValuesChange={setSelected}
+              // errors={errors.hrIds}
+              displayName={"HRs"}
+              data={travelEmployees}
+              isLoading={travelEmployeesLoading}
+            />
 
-              <Button onClick={handleSubmit}>Add</Button>
-            </>
+            <Button onClick={handleSubmit}>Add</Button>
           </div>
         )}
         <div className="border p-4 flex flex-col gap-1 grow max-h-max h-full overflow-auto">

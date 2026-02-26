@@ -21,7 +21,7 @@ public interface TravelExpenseRepository extends JpaRepository<TravelExpense, Lo
     // GETTING ALL EXPENSES WITHOUT ANY TRAVEL ID
     // for admin hr
     @Override
-    @Query(value = "SELECT te,tp From TravelExpense te join fetch te.travelPlan tp where tp.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
+    @Query(value = "SELECT te,tp From TravelExpense te join fetch te.travelPlan tp where tp.isDeleted = false order by te.id desc")
     List<TravelExpense> findAll();
 
     // get all expenses under this manager
@@ -38,7 +38,7 @@ public interface TravelExpenseRepository extends JpaRepository<TravelExpense, Lo
     //
 
     // GETTING ALL EXPENSES BY ANY TRAVEL ID
-    @Query("SELECT te,tp From TravelExpense te join fetch te.travelPlan tp where tp.id = :travelPlanId and tp.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")
+    @Query("SELECT te,tp From TravelExpense te join fetch te.travelPlan tp where tp.id = :travelPlanId and tp.isDeleted = false order by te.id desc")
     List<TravelExpense> findAllByTravelId(Long travelPlanId);
 
     @Query(value = "select te from TravelExpense te join te.submittedBy ep where ep.manager.id = :managerId and te.travelPlan.id = :travelPlanId and te.travelPlan.isDeleted = false order by te.submittedBy.id, te.expenseUploadDate")

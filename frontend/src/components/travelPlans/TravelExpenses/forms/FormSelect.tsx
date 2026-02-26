@@ -24,16 +24,30 @@ const FormSelect = ({ data, name, value, onValueChange, type }) => {
           <SelectValue placeholder="Select" />
         </SelectTrigger>
         <SelectContent position="item-aligned">
-          {data?.map((d) => {
-            return (
-              <SelectItem key={d?.id} value={`${d?.id}`}>
-                {type === "job" ? d?.jobTitle : d?.name}
-              </SelectItem>
-            );
-          })}
+          {data?.map((d) => (
+            <FormSelectItem type={type} d={d} />
+          ))}
         </SelectContent>
       </Select>
     </Field>
+  );
+};
+
+const FormSelectItem = ({ type, d }) => {
+  let val;
+
+  if (type === "job") {
+    val = d?.jobTitle;
+  } else if (type === "travel") {
+    val = `${d?.firstName} ${d?.lastName}`;
+  } else {
+    val = d?.name;
+  }
+
+  return (
+    <SelectItem key={d?.id} value={`${d?.id}`}>
+      {val}
+    </SelectItem>
   );
 };
 

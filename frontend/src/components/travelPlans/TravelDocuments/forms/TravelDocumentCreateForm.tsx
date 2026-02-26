@@ -18,8 +18,15 @@ import {
 import FormSelect from "../../TravelExpenses/forms/FormSelect";
 import AssignEmloyeeSelect from "../../TravelplanDashboard/forms/AssignEmloyeeSelect";
 import type { TravelDocumentCreateDto } from "../../types/TravelPlan.types";
+import EmployeeSelect from "../../TravelExpenses/forms/EmployeeSelect";
+import TravelEmployeeSelect from "../../TravelEmployees/TravelEmployeeSelect";
+import { useEmployeesTravelPlan } from "../../../shared/services/employee.queries";
+import { useState } from "react";
+import { RoleUtil } from "../../../../auth/role.util";
 
 const TravelDocumentCreateForm = () => {
+  const [uploadFor, setUplaodFor] = useState([]);
+
   // navigate
   const navigate = useNavigate();
   // navigate
@@ -29,6 +36,9 @@ const TravelDocumentCreateForm = () => {
   // query hooks
   const create = useCreateTravelDocument();
   const { data: docTypes } = useTravelDocumentTypes();
+  const { data: travelEmployees, isLoading: travelEmployeesLoading } =
+    useEmployeesTravelPlan(id);
+
   // query hooks
 
   // react form
@@ -61,23 +71,29 @@ const TravelDocumentCreateForm = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>
         <FieldSet className="grid grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="uploadedForEmployeeId">Upload For</FieldLabel>
-            <Controller
-              name="uploadedForEmployeeId"
-              control={control}
-              render={({ field, fieldState }) => (
-                <AssignEmloyeeSelect
-                  name={"uploadedForEmployeeId"}
-                  value={field.value}
-                  onValueChange={field.onChange}
-                />
+          {(RoleUtil.isAdmin || RoleUtil.isManager) && (
+            <Field>
+              <FieldLabel htmlFor="uploadedForEmployeeId">
+                Upload For
+              </FieldLabel>
+              <Controller
+                name="uploadedForEmployeeId"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <FormSelect
+                    data={travelEmployees}
+                    name={"uploadedForEmployeeId"}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    type={"travel"}
+                  />
+                )}
+              />
+              {errors.uploadedForEmployeeId && (
+                <FieldError errors={[errors.uploadedForEmployeeId]} />
               )}
-            />
-            {errors.uploadedForEmployeeId && (
-              <FieldError errors={[errors.uploadedForEmployeeId]} />
-            )}
-          </Field>
+            </Field>
+          )}
         </FieldSet>
         <FieldSet>
           <Field>

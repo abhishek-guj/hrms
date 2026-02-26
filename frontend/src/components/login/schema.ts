@@ -1,6 +1,10 @@
 import { min } from "date-fns";
 import * as z from "zod";
 
+const fileSchema = z.custom<File>();
+
+
+
 // used in login form
 export const LoginFormSchema = z.object({
 	email: z.email({ message: "Please enter valid email" }),
@@ -62,14 +66,14 @@ export const EmployeeExpenseSchema = z.object({
 		}),
 	expenseDate: z.date(),
 	// files: z.array(z.file()).min(1, { error: "atleast one file is requried" }),
-	files: z.instanceof(FileList).transform((fileList) => fileList[0])
-		.refine((file) => !!file, { message: "File is required" })
+	files: z.instanceof(FileList)
+		.refine((file) => !!file[0], { message: "File is required" })
+
 });
 // used in creating expense
 
 
 
-const fileSchema = z.custom<File>();
 // used in referring job form
 export const JobReferralSchema = z.object({
 	jobId: z.string().min(1, { error: "select one job" }),
@@ -88,9 +92,11 @@ export const TravelDocumentSchema = z.object({
 	travelPlanId: z.string(),
 	uploadedForEmployeeId: z.string(),
 	documentTypeId: z.string().min(1, { error: "select document type" }),
-	file: z.array(fileSchema).length(1)
-		.refine((file) => !!file, { message: "File is required" })
-		.refine((data) => ["application/pdf", "image/png", "image/jpeg", "image/jpg"].includes(data.type), { message: "Invlaid file type" })
+	file: z.instanceof(FileList)
+		.refine((file) => !!file[0], { message: "File is required" })
+	// file: z.array(fileSchema).length(1)
+	// 	.refine((file) => !!file, { message: "File is required" })
+	// 	.refine((data) => ["application/pdf", "image/png", "image/jpeg", "image/jpg"].includes(data.type), { message: "Invlaid file type" })
 })
 
 // used in referring job form

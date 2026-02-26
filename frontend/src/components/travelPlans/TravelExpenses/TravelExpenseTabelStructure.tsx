@@ -148,14 +148,15 @@ export const TravelExpenseTableColumns: ColumnDef<TravelExpenseDto>[] = [
           </Link>
         </Button>
 
-        {!RoleUtil.isThisManager(getValue()) && (
-          <Button asChild variant={"outline"}>
-            <Link to={`${row.getValue("id")}/delete`} className="border">
-              <Trash className="h-4 w-4" />
-              <span className="hidden lg:block">Delete</span>
-            </Link>
-          </Button>
-        )}
+        {!RoleUtil.isThisManager(getValue()) &&
+          row.getValue("status") === "Pending" && (
+            <Button asChild variant={"outline"}>
+              <Link to={`${row.getValue("id")}/delete`} className="border">
+                <Trash className="h-4 w-4" />
+                <span className="hidden lg:block">Delete</span>
+              </Link>
+            </Button>
+          )}
       </div>
     ),
   },
@@ -164,6 +165,10 @@ export const TravelExpenseTableColumns: ColumnDef<TravelExpenseDto>[] = [
 if (RoleUtil.isAdmin || RoleUtil.isHr)
   TravelExpenseTableColumns.push({
     id: "changeStatus",
+    accessorFn: (row) => row.status,
+    accessorKey: "changeStatus",
     header: () => <div className="text-center">Change Status</div>,
-    cell: ({ row }) => <StatusUpdate id={row.getValue("id")} />,
+    cell: ({ row, getValue }) => (
+      <StatusUpdate id={row.getValue("id")} status={getValue()} />
+    ),
   });

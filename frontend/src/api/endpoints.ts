@@ -41,7 +41,7 @@ export const TRAVEL_DOCUMENTS_ENDPOINTS = {
 export const EXPENSE_ENDPOINTS = {
 	create: () => `/travel-expense`,
 	delete: (id: string) => `/travel-expense/${id}`,
-	// getTravelExpenseById: (id: string) => `/travel-expense/${id}`,
+	getTravelExpenseById: (id: string) => `/travel-expense/${id}`,
 };
 
 export const EXPENSE_TYPES_ENDPOINTS = {

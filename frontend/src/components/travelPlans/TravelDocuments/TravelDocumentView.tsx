@@ -16,7 +16,7 @@ const TravelDocumentView = () => {
   const navigate = useNavigate();
   const { id, documentId } = useParams<{ id: string; documentId: string }>();
 
-  const { data } = useTravelDocumentById(id, documentId);
+  const { data, isLoading } = useTravelDocumentById(id, documentId);
 
   console.log(data);
 
@@ -24,6 +24,9 @@ const TravelDocumentView = () => {
     navigate(`/travel/plans/${id}/documents`);
   };
 
+  if (isLoading) {
+    return <div> Loading... </div>;
+  }
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-1/2 sm:w-1/2 sm:max-h-10/12 sm:h-screen/50  flex flex-col overflow-hidden">
