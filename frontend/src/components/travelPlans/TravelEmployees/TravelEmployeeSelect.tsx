@@ -15,6 +15,7 @@ const TravelEmployeeSelect = ({
   displayName,
   isLoading,
   data,
+  removeMySelf = true,
   ...props
 }: {
   data?: any;
@@ -26,6 +27,7 @@ const TravelEmployeeSelect = ({
   errors?: any;
   displayName?: any;
   isLoading?: any;
+  removeMySelf?: any,
 }) => {
   if (isLoading) {
     <div className="flex flex-row justify-center items-center min-w-30 border">
@@ -42,6 +44,7 @@ const TravelEmployeeSelect = ({
       errors={errors}
       displayName={displayName}
       type={null}
+      removeMySelf={removeMySelf}
     />
   );
 };

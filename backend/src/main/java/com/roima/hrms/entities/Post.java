@@ -3,8 +3,13 @@ package com.roima.hrms.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder.Default;
+
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
@@ -13,8 +18,11 @@ import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Table(name = "posts", schema = "social")
+@Table(name = "post", schema = "social")
 public class Post {
 
     @Id
@@ -48,9 +56,9 @@ public class Post {
     @Column(name = "is_system_generated")
     private Boolean isSystemGenerated;
 
-    @ColumnDefault("false")
+    @ColumnDefault("0")
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
     /** Nullable – only set when a post is deleted */
     @Column(name = "deleted_by")
@@ -60,9 +68,9 @@ public class Post {
     @Column(name = "delete_reason")
     private String deleteReason;
 
-    @ColumnDefault("true")
+    @ColumnDefault("1")
     @Column(name = "visible_to_all", nullable = false)
-    private Boolean visibleToAll = true;
+    private Boolean visibleToAll;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PostTag> postTags = new HashSet<>();

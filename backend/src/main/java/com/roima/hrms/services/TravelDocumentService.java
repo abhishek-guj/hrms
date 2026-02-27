@@ -1,6 +1,5 @@
 package com.roima.hrms.services;
 
-
 import com.roima.hrms.dtos.req.TravelDocumentReqDto;
 import com.roima.hrms.dtos.res.TravelDocumentDto;
 import com.roima.hrms.dtos.res.TravelExpenseDto;
@@ -31,7 +30,10 @@ public class TravelDocumentService {
     private final TravelEmployeeRepository travelEmployeeRepository;
     private final FileService fileService;
 
-    public TravelDocumentService(TravelDocumentRepository travelDocumentRepository, TravelDocumentTypeRepository travelDocumentTypeRepository, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, ModelMapper modelMapper, RoleUtil roleUtil, TravelEmployeeRepository travelEmployeeRepository, FileService fileService) {
+    public TravelDocumentService(TravelDocumentRepository travelDocumentRepository,
+            TravelDocumentTypeRepository travelDocumentTypeRepository, TravelPlanRepository travelPlanRepository,
+            EmployeeProfileRepository employeeProfileRepository, ModelMapper modelMapper, RoleUtil roleUtil,
+            TravelEmployeeRepository travelEmployeeRepository, FileService fileService) {
         this.travelDocumentRepository = travelDocumentRepository;
         this.travelDocumentTypeRepository = travelDocumentTypeRepository;
         this.travelPlanRepository = travelPlanRepository;
@@ -44,14 +46,16 @@ public class TravelDocumentService {
 
     @Transactional
     public TravelDocumentDto createTravelDocument(TravelDocumentReqDto dto) {
-        TravelPlan travelPlan = travelPlanRepository.findById(dto.getTravelPlanId()).orElseThrow(TravelPlanNotFoundException::new);
-//        EmployeeProfile uploadedBy = employeeProfileRepository.findById(dto.getUploadedByEmployeeId()).orElseThrow(EmployeeNotFoundException::new);
-        EmployeeProfile uploadedBy = roleUtil.getCurrentEmployee();
-//        EmployeeProfile uploadedFor = employeeProfileRepository.findById(dto.getUploadedForEmployeeId()).orElseThrow(EmployeeNotFoundException::new);
-        TravelDocumentType travelDocumentType = travelDocumentTypeRepository.findById(dto.getDocumentTypeId()).orElseThrow(TravelDocumentTypeNotFoundException::new);
+        TravelPlan travelPlan = travelPlanRepository.findById(dto.getTravelPlanId())
+                .orElseThrow(TravelPlanNotFoundException::new);
 
+        EmployeeProfile uploadedBy = roleUtil.getCurrentEmployee();
+
+        TravelDocumentType travelDocumentType = travelDocumentTypeRepository.findById(dto.getDocumentTypeId())
+                .orElseThrow(TravelDocumentTypeNotFoundException::new);
 
         String ownerType = null;
+
         EmployeeProfile uploadedFor = null;
         if (roleUtil.isHr() || roleUtil.isAdmin()) {
             ownerType = "Hr";
@@ -60,19 +64,20 @@ public class TravelDocumentService {
                 throw new IllegalArgumentException("HR must provide employee id for whom it is uploaded.");
             }
 
-            uploadedFor = employeeProfileRepository.findById(dto.getUploadedForEmployeeId()).orElseThrow(EmployeeNotFoundException::new);
-        } else if (roleUtil.isEmployee()) {
+            uploadedFor = employeeProfileRepository.findById(dto.getUploadedForEmployeeId())
+                    .orElseThrow(EmployeeNotFoundException::new);
+        } else {
             ownerType = "employee";
             uploadedFor = uploadedBy; // currently putting uploaded for same as uploaded by
         }
 
         // checking if the employee blongs to plan
-        boolean exists = travelEmployeeRepository.existsByTravelPlanAndEmployeeProfile(travelPlan, uploadedFor);
+        boolean exists = travelEmployeeRepository.existsByTravelPlanAndEmployeeProfile_Id(travelPlan,
+                uploadedFor.getId());
 
         if (!exists) {
             throw new RuntimeException("Employee not assigned to travelplan");
         }
-
 
         // checking files
         if (dto.getFile() == null || dto.getFile().isEmpty()) {
@@ -103,12 +108,12 @@ public class TravelDocumentService {
         List<TravelDocument> travelDocuments = null;
 
         if (roleUtil.isEmployee()) {
-            travelDocuments = travelDocumentRepository.getTravelDocumentsByUploadedForEmployee_IdAndTravelPlan_Id(roleUtil.getCurrentEmployeeId(), travelPlanId);
+            travelDocuments = travelDocumentRepository.getTravelDocumentsByUploadedForEmployee_IdAndTravelPlan_Id(
+                    roleUtil.getCurrentEmployeeId(), travelPlanId);
         } else if (roleUtil.isManager()) {
-//            boolean exists = travelEmployeeRepository.findByTravelPlan_Id(travelPlanId).stream().anyMatch(tp -> tp.getEmployeeProfile().getManager().getId() == roleUtil.getCurrentEmployeeId());
-//            if (exists) {
-                travelDocuments = travelDocumentRepository.getTravelDocumentsByManagerId(roleUtil.getCurrentEmployeeId(), travelPlanId);
-//            }
+            travelDocuments = travelDocumentRepository.getTravelDocumentsByManagerId(roleUtil.getCurrentEmployeeId(),
+                    travelPlanId);
+            // }
         } else {
             travelDocuments = travelDocumentRepository.getTravelDocumentsByTravelPlan_Id(travelPlanId);
         }
@@ -120,19 +125,21 @@ public class TravelDocumentService {
         TravelDocument travelDocument = null;
 
         if (roleUtil.isEmployee()) {
-            travelDocument = travelDocumentRepository.getTravelDocumentByIdForEmployee(travelDocumentID, roleUtil.getCurrentEmployeeId());
+            travelDocument = travelDocumentRepository.getTravelDocumentByIdForEmployee(travelDocumentID,
+                    roleUtil.getCurrentEmployeeId());
         } else if (roleUtil.isManager()) {
-            travelDocument = travelDocumentRepository.getTravelDocumentByManagerId(roleUtil.getCurrentEmployeeId(), travelDocumentID);
+            travelDocument = travelDocumentRepository.getTravelDocumentByManagerId(roleUtil.getCurrentEmployeeId(),
+                    travelDocumentID);
         } else {
             travelDocument = travelDocumentRepository.getTravelDocumentById(travelDocumentID);
         }
         return toTravelDocumentDto(travelDocument);
     }
 
-
     @Transactional
     public void deleteTravelDocument(Long travelDocumentId) {
-        TravelDocument travelDocument = travelDocumentRepository.findById(travelDocumentId).orElseThrow(() -> new IllegalArgumentException("Travel Document not found"));
+        TravelDocument travelDocument = travelDocumentRepository.findById(travelDocumentId)
+                .orElseThrow(() -> new IllegalArgumentException("Travel Document not found"));
 
         travelDocument.setDeletedBy(roleUtil.getCurrentEmployeeId());
         travelDocument.setIsDeleted(true);
@@ -144,8 +151,8 @@ public class TravelDocumentService {
         // not created another file for this small service. single mappping only
 
         // not working currently
-//        var a = modelMapper.map(travelDocument, TravelDocumentDto.class);
-//        return a;
+        // var a = modelMapper.map(travelDocument, TravelDocumentDto.class);
+        // return a;
 
         TravelDocumentDto dto = TravelDocumentDto.builder()
                 .id(travelDocument.getId())
@@ -153,9 +160,11 @@ public class TravelDocumentService {
                 .travelPlanPurpose(travelDocument.getTravelPlan().getPurpose())
                 .ownerType(travelDocument.getOwnerType())
                 .uploadedById(travelDocument.getUploadedByEmployee().getId())
-                .uploadedByName(travelDocument.getUploadedByEmployee().getFirstName() + " " + travelDocument.getUploadedByEmployee().getLastName())
+                .uploadedByName(travelDocument.getUploadedByEmployee().getFirstName() + " "
+                        + travelDocument.getUploadedByEmployee().getLastName())
                 .uploadedForId(travelDocument.getUploadedForEmployee().getId())
-                .uploadedForName(travelDocument.getUploadedForEmployee().getFirstName() + " " + travelDocument.getUploadedForEmployee().getLastName())
+                .uploadedForName(travelDocument.getUploadedForEmployee().getFirstName() + " "
+                        + travelDocument.getUploadedForEmployee().getLastName())
                 .uploadDate(travelDocument.getUploadDate())
                 .documentTypeId(travelDocument.getDocumentType().getId())
                 .documentTypeName(travelDocument.getDocumentType().getName())

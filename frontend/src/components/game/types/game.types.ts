@@ -21,6 +21,8 @@ export interface GameSlotDto {
 export interface SlotDetailsDto {
     gameSlot: GameSlotDto;
     canBook: boolean;
+    inGroup: boolean;
+
     // max players in group
     // queue in waiting list
 }

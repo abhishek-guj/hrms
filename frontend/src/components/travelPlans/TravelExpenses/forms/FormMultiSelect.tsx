@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import type { EmployeeProfileDto } from "../../../job/types/job.types";
 import SearchInput from "../../TravelplanDashboard/Shared/SearchInput";
+import { RoleUtil } from "../../../../auth/role.util";
 
 const FormMultiSelect = ({
   data,
@@ -23,17 +24,19 @@ const FormMultiSelect = ({
   multiSelectValuesChange,
   errors,
   displayName,
+  removeMySelf = true,
   ...props
 }: {
-  data?: any;
-  name?: any;
-  value?: any;
-  onValueChange?: any;
-  type?: any;
-  multiSelectValues?: any;
-  multiSelectValuesChange?: any;
-  errors?: any;
-  displayName?: any;
+  data?: any,
+  name?: any,
+  value?: any,
+  onValueChange?: any,
+  type?: any,
+  multiSelectValues?: any,
+  multiSelectValuesChange?: any,
+  errors?: any,
+  displayName?: any,
+  removeMySelf?: any,
 }) => {
   const handleRemove = (id) => {
     const ids = multiSelectValues.filter((e) => e !== id);
@@ -65,7 +68,6 @@ const FormMultiSelect = ({
   return (
     <Field orientation="responsive">
       <FieldLabel htmlFor={name}>{displayName}</FieldLabel>
-      <SearchInput globalFilter={filterKey} setGlobalFilter={setFilterKey} />
       <Select
         name={name}
         onValueChange={(event) => {
@@ -79,13 +81,15 @@ const FormMultiSelect = ({
         <SelectTrigger id="form-rhf-select-language" className="min-w-[120px]">
           <SelectValue placeholder={"Select"} />
         </SelectTrigger>
-        <SelectContent position="item-aligned">
+        <SelectContent position="popper" className="border border-red-700 h-64">
+          <SearchInput globalFilter={filterKey} setGlobalFilter={setFilterKey} />
           {filterData?.map((d) => {
-            return (
-              <SelectItem key={d?.id} value={`${d?.id}`}>
-                {`${d?.firstName} ${d?.lastName}`}
-              </SelectItem>
-            );
+            if (!multiSelectValues?.includes(d.id))
+              return (
+                <SelectItem key={d?.id} value={`${d?.id}`}>
+                  {`${d?.firstName} ${d?.lastName}`}
+                </SelectItem>
+              );
           })}
         </SelectContent>
       </Select>
@@ -98,15 +102,17 @@ const FormMultiSelect = ({
               className="flex gap-2 justify-center items-center text-sm"
             >
               {`${result?.firstName} ${result?.lastName}`}
-              <Button
-                variant={"outline"}
-                className="p-0 w-4 h-6"
-                onClick={() => {
-                  handleRemove(selected);
-                }}
-              >
-                <Trash className="h-3 w-3 m-0 p-0 text-primary" />
-              </Button>
+              {((!removeMySelf && `${RoleUtil.myId}` !== `${result?.id}`) || (removeMySelf)) &&
+                <Button
+                  variant={"outline"}
+                  className="p-0 w-4 h-6"
+                  onClick={() => {
+                    handleRemove(selected);
+                  }}
+                >
+                  <Trash className="h-3 w-3 m-0 p-0 text-primary" />
+                </Button>
+              }
             </Badge>
           );
         })}

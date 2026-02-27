@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from "../../../../lib/utils";
+import { FieldInput } from "../../../game/forms/BookGameSlotForm";
 import {
   TravelPlanSchema,
   type TravelPlanSchemaType,
@@ -12,11 +13,8 @@ import {
 import { DatePickerInput } from "../../../ui/date-picker";
 import { FieldError, FieldSet } from "../../../ui/field";
 import { Separator } from "../../../ui/separator";
-import type { LoginFormType } from "../../loginForm.types";
 import { useCreateTravelPlan } from "../../queries/travelPlans.queries";
 import TravelTypeSelect from "./TravelTypeSelect";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldInput } from "../../../game/forms/BookGameSlotForm";
 
 const TravelPlanCreateForm = () => {
   // navigate
@@ -42,30 +40,16 @@ const TravelPlanCreateForm = () => {
 
   // handlers
   const onSubmit: SubmitHandler<TravelPlanSchemaType> = async (data) => {
-    const strStartDate = data?.startDate;
-    strStartDate.setTime(
-      strStartDate.getTime() - strStartDate.getTimezoneOffset() * 60000,
-    );
-    const strEndDate = data?.endDate;
-    strEndDate.setTime(
-      strEndDate.getTime() - strEndDate.getTimezoneOffset() * 60000,
-    );
-    const strSubmissionDate = data?.lastDateOfExpenseSubmission;
-    strSubmissionDate.setTime(
-      strSubmissionDate.getTime() -
-        strSubmissionDate.getTimezoneOffset() * 60000,
-    );
 
     const newData = {
       ...data,
-      startDate: strStartDate.toISOString(),
-      endDate: strEndDate.toISOString(),
-      lastDateOfExpenseSubmission: strSubmissionDate.toISOString(),
+      startDate: formatDate(data?.startDate),
+      endDate: formatDate(data?.endDate),
+      lastDateOfExpenseSubmission: formatDate(data?.lastDateOfExpenseSubmission),
     };
 
-    console.log();
     const resData = await create.mutateAsync({ payload: newData });
-    // navigate("/travel/plans");
+    navigate("/travel/plans");
   };
   // handlers
 
@@ -215,6 +199,9 @@ const TravelPlanCreateForm = () => {
       </FieldGroup>
     </form>
   );
+
+
 };
 
 export default TravelPlanCreateForm;
+

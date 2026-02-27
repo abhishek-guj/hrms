@@ -23,7 +23,7 @@ const TravelExpenseView = () => {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-fit w-fit max-h-10/12 h-screen/50">
+      <DialogContent className="max-w-fit w-fit max-h-10/12 h-screen/50 overflow-hidden">
         <DialogHeader>
           <DialogTitle>View Expense</DialogTitle>
         </DialogHeader>

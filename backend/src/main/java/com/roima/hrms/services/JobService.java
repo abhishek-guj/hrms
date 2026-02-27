@@ -47,13 +47,25 @@ public class JobService {
     private final ModelMapper modelMapper;
     private final JobJdFileRepository jobJdFileRepository;
 
-    public JobService(JobRepository jobRepository, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository,
-            EmployeeProfileRepository employeeProfileRepository, FileService fileService,
-            ExpenseDocumentRepository expenseDocumentRepository, JobMapper jobMapper, EmailService emailService,
-            JobShareRepository jobShareRepository, JobReferralRepository jobReferralRepository,
-            NotificationService notificationService, ModelMapper modelMapper, JobHrRepository jobHrRepository,
+    // constructor
+    public JobService(
+            JobRepository jobRepository,
+            RoleUtil roleUtil,
+            TravelPlanRepository travelPlanRepository,
+            EmployeeProfileRepository employeeProfileRepository,
+            FileService fileService,
+            ExpenseDocumentRepository expenseDocumentRepository,
+            JobMapper jobMapper,
+            EmailService emailService,
+            JobShareRepository jobShareRepository,
+            JobReferralRepository jobReferralRepository,
+            NotificationService notificationService,
+            ModelMapper modelMapper,
+            JobHrRepository jobHrRepository,
             JobCvReviewerRepository jobCvReviewerRepository,
-            JobJdFileRepository jobJdFileRepository) {
+            JobJdFileRepository jobJdFileRepository
+
+    ) {
         this.jobRepository = jobRepository;
         this.roleUtil = roleUtil;
         this.travelPlanRepository = travelPlanRepository;
@@ -92,14 +104,7 @@ public class JobService {
 
     public JobDto getById(Long id) {
         Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job Not Found!"));
-        // this will be returned f admin or hr
-        // if (roleUtil.isAdmin() || roleUtil.isHr() || roleUtil.isManager() ||
-        // roleUtil.isEmployee()) {
-        // return jobMapper.toJobDto(job);
-        // } else {
-        // // for normal public
-        // JobDto jobDto = jobMapper.toJobDto(job);
-        // }
+
         List<String> hrs = jobHrRepository.findAllByJob(
                 job).stream().map(hr -> hr.getHr().getId().toString())
                 .toList();
@@ -159,16 +164,6 @@ public class JobService {
 
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found."));
 
-        // check if files not null
-        // if (dto.getJobJdFile() == null || dto.getJobJdFile().isEmpty()) {
-        // throw new RuntimeException("Please upload at least 1 document");
-        // }
-
-        // fileService.validateFile(dto.getJobJdFile());
-
-        // String filePath = fileService.store(dto.getJobJdFile(), "job");
-
-        // converting to entity
         job.setJobTitle(dto.getJobTitle());
         job.setJobDetails(dto.getJobDetails());
         job.setExperienceYears(dto.getExperienceYears());
@@ -233,6 +228,12 @@ public class JobService {
             }
         }
 
+    }
+
+    public void getShares() {
+        // todo: later complete this and make corresponding page in frontend
+        List<JobShare> jobShares = jobShareRepository.findAllOrderByDesc();
+        // return jobShares.stream().map(null).toList();
     }
 
     @Transactional

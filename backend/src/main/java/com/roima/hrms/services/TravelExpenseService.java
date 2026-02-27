@@ -114,16 +114,14 @@ public class TravelExpenseService {
         // checking amount for the day
         BigDecimal totalAmountForExpenseDate = travelExpenseRepository
                 .sumOfExpenseDateByEmployee(roleUtil.getCurrentEmployee(),
-                        LocalDate.parse(dto.getExpenseDate().substring(0, 10))
-                    ,
-                travelPlan
-                );
+                        LocalDate.parse(dto.getExpenseDate().substring(0, 10)),
+                        travelPlan);
 
         BigDecimal tmpTotal = null;
         if (totalAmountForExpenseDate != null) {
             tmpTotal = totalAmountForExpenseDate.add(dto.getExpenseAmount());
         } else {
-            tmpTotal = BigDecimal.valueOf(0L);
+            tmpTotal = dto.getExpenseAmount();
         }
 
         //
@@ -215,9 +213,17 @@ public class TravelExpenseService {
         }
     }
 
+    @Transactional
     public void deleteTravelExpense(Long id) {
         TravelExpense travelExpense = travelExpenseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
+
+        boolean status = travelExpense.getStatus().equals("Pending");
+
+        if (!status) {
+            throw new RuntimeException("The status is already reviewed you can't delete");
+        }
+
         Long submittedById = travelExpense.getSubmittedBy().getId();
         if (roleUtil.isEmployee() && roleUtil.getCurrentEmployeeId().equals(submittedById)) {
             travelExpenseRepository.delete(travelExpense);
@@ -242,26 +248,6 @@ public class TravelExpenseService {
         }
         return travelExpenseMapper.toTravelExpenseDtoList(travelExpenses);
     }
-
-    // public List<TravelExpenseDto> getByIdTravelExpensesByTravelPlanId(Long
-    // travelPlanId,Long ExpenseId) {
-    // // if admin or hr then show all expenses
-    // List<TravelExpense> travelExpenses;
-    // if(roleUtil.isAdmin() || roleUtil.isHr()){
-    // travelExpenses = travelExpenseRepository.findAllByTravelId(travelPlanId);
-    // } else if (roleUtil.isManager()) {
-    // Long managerId = roleUtil.getCurrentEmployeeId();
-    // travelExpenses =
-    // travelExpenseRepository.findAllByManagerIdAndTravelId(managerId,
-    // travelPlanId);
-    // }else {
-    // Long employeeId = roleUtil.getCurrentEmployeeId();
-    // travelExpenses =
-    // travelExpenseRepository.findAllByEmployeeIdAndTravelId(employeeId,
-    // travelPlanId);
-    // }
-    // return travelExpenseMapper.toTravelExpenseDtoList(travelExpenses);
-    // }
 
     @Transactional
     public void updateStatus(Long id, TravelExpenseStatusUpdateDto statusDto) {

@@ -60,7 +60,10 @@ export const TravelDocumentTableColumns: ColumnDef<TravelDocument>[] = [
 						<span className="hidden lg:block">View</span>
 					</Link>
 				</Button>
-				{RoleUtil.isThisManager(getValue()) && (
+				{(RoleUtil.isThisManager(getValue()) ||
+					RoleUtil.isAdmin ||
+					RoleUtil.isHr ||
+					RoleUtil.isEmplpoyee) && (
 					<Button asChild variant={"outline"}>
 						<Link to={`${row.getValue("id")}/delete`} className="border">
 							<Trash className="h-4 w-4" />

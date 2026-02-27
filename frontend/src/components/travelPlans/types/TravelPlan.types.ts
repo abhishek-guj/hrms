@@ -99,15 +99,10 @@ export interface ExpenseTypeDto {
 
 export interface TravelExpenseRequestDto {
 	travelPlanId: string;
-	submittedById: string;
 	expenseTypeId: string;
-	submitStatus: string;
-	expenseUploadDate: string;
-	expenseAmount: number;
+	expenseAmount: string;
 	expenseDate: Date;
-	status: string;
-	remark: string;
-	files: File[];
+	files: FileList;
 }
 
 

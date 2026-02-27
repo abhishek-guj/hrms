@@ -34,7 +34,9 @@ export const TravelPlanTableColumns: ColumnDef<DataTabelItem>[] = [
     accessorKey: "purpose",
     header: "Purpose",
     cell: ({ row }) => (
-      <span className="font-medium">{row.getValue("purpose")}</span>
+      <div className="font-medium min-w-20 w-36">
+        {row.getValue("purpose")}
+      </div>
     ),
   },
   {

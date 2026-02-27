@@ -89,7 +89,7 @@ const TravelDocumentsTable = () => {
 			<div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
 				<Table className="w-full">
 					<DataTableHeader table={table} />
-					<DataTableBody table={table} columns={TravelPlanTableColumns} />
+					<DataTableBody table={table} columns={TravelDocumentTableColumns} />
 				</Table>
 			</div>
 

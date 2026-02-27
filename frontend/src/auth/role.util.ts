@@ -15,7 +15,7 @@ const checkManager = (id) => {
     if (!RoleUtil.isManager) {
         return false
     }
-    return id === getId()
+    return `${id}` === `${getId()}`
 }
 
 export const RoleUtil = {

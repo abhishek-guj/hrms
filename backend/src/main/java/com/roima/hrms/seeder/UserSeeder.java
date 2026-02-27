@@ -180,17 +180,6 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
                         emp1.setEmployeeProfile(employeeProfile1);
                         userRepository.save(emp1);
 
-                        String employeeEmail2 = "emp2@exp.com";
-                        if (userRepository.existsByEmail(employeeEmail2)) {
-                                return;
-                        }
-                        User emp2 = new User();
-                        emp2.setRole(empRole);
-                        emp2.setEmail(employeeEmail2);
-                        emp2.setPasswordHash(PasswordUtil.hashPassword("1234"));
-                        emp2.setEmployeeProfile(employeeProfile2);
-                        userRepository.save(emp2);
-
                         String employeeEmail3 = "emp3@exp.com";
                         if (userRepository.existsByEmail(employeeEmail3)) {
                                 return;
@@ -225,6 +214,17 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
                         mng.setPasswordHash(PasswordUtil.hashPassword("1234"));
                         mng.setEmployeeProfile(managerProfile);
                         userRepository.save(mng);
+
+                        String employeeEmail2 = "mng2@exp.com";
+                        if (userRepository.existsByEmail(employeeEmail2)) {
+                                return;
+                        }
+                        User emp2 = new User();
+                        emp2.setRole(mngRole);
+                        emp2.setEmail(employeeEmail2);
+                        emp2.setPasswordHash(PasswordUtil.hashPassword("1234"));
+                        emp2.setEmployeeProfile(managerProfile2);
+                        userRepository.save(emp2);
 
                         Role hrRole = roleRepository.findByRole(RoleEnum.Hr)
                                         .orElseThrow(() -> new RuntimeException("Role Not Found!"));

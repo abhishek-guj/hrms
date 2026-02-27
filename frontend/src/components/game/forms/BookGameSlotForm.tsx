@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { type UseFormRegister } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { RoleUtil } from "../../../auth/role.util";
+import { useEmployeesAll } from "../../shared/services/employee.queries";
 import AssignedEmployeeCard from "../../travelPlans/TravelEmployees/AssignedEmployeeCard";
-import AssignEmloyeeSelect from "../../travelPlans/TravelplanDashboard/forms/AssignEmloyeeSelect";
+import TravelEmployeeSelect from "../../travelPlans/TravelEmployees/TravelEmployeeSelect";
 import { Button } from "../../ui/button";
 import { Field, FieldError, FieldLabel } from "../../ui/field";
 import { Input } from "../../ui/input";
 import { Separator } from "../../ui/separator";
 import GameSlotDetails from "../GameSlotDetails";
 import { useBookSlot, useSlotDetails } from "../queries/game.queries";
+import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 
 const BookGameSlotForm = () => {
   // navigate
@@ -20,14 +22,12 @@ const BookGameSlotForm = () => {
   const [countError, setCountError] = useState(false);
   const { id, slotId } = useParams<{ slotId: string }>();
 
-  console.log("init", selected);
 
   // query hooks
   const bookSlot = useBookSlot();
   // query hooks
 
   const { data: slotDetails, isLoading, error } = useSlotDetails(slotId!);
-  console.log(slotDetails);
 
   useEffect(() => {
     const count = selected.length;
@@ -69,22 +69,12 @@ const BookGameSlotForm = () => {
   const cantBook = slotDetails?.canBook;
   const isInQueue = slotDetails?.inQueue;
 
-  const employees = [
-    { id: "1", name: "ad" },
-    { id: "2", name: "man" },
-    { id: "3", name: "man2" },
-    { id: "4", name: "emp" },
-    { id: "5", name: "employee" },
-    { id: "6", name: "employee3" },
-    { id: "7", name: "employee4" },
-    { id: "8", name: "employee05" },
-    { id: "9", name: "employee06" },
-    { id: "10", name: "employee07" },
-    { id: "11", name: "employee08" },
-    { id: "12", name: "employee09" },
-  ];
 
-  const myEmployee = employees.filter(
+
+  // fetching all employees from backend
+  const { data: employees, isLoading: employeesLoading } = useEmployeesAll();
+
+  const myEmployee = employees?.filter(
     (emp) => Number(emp.id) === Number(RoleUtil.myId),
   )[0];
 
@@ -107,13 +97,14 @@ const BookGameSlotForm = () => {
   }
 
   return (
-    <div className="px-8 py-2 flex flex-col gap-6">
+
+    <div className="p-5">
       <GameSlotDetails
         slotDetails={slotDetails?.gameSlot}
         slotSizes={slotDetails?.slotSizes}
       />
       <Separator />
-      <form onSubmit={onSubmit} className="flex flex-col p-2 gap-2">
+      <form onSubmit={onSubmit} className="flex flex-col p-2 gap-2 ">
         <Field>
           {/* <FieldInput
           name="playerId"
@@ -132,33 +123,22 @@ const BookGameSlotForm = () => {
           )}
           {!alreadyBooked && (
             <>
-              <FieldLabel>Select Players</FieldLabel>
-              <AssignEmloyeeSelect onValueChange={handleChange} />
+              <TravelEmployeeSelect
+                name={"Players"}
+                onValueChange={setSelected}
+                multiSelectValues={selected}
+                multiSelectValuesChange={setSelected}
+                displayName={"Select Player"}
+                data={employees}
+                isLoading={employeesLoading}
+                removeMySelf={false}
+              />
               <div className="py-4 flex flex-wrap gap-1.5">
                 {countError && (
                   <div className="text-sm text-red-500 items-center">
                     Selected players not equal to any slot size...!
                   </div>
                 )}
-                <AssignedEmployeeCard
-                  handleRemove={handleRemove}
-                  emp={myEmployee}
-                  showDesignation={false}
-                  disableRemove={true}
-                />
-                {employees
-                  ?.filter((emp) => selected.includes(Number(emp.id)))
-                  .filter((emp) => Number(emp.id) !== Number(myEmployee.id))
-                  .map((emp) => {
-                    return (
-                      <AssignedEmployeeCard
-                        key={emp.id}
-                        handleRemove={handleRemove}
-                        emp={emp}
-                        showDesignation={false}
-                      />
-                    );
-                  })}
               </div>
             </>
           )}
@@ -171,8 +151,7 @@ const BookGameSlotForm = () => {
         >
           Request Slot
         </Button>
-      </form>
-    </div>
+      </form></div>
   );
 };
 

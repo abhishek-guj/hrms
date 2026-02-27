@@ -1,5 +1,6 @@
 import { min } from "date-fns";
 import * as z from "zod";
+import { RoleUtil } from "../../auth/role.util";
 
 const fileSchema = z.custom<File>();
 
@@ -61,11 +62,10 @@ export const EmployeeExpenseSchema = z.object({
 	travelPlanId: z.string().min(1, { error: "Provide Travel Plan" }),
 	expenseTypeId: z.string().min(1, { error: "Provide Expense Type" }),
 	expenseAmount: z.string()
-		.min(0, { error: "please provide expense" }).refine((data) => Number(data) >= 0, {
+		.min(1, { error: "please provide expense" }).refine((data) => Number(data) >= 0, {
 			error: "please provide expense"
 		}),
-	expenseDate: z.date(),
-	// files: z.array(z.file()).min(1, { error: "atleast one file is requried" }),
+	expenseDate: z.date({ error: "Expense date needed" }),
 	files: z.instanceof(FileList)
 		.refine((file) => !!file[0], { message: "File is required" })
 
@@ -94,11 +94,17 @@ export const TravelDocumentSchema = z.object({
 	documentTypeId: z.string().min(1, { error: "select document type" }),
 	file: z.instanceof(FileList)
 		.refine((file) => !!file[0], { message: "File is required" })
-	// file: z.array(fileSchema).length(1)
-	// 	.refine((file) => !!file, { message: "File is required" })
-	// 	.refine((data) => ["application/pdf", "image/png", "image/jpeg", "image/jpg"].includes(data.type), { message: "Invlaid file type" })
+}).refine((data) => {
+	if (RoleUtil.isAdmin || RoleUtil.isHr) {
+		return data.uploadedForEmployeeId.length > 0
+	}
+	else {
+		return true
+	}
+}, {
+	path: ["uploadedForEmployeeId"],
+	message: "Need to select for uploading for",
 })
-
 // used in referring job form
 
 

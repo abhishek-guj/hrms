@@ -1,6 +1,5 @@
 package com.roima.hrms.entities;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +30,6 @@ public class JobShare {
     @JoinColumn(name = "shared_by")
     private EmployeeProfile sharedBy;
 
-    @Column(name="is_email_sent")
+    @Column(name = "is_email_sent")
     private boolean isEmailSent;
 }

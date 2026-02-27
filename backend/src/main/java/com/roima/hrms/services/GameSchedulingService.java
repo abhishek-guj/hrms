@@ -47,13 +47,22 @@ public class GameSchedulingService {
     private final long PRIORITY_CHECK_DAYS = 3L;
     private final GameQueueRepository gameQueueRepository;
 
-    public GameSchedulingService(RoleUtil roleUtil, EmployeeProfileRepository employeeProfileRepository,
-            PlayerGroupRepository playerGroupRepository, SlotBookingRepository slotBookingRepository,
-            GameTypeRepository gameTypeRepository, GameSlotRepository gameSlotRepository, ModelMapper modelMapper,
-            GameQueueRepository gameQueueRepository, GameSlotSizeRepository gameSlotSizeRepository,
+    public GameSchedulingService(
+            RoleUtil roleUtil,
+            EmployeeProfileRepository employeeProfileRepository,
+            PlayerGroupRepository playerGroupRepository,
+            SlotBookingRepository slotBookingRepository,
+            GameTypeRepository gameTypeRepository,
+            GameSlotRepository gameSlotRepository,
+            ModelMapper modelMapper,
+            GameQueueRepository gameQueueRepository,
+            GameSlotSizeRepository gameSlotSizeRepository,
             NotificationService notificationService,
             EmailService emailService,
-            GameOperationHourRepository gameOperationHourRepository) {
+            GameOperationHourRepository gameOperationHourRepository
+
+    ) {
+
         this.roleUtil = roleUtil;
         this.employeeProfileRepository = employeeProfileRepository;
         this.playerGroupRepository = playerGroupRepository;
@@ -80,7 +89,8 @@ public class GameSchedulingService {
                 .maxSlotDurationMinutes(gameReqDto.getMaxSlotDurationMinutes())
                 .build();
 
-        List<GameSlotSize> gameSlotSizes = gameReqDto.getSlotSizes().stream().map(slotSize -> {
+        // save game slots
+        gameReqDto.getSlotSizes().stream().map(slotSize -> {
             GameSlotSize newSlotSize = GameSlotSize.builder()
                     .slotSize(
                             slotSize.intValue())

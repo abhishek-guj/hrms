@@ -45,8 +45,8 @@ public interface SlotBookingRepository extends JpaRepository<SlotBooking, Long> 
         @Query("""
                         select (count(sb)>0) from SlotBooking sb
                         where sb.groupOwner = :player
-                        and (sb.status = 'Requested' or sb.status = 'Waiting')
-                        and sb.gameSlot.slotStart >= :thresholdDateTime
+                        and (sb.status = 'Requested' or sb.status = 'Waiting' or sb.status = 'Confirmed')
+                        and sb.gameSlot.slotEnd >= :thresholdDateTime
                         and sb.gameSlot.gameType = :gameType
                         and sb.isDeleted = false
                         """)
@@ -77,7 +77,7 @@ public interface SlotBookingRepository extends JpaRepository<SlotBooking, Long> 
                             join sb.gameSlot gs
                             where p.id = :playerId
                             and sb.isDeleted = false
-                            order by gs.slotStart desc
+                            order by gs.id desc
                         """)
         List<SlotBooking> findAllByPlayer(Long playerId);
 

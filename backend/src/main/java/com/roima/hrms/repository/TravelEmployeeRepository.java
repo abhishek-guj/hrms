@@ -17,6 +17,9 @@ public interface TravelEmployeeRepository extends JpaRepository<TravelEmployee, 
     @Query("select (count(t) > 0) from TravelEmployee t where t.travelPlan = :travelPlan and t.employeeProfile = :employeeProfile and t.travelPlan.isDeleted = false")
     boolean existsByTravelPlanAndEmployeeProfile(TravelPlan travelPlan, EmployeeProfile employeeProfile);
 
+    @Query("select (count(t) > 0) from TravelEmployee t where t.travelPlan = :travelPlan and t.employeeProfile.id = :employeeProfileId and t.travelPlan.isDeleted = false")
+    boolean existsByTravelPlanAndEmployeeProfile_Id(TravelPlan travelPlan, Long employeeProfileId);
+
     @Modifying
     @Query("delete from TravelEmployee te where te.travelPlan.id = :travelPlanId and te.employeeProfile.id = :employeeId")
     void removeTravelEmployeesByTravelPlan_IdAndEmployeeProfile_Id(Long travelPlanId, Long employeeId);

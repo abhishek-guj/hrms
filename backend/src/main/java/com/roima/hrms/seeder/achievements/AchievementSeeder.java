@@ -60,7 +60,7 @@ public class AchievementSeeder implements ApplicationListener<ContextRefreshedEv
 
                 // ── Resolve employee profiles created by UserSeeder ───────────────────
                 EmployeeProfile emp1 = employeeProfileRepository.getEmployeeProfileByUser_Email("emp@exp.com");
-                EmployeeProfile emp2 = employeeProfileRepository.getEmployeeProfileByUser_Email("emp2@exp.com");
+                EmployeeProfile emp2 = employeeProfileRepository.getEmployeeProfileByUser_Email("mng@exp.com");
                 EmployeeProfile emp3 = employeeProfileRepository.getEmployeeProfileByUser_Email("emp3@exp.com");
                 EmployeeProfile emp4 = employeeProfileRepository.getEmployeeProfileByUser_Email("emp4@exp.com");
                 EmployeeProfile hr1 = employeeProfileRepository.getEmployeeProfileByUser_Email("hr1@exp.com");
