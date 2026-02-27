@@ -23,6 +23,7 @@ import { Button } from "../../ui/button";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { RoleUtil } from "../../../auth/role.util";
+import ProtectedComponent from "../../../auth/ProtectedComponent";
 
 const TravelPlansTable = () => {
   // states
@@ -72,15 +73,16 @@ const TravelPlansTable = () => {
           setGlobalFilter={setGlobalFilter}
         />
 
-        {(RoleUtil.isAdmin || RoleUtil.isHr) && (
+        {/* {(RoleUtil.isAdmin || RoleUtil.isHr) && ( */}
+        <ProtectedComponent hasRole={["Hr", "Admin"]}>
           <Button asChild>
             <Link to={"new"}>
               New <Plus />
             </Link>
           </Button>
-        )}
+        </ProtectedComponent>
+        {/* )} */}
       </div>
-
       <div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
         <Table className="w-full">
           <DataTableHeader table={table} />
