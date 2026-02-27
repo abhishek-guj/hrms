@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -12,8 +11,7 @@ import { format } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
 import { Controller } from "react-hook-form";
 
-export function DatePickerInput({ name, control }) {
-  const [date, setDate] = React.useState<Date>();
+export function DatePickerInput({ name, control, ...props }) {
 
   return (
     <Controller
@@ -39,13 +37,12 @@ export function DatePickerInput({ name, control }) {
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={field.value}
+              selected={field.value ?? new Date()}
               onSelect={field.onChange}
-              // defaultMonth={field.value}
               noonSafe
-			  
+              today={field.value ?? new Date()}
+              {...props}
             />
-            {/* {console.log(field)} */}
           </PopoverContent>
         </Popover>
       )}

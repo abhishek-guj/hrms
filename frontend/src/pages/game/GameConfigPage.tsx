@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { Pencil, Plus, Trash } from "lucide-react";
 import GameConfigForm from "../../components/game/forms/GameConfigForm";
 import { ViewField } from "../../components/game/GameSlotDetails";
 import {
@@ -7,18 +7,15 @@ import {
 } from "../../components/game/queries/game.queries";
 import type { GameDetailsDto } from "../../components/game/types/game.types";
 import { Button } from "../../components/ui/button";
-import { Separator } from "../../components/ui/separator";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "../../components/ui/dialog";
-import { Input } from "../../components/ui/input";
-import { Pencil, Plus, Trash } from "lucide-react";
+import { Separator } from "../../components/ui/separator";
 
 const GameConfigPage = () => {
   return (

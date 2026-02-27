@@ -1,8 +1,3 @@
-import { useParams } from "react-router-dom";
-import {
-  useEmployeesAll,
-  useEmployeesTravelPlan,
-} from "../../shared/services/employee.queries";
 import FormMultiSelect from "../TravelExpenses/forms/FormMultiSelect";
 
 const TravelEmployeeSelect = ({
@@ -29,11 +24,18 @@ const TravelEmployeeSelect = ({
   isLoading?: any;
   removeMySelf?: any,
 }) => {
+
+
+
+  // renders 
+
   if (isLoading) {
-    <div className="flex flex-row justify-center items-center min-w-30 border">
+    return <div className="flex flex-row justify-center items-center min-w-30 border">
       Loading employees
     </div>;
   }
+
+  // render
   return (
     <FormMultiSelect
       data={data}

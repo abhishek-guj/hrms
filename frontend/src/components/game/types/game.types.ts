@@ -14,17 +14,16 @@ export interface GameSlotDto {
     gameTypeName: string;
     slotStart: Date;
     slotEnd: Date;
-    booked: Boolean;
-    lowPriority: Boolean;
+    booked: boolean;
+    lowPriority: boolean;
 }
 
 export interface SlotDetailsDto {
     gameSlot: GameSlotDto;
     canBook: boolean;
     inGroup: boolean;
-
-    // max players in group
-    // queue in waiting list
+    slotSizes: number[];
+    inQueue: boolean
 }
 
 

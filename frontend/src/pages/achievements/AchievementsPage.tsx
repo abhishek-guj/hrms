@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import AchievementFeed from "../../components/achievements/AchievementFeed";
+import AchievementFilters from "../../components/achievements/AchievementFilter";
+import CreatePostButton from "../../components/achievements/CreatePostButton";
+import type { AchievementFilterParams } from "../../components/achievements/types/achievements.types";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import AchievementFeed from "../../components/achievements/AchievementFeed";
-import type { AchievementFilterParams } from "../../components/achievements/types/achievements.types";
-import CreatePostButton from "../../components/achievements/CreatePostButton";
-import AchievementFilters from "../../components/achievements/AchievementFilter";
 
 const AchievementsPage = () => {
   const [filters, setFilters] = useState<AchievementFilterParams>({

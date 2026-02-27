@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { RoleUtil } from "../../auth/role.util";
 import { ViewField } from "../../components/game/GameSlotDetails";
 import {
   useCancelBooking,
@@ -7,16 +8,14 @@ import {
 import type { PlayerGroupDto } from "../../components/game/types/game.types";
 import type { EmployeeProfileDto } from "../../components/job/types/job.types";
 import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
 import { Separator } from "../../components/ui/separator";
 import { cn } from "../../lib/utils";
-import { Button } from "../../components/ui/button";
-import { RoleUtil } from "../../auth/role.util";
 
 const MyBookingPage = () => {
   const { data } = useMySlotBookings();
-  const bookings = data && data[0];
-  const queues = data && data[1];
-  console.log(data);
+  const bookings = data?.[0];
+  const queues = data?.[1];
   return (
     <div className="flex flex-col p-8 gap-4">
       <div className="grid grid-cols-2 gap-8 p-4 sm:px-10 justify-center w-full">
@@ -138,13 +137,13 @@ function BookingStatus({
 
   const config =
     BookingStatusConfig[
-      status?.toLowerCase() as keyof typeof BookingStatusConfig
+    status?.toLowerCase() as keyof typeof BookingStatusConfig
     ];
   const isCancelled = "cancelled" === status?.toLowerCase();
   const isOwner = Number(groupOwner?.id) === Number(RoleUtil.myId);
 
   const handleCancel = () => {
-    const res = cancelBooking.mutateAsync({ id: gameSlotId });
+    cancelBooking.mutateAsync({ id: gameSlotId });
   };
 
   console.log(typeof groupOwner?.id, typeof RoleUtil.myId);

@@ -7,9 +7,6 @@
 @tailwind utilities;
 
 
-/* :root{
-  box-sizing: border-box;
-} */
 
 @custom-variant dark (&:is(.dark *));
 :root {

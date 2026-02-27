@@ -57,7 +57,6 @@ export interface TravelEmployeeDto {
 	lastName: string;
 }
 
-// export interface EmployeeDto {}
 
 export interface TravelExpenseDto {
 	id: number;

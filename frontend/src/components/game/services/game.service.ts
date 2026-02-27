@@ -20,7 +20,7 @@ export const GameService = {
         const res = await api.get<IApiResponse<SlotDetailsDto>>(GAME_ENDPOINTS.getSlotDetails(slotId));
         return res.data.data;
     },
-    async bookSlot(slotId: string, playerIds: string[]) {
+    async bookSlot(slotId: string, playerIds: number[]) {
         const res = await api.post<IApiResponse<boolean>>(GAME_ENDPOINTS.bookSlot(slotId),
             {
                 playerIds: playerIds
@@ -29,7 +29,7 @@ export const GameService = {
     },
 
     async cancelBooking(slotBookingId: string) {
-        const res = await api.delete<IApiResponse<SlotDetailsDto>>(GAME_ENDPOINTS.cancelBooking(slotBookingId));
+        await api.delete<IApiResponse<SlotDetailsDto>>(GAME_ENDPOINTS.cancelBooking(slotBookingId));
     },
 
     async createGame(dto: GameReqDto) {

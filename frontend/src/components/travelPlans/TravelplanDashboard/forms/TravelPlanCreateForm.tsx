@@ -48,7 +48,7 @@ const TravelPlanCreateForm = () => {
       lastDateOfExpenseSubmission: formatDate(data?.lastDateOfExpenseSubmission),
     };
 
-    const resData = await create.mutateAsync({ payload: newData });
+    await create.mutateAsync({ payload: newData });
     navigate("/travel/plans");
   };
   // handlers

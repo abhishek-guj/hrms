@@ -1,11 +1,9 @@
-import React from "react";
-import { useTimeSlotsAll } from "../../components/game/queries/game.queries";
-import { ScrollArea, ScrollBar } from "../../components/ui/scroll-area";
-import GameSlotSelector from "../../components/game/GameSlotSelector";
-import { Separator } from "../../components/ui/separator";
 import { Link, Outlet } from "react-router-dom";
-import { Button } from "../../components/ui/button";
 import { RoleUtil } from "../../auth/role.util";
+import GameSlotSelector from "../../components/game/GameSlotSelector";
+import { useTimeSlotsAll } from "../../components/game/queries/game.queries";
+import { Button } from "../../components/ui/button";
+import { Separator } from "../../components/ui/separator";
 
 const GamesPage = () => {
   const { data, error, isLoading } = useTimeSlotsAll(); // exclamation to supress undefined error

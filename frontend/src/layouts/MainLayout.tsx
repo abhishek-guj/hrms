@@ -6,9 +6,9 @@ import {
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-import { AppSidebar } from "../components/layout/AppSidebar";
 import { Outlet } from "react-router-dom";
 import AppBreadcrumb from "../components/layout/AppBreadcrumb";
+import { AppSidebar } from "../components/layout/AppSidebar";
 
 const MainLayout = () => {
 	return (

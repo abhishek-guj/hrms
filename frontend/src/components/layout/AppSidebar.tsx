@@ -9,18 +9,14 @@ import {
 	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarRail,
+	SidebarMenuItem
 } from "@/components/ui/sidebar";
-import { useAppSelector } from "../../store/hooks";
-import { selectIsAuthenticated } from "../../store/auth/auth.selector";
-import { Button } from "../ui/button";
-import { useDispatch } from "react-redux";
-import { authActions } from "../../store/auth/auth.slice";
-import { navLinksList } from "./NavLinks";
+import { LogOut, UserCog } from "lucide-react";
 import NotificationList from "../notification/NotificationList";
-import { Instagram, LogOut, Network, Pen } from "lucide-react";
-import { IconSocial } from "@tabler/icons-react";
+import { Button } from "../ui/button";
+import { navLinksList } from "./NavLinks";
+import { RoleUtil } from "../../auth/role.util";
+import { Link } from "react-router-dom";
 
 export const AppSidebar = ({
 	...props
@@ -92,7 +88,7 @@ export const UserLoginMenu = () => {
 		localStorage.removeItem("token");
 		localStorage.removeItem("role");
 		localStorage.removeItem("employeeId");
-		window.location.href = "/login";
+		globalThis.location.href = "/login";
 	};
 
 	return (
@@ -101,6 +97,16 @@ export const UserLoginMenu = () => {
 			<SidebarGroupContent>
 				<SidebarMenu>
 					<SidebarMenuItem>
+						{(RoleUtil.isAdmin || RoleUtil.isHr) &&
+							<SidebarMenuButton asChild>
+								{/* <div > */}
+								<Link to={"/admin-panel"} className="flex flex-row items-center px-3 w-full">
+									<UserCog />
+									Admin Panel
+								</Link>
+								{/* </div> */}
+							</SidebarMenuButton>
+						}
 						<SidebarMenuButton asChild onClick={handleLogout}>
 							<Button asChild className="flex justify-start cursor-pointer">
 								<div className="flex flex-row justify-start items-center">

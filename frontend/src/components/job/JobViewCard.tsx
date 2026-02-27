@@ -10,6 +10,22 @@ const JobViewCard = () => {
 
   const { data, isLoading, error } = useJobsById(jobId!);
 
+
+  if (isLoading) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        Loading
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        No Data Found...
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 px-4 flex flex-col w-full gap-2 overflow-y-auto">
       <div className="grid grid-cols-2 space-x-10">

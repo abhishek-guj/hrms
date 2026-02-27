@@ -1,8 +1,8 @@
 import { useMyOrgChart } from "../../components/orgchart/org.queries";
 import { showError } from "../../components/ui/toast";
 
-import "@xyflow/react/dist/style.css";
 import { Background, Controls, MarkerType, ReactFlow } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 
 const OrgChartPage = () => {
 	const { data, isLoading, error } = useMyOrgChart();
@@ -23,9 +23,13 @@ const OrgChartPage = () => {
 
 	return (
 		<div className="flex flex-1 flex-col gap-4 p-4">
-			<ReactFlow nodes={nodes} edges={edges} fitView>
-				{/* <Background /> */}
-				{/* <Controls /> */}
+			<ReactFlow
+				nodes={nodes}
+				edges={edges}
+				fitView
+			>
+				<Background />
+				<Controls />
 			</ReactFlow>
 		</div>
 	);
@@ -92,7 +96,7 @@ const createLastLevelNodes = (data, edges, nodes) => {
 	// this for creating direct reporting employee nodes to the current logged in user
 
 	if (data) {
-		// let countx = data[0].underEmployees.length * 100;
+
 		let countx = 0;
 		let county = data.length * 100 + 100;
 		data[0].underEmployees?.forEach((d, idx) => {

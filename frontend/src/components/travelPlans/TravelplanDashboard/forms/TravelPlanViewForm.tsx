@@ -1,13 +1,5 @@
-import { Input } from "@/components/ui/input";
 
-import { useForm, type SubmitHandler } from "react-hook-form";
-import { useParams } from "react-router-dom";
-import { type TravelPlanSchemaType } from "../../../login/schema";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
-import { DatePickerInput } from "../../../ui/date-picker";
 import { Separator } from "../../../ui/separator";
-import type { LoginFormType } from "../../loginForm.types";
-import { useTravelPlan } from "../../queries/travelPlans.queries";
 import { showError } from "../../../ui/toast";
 
 const TravelPlanViewForm = ({ data, error, isLoading }) => {

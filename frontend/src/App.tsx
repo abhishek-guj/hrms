@@ -1,10 +1,5 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import { useTravelPlans } from "./components/travelPlans/queries/travelPlans.queries";
-import { ReactFlow, Background, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import "./App.css";
 
 function App() {
 	const error = false;

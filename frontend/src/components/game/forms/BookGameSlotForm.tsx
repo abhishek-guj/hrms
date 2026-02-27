@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { type UseFormRegister } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { RoleUtil } from "../../../auth/role.util";
 import { useEmployeesAll } from "../../shared/services/employee.queries";
-import AssignedEmployeeCard from "../../travelPlans/TravelEmployees/AssignedEmployeeCard";
 import TravelEmployeeSelect from "../../travelPlans/TravelEmployees/TravelEmployeeSelect";
 import { Button } from "../../ui/button";
 import { Field, FieldError, FieldLabel } from "../../ui/field";
@@ -11,16 +10,12 @@ import { Input } from "../../ui/input";
 import { Separator } from "../../ui/separator";
 import GameSlotDetails from "../GameSlotDetails";
 import { useBookSlot, useSlotDetails } from "../queries/game.queries";
-import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 
 const BookGameSlotForm = () => {
-  // navigate
-  const navigate = useNavigate();
-  // navigate
 
   const [selected, setSelected] = useState([Number(RoleUtil.myId)]);
   const [countError, setCountError] = useState(false);
-  const { id, slotId } = useParams<{ slotId: string }>();
+  const { slotId } = useParams<{ slotId: string }>();
 
 
   // query hooks
@@ -32,10 +27,10 @@ const BookGameSlotForm = () => {
   useEffect(() => {
     const count = selected.length;
     console.log(count);
-    if (!slotDetails?.slotSizes?.includes(count)) {
-      setCountError(true);
-    } else {
+    if (slotDetails?.slotSizes?.includes(count)) {
       setCountError(false);
+    } else {
+      setCountError(true);
     }
   }, [slotDetails, selected]);
 
@@ -43,23 +38,10 @@ const BookGameSlotForm = () => {
   const onSubmit = async (e) => {
     console.log("submit", selected);
     e.preventDefault();
-    // alert();
-    const resData = await bookSlot.mutateAsync({
-      id: slotId,
+    await bookSlot.mutateAsync({
+      id: slotId!,
       playerIds: selected,
     });
-  };
-
-  const handleChange = (value) => {
-    const id = Number(value);
-    if (!selected.includes(id)) {
-      setSelected((prev) => [...prev, id]);
-    }
-  };
-
-  const handleRemove = (value) => {
-    console.log(value);
-    setSelected(selected.filter((select) => select != value));
   };
   // handlers
 
@@ -74,11 +56,6 @@ const BookGameSlotForm = () => {
   // fetching all employees from backend
   const { data: employees, isLoading: employeesLoading } = useEmployeesAll();
 
-  const myEmployee = employees?.filter(
-    (emp) => Number(emp.id) === Number(RoleUtil.myId),
-  )[0];
-
-  console.log("my ", myEmployee);
 
   // renders
   if (isLoading) {

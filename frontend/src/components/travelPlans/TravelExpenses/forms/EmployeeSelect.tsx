@@ -15,6 +15,16 @@ const EmployeeSelect = ({
   errors,
   displayName,
   ...props
+}: {
+
+  name?:any,
+  value?:any,
+  onValueChange?:any,
+  type?:any,
+  multiSelectValues?:any,
+  multiSelectValuesChange?:any,
+  errors?:any,
+  displayName?:any,
 }) => {
   const { data, isLoading } = useEmployeesAll();
 

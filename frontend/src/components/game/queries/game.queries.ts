@@ -51,8 +51,8 @@ export const useCancelBooking = () => {
 export const useBookSlot = () => {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: async ({ id, playerIds }: { id: string, playerIds: string[] }) => {
-            const response = await GameService.bookSlot(id, playerIds);
+        mutationFn: async ({ id, playerIds }: { id: string, playerIds: number[] }) => {
+            await GameService.bookSlot(id, playerIds);
             return id;
         },
         onSuccess: (id) => {

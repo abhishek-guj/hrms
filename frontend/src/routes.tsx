@@ -1,9 +1,16 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import TravelDocumentsPage from "./components/travelPlans/TravelDocuments/TravelDocumentsPage";
-import App from "./App";
+import BookGameSlot from "./components/game/BookGameSlot";
+import CVView from "./components/job/CvView";
+import JobReferral from "./components/job/JobReferral";
 import JobShare from "./components/job/JobShare";
 import JobView from "./components/job/JobView";
+import ReferralsPage from "./components/job/ReferralsPage";
+import ReferralStatusChange from "./components/job/ReferralStatusChange";
 import PublicLayout from "./components/layout/PublicLayout";
+import TravelDocumentCreate from "./components/travelPlans/TravelDocuments/TravelDocumentCreate";
+import TravelDocumentDelete from "./components/travelPlans/TravelDocuments/TravelDocumentDelete";
+import TravelDocumentsPage from "./components/travelPlans/TravelDocuments/TravelDocumentsPage";
+import TravelDocumentView from "./components/travelPlans/TravelDocuments/TravelDocumentView";
 import TravelExpenseCreate from "./components/travelPlans/TravelExpenses/TravelExpenseCreate";
 import TravelExpenseDelete from "./components/travelPlans/TravelExpenses/TravelExpenseDelete";
 import TravelExpenseView from "./components/travelPlans/TravelExpenses/TravelExpenseView";
@@ -15,27 +22,20 @@ import TravelPlanEmployees from "./components/travelPlans/TravelplanDashboard/Tr
 import TravelPlanView from "./components/travelPlans/TravelplanDashboard/TravelPlanView";
 import MainLayout from "./layouts/MainLayout";
 import ErrorPage from "./pages/ErrorPage";
+import GamesPage from "./pages/game/GamesPage";
+import MyBookingPage from "./pages/game/MyBookingPage";
 import JobPublicPage from "./pages/job/JobPublicPage";
 import JobsPage from "./pages/job/JobsPage";
 import LoginPage from "./pages/LoginPage";
 import OrgChartPage from "./pages/org/OrgChartPage";
 import TravelPlanPage from "./pages/travel/TravelPlanPage";
-import JobReferral from "./components/job/JobReferral";
-import TravelDocumentCreate from "./components/travelPlans/TravelDocuments/TravelDocumentCreate";
-import TravelDocumentView from "./components/travelPlans/TravelDocuments/TravelDocumentView";
-import TravelDocumentDelete from "./components/travelPlans/TravelDocuments/TravelDocumentDelete";
-import ReferralsPage from "./components/job/ReferralsPage";
-import ReferralStatusChange from "./components/job/ReferralStatusChange";
-import CVView from "./components/job/CvView";
-import GamesPage from "./pages/game/GamesPage";
-import BookGameSlot from "./components/game/BookGameSlot";
-import MyBookingPage from "./pages/game/MyBookingPage";
 // ── Achievements ──────────────────────────────────────────────────────────────
 import AchievementsPage from "./pages/achievements/AchievementsPage";
 
-import { roles, RoleUtil } from "./auth/role.util";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import { roles } from "./auth/role.util";
 import GameConfigPage from "./pages/game/GameConfigPage";
+import AdminPanelPage from "./pages/admin/AdminPanelPage";
 
 const { admin, hr, manager, employee } = roles;
 
@@ -138,6 +138,11 @@ const router = createBrowserRouter([
         path: "/my-slots",
         element: <MyBookingPage />,
       },
+      {
+        path: "/admin-panel",
+        element: <AdminPanelPage />
+      },
+
       // ── Achievements & Celebrations ──────────────────────────────────────
       {
         path: "/achievements",

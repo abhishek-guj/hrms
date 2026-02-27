@@ -40,10 +40,10 @@ const TravelPlanEditForm = () => {
   const newData = {
     ...data,
     id: `${data?.id}`,
-    travelTypeId: `${travelType.id}`,
-    startDate: new Date(startDate),
-    endDate: new Date(endDate),
-    lastDateOfExpenseSubmission: new Date(lastDateOfExpenseSubmission),
+    travelTypeId: `${travelType?.id}`,
+    startDate: new Date(startDate!),
+    endDate: new Date(endDate!),
+    lastDateOfExpenseSubmission: new Date(lastDateOfExpenseSubmission!),
   };
 
   // react form
@@ -52,7 +52,6 @@ const TravelPlanEditForm = () => {
     handleSubmit,
     formState: { errors },
     control,
-    reset,
   } = useForm<TravelPlanUpdateSchemaType>({
     mode: "onBlur",
     defaultValues: { ...newData },
@@ -72,6 +71,22 @@ const TravelPlanEditForm = () => {
   };
   // handlers
 
+
+
+  if (isLoading) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        Loading
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
+        No Data Found...
+      </div>
+    );
+  }
   //
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

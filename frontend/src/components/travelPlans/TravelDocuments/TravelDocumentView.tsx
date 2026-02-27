@@ -11,7 +11,7 @@ import ProofView from "../TravelExpenses/ProofView";
 import { useTravelDocumentById } from "../queries/travelDocuments.queries";
 
 const TravelDocumentView = () => {
-	const [open, setOpen] = useState(true);
+	const [open] = useState(true);
 
 	const navigate = useNavigate();
 	const { id, documentId } = useParams<{ id: string; documentId: string }>();

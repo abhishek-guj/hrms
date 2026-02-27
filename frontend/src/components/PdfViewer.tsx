@@ -1,9 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { Document, Page } from "react-pdf";
-import { api } from "../api/apiClient";
-
-import { pdfjs } from "react-pdf";
-import { useExpenseDocument } from "./shared/services/documents.queries";
+import { useEffect, useRef, useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
