@@ -4,7 +4,7 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 export const GameSlotScroll = ({ slotList }) => {
   return (
-    <ScrollArea className="w-full h-full grow">
+    <ScrollArea className="w-full h-full grow pb-4">
       <div className="flex gap-2.5 py-4">
         {slotList?.map((slot) => (
           <GameSlot key={slot?.id} slot={slot} />

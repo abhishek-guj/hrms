@@ -14,11 +14,12 @@ public class EmployeeInterest {
     @Column(name = "pk_employee_interest_id", nullable = false)
     private Long id;
 
-    @Column(name = "employee_id")
-    private Long employeeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private EmployeeProfile employeeProfile;
 
-    @Column(name = "game_type_id")
-    private Long gameTypeId;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_type_id", nullable = false)
+    private GameType gameType;
 
 }

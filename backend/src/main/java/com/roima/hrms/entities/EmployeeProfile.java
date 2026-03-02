@@ -27,9 +27,6 @@ public class EmployeeProfile {
     @OneToOne(mappedBy = "employeeProfile", fetch = FetchType.LAZY)
     private User user;
 
-    @Column(name = "department_id")
-    private Long departmentId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
     private EmployeeProfile manager;
@@ -76,5 +73,10 @@ public class EmployeeProfile {
     @OneToMany(mappedBy = "employeeProfile")
     private Set<Notification> notifications = new HashSet<>();
 
+    @OneToMany(mappedBy = "employeeProfile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EmployeeInterest> employeeInterests = new HashSet<>();
+
+    @OneToMany(mappedBy = "players", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PlayerGroup> playerGroups = new HashSet<>();
 
 }

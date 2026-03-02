@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Set;
 
@@ -73,11 +74,15 @@ public class NotificationService {
 
     @Transactional
     public void sendGameNotification(SlotBooking slotBooking) {
-        String s1 = "Game: " + slotBooking.getGameSlot().getGameType().getName();
-        String s2 = "Game Status: " + slotBooking.getStatus();
-        String s3 = "Game Start Time: " + slotBooking.getGameSlot().getSlotStart();
-        String s4 = "Game End Time: " + slotBooking.getGameSlot().getSlotEnd();
-        String s5 = "Booked By: " + slotBooking.getGroupOwner().getFirstName() + " "
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        String s1 = "\nGame: " + slotBooking.getGameSlot().getGameType().getName();
+        String s2 = "\nGame Status: " + slotBooking.getStatus();
+        String s3 = "\nGame Start Time: "
+                + slotBooking.getGameSlot().getSlotStart().format(formatter);
+        String s4 = "\nGame End Time: "
+                + slotBooking.getGameSlot().getSlotEnd().format(formatter);
+        String s5 = "\nBooked By: " + slotBooking.getGroupOwner().getFirstName() + " "
                 + slotBooking.getGroupOwner().getLastName();
         String body = s1 + s2 + s3 + s4 + s5;
 

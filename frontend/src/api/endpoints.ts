@@ -9,6 +9,11 @@ export const AUTH_ENDPOINTS = {
 	login: () => `/auth/login`,
 };
 
+export const PROFILE_ENDPOINTS = {
+	get: () => `/profile`,
+	update: () => `/profile/interests`,
+}
+
 export const TRAVEL_PLAN_ENDPOINTS = {
 	getAll: () => "/travel-plans",
 	getById: (id: string) => `/travel-plans/${id}`,

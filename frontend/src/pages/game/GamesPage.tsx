@@ -29,7 +29,7 @@ const GamesPage = () => {
         return (
           <div
             key={game.gameTypeId}
-            className="w-full h-full flex flex-col items-end"
+            className="w-full h-fit flex flex-col items-end"
           >
             <GameSlotSelector game={game} />
             <Separator />

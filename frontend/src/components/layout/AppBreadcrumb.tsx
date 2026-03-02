@@ -5,6 +5,7 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const AppBreadcrumb = () => {
@@ -31,7 +32,7 @@ const AppBreadcrumb = () => {
 			<BreadcrumbList>
 				{crumbs.map((c, idx) => {
 					return (
-						<>
+						<React.Fragment key={c.path + "_" + c.title}>
 							<BreadcrumbItem>
 								<BreadcrumbPage>
 									<Link to={`${c.path}`}>{c.title}</Link>
@@ -40,7 +41,7 @@ const AppBreadcrumb = () => {
 							{crumbs.length - (idx + 1) !== 0 && (
 								<BreadcrumbSeparator className="hidden md:block" />
 							)}
-						</>
+						</React.Fragment>
 					);
 				})}
 			</BreadcrumbList>

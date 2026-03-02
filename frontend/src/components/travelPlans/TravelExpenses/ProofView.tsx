@@ -42,7 +42,7 @@ const ProofView = ({ filePath, docType }) => {
 		return (
 			<div>
 				<div className="flex flex-row justify-end py-1">
-					<Button onClick={handleDownload}>Download</Button>
+					<Button size={"xs"} onClick={handleDownload}>Download</Button>
 				</div>
 				<PdfViewer pdf={data} />
 			</div>

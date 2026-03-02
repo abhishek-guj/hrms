@@ -41,7 +41,6 @@ const GameSlot = ({ slot }) => {
 
 const getSlotColor = (slot) => {
   if (slot.booked && slot.lowPriority) {
-    console.log(slot);
     return "bg-amber-100";
   } else if (slot.booked) {
     return "bg-red-100";

@@ -5,6 +5,7 @@ import com.roima.hrms.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,9 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
 
     @Query("select ep from User ep")
     List<User> getAll();
+
+    // to get and show all employees that dont overlap in a given slot
+    // List<EmployeeProfile> findAllNotOverlapingGameSlots(Long slotId,
+    // LocalDateTime startDateTime,
+    // LocalDateTime endDateTime);
 }

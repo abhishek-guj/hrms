@@ -28,8 +28,8 @@ const OrgChartPage = () => {
 				edges={edges}
 				fitView
 			>
-				<Background />
-				<Controls />
+				{/* <Background /> */}
+				<Controls showInteractive={true} />
 			</ReactFlow>
 		</div>
 	);

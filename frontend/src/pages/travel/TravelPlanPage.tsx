@@ -4,14 +4,11 @@ import TravelPlansTable from "../../components/travelPlans/TravelplanDashboard/T
 
 const TravelPlanPage = () => {
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="h-fit ">
-        <TravelPlanSectionCards />
+    <div className="flex flex-1 flex-col gap-8 p-12">
+      <div className="flex justify-start items-center text-2xl font-semibold w-full">
+        Travel Plans
       </div>
-      <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min rounded overflow-hidden p-2">
-        {/* USE THIS TABLE BLOCK */}
-        {/* https://blocks.so/tables */}
-        {/* USE THIS TABLE BLOCK */}
+      <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min rounded overflow-hidden">
         <TravelPlansTable />
       </div>
       <Outlet />

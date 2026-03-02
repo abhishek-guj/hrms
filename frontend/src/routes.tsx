@@ -36,6 +36,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import { roles } from "./auth/role.util";
 import GameConfigPage from "./pages/game/GameConfigPage";
 import AdminPanelPage from "./pages/admin/AdminPanelPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const { admin, hr, manager, employee } = roles;
 
@@ -137,6 +138,10 @@ const router = createBrowserRouter([
       {
         path: "/my-slots",
         element: <MyBookingPage />,
+      },
+      {
+        path: "/my-profile",
+        element: <ProfilePage />
       },
       {
         path: "/admin-panel",

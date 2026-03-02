@@ -8,6 +8,9 @@ import com.roima.hrms.repository.EmployeeProfileRepository;
 import com.roima.hrms.repository.RoleRepository;
 import com.roima.hrms.repository.UserRepository;
 import com.roima.hrms.utils.PasswordUtil;
+
+import java.time.LocalDate;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -56,7 +59,11 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
                         adminProfile = EmployeeProfile.builder()
                                         .firstName("ad")
                                         .lastName("min")
+                                        .birthDate(LocalDate.of(2004, 5, 17))
+                                        .joiningDate(LocalDate.of(2026, 1, 1))
+                                        .contactNumber(1234567890)
                                         .build();
+
                         employeeProfileRepository.save(adminProfile);
 
                         String adminEmail = "abhi@exp.com";
@@ -78,6 +85,9 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
                                         .firstName("man")
                                         .lastName("ager")
                                         .manager(employeeProfileRepository.findByFirstName("ad").orElseThrow())
+                                        .birthDate(LocalDate.of(2004, 6, 17))
+                                        .contactNumber(1111111111)
+                                        .joiningDate(LocalDate.of(2026, 1, 5))
                                         .build();
                         employeeProfileRepository.save(managerProfile);
 
@@ -85,6 +95,9 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
                                         .firstName("man2")
                                         .lastName("ager2")
                                         .manager(employeeProfileRepository.findByFirstName("ad").orElseThrow())
+                                        .birthDate(LocalDate.of(2004, 7, 17))
+                                        .joiningDate(LocalDate.of(2026, 1, 10))
+                                        .contactNumber(222222222)
                                         .build();
                         employeeProfileRepository.save(managerProfile2);
 
@@ -92,6 +105,9 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
                                         .firstName("emp")
                                         .lastName("loyee")
                                         .manager(managerProfile)
+                                        .birthDate(LocalDate.of(2004, 8, 17))
+                                        .joiningDate(LocalDate.of(2026, 1, 19))
+                                        .contactNumber(333333333)
                                         .build();
                         employeeProfileRepository.save(employeeProfile1);
 

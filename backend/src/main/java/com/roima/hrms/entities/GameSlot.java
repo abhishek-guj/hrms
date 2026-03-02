@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -34,5 +35,5 @@ public class GameSlot {
     private Set<GameQueue> gameQueues;
 
     @OneToMany(mappedBy = "gameSlot", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SlotBooking> slotBookings;
+    private List<SlotBooking> slotBookings;
 }

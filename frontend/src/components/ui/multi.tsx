@@ -550,7 +550,7 @@ const MultipleSelector = React.forwardRef<
                   disabled ||
                   selected.length < 1 ||
                   selected.filter((s) => s.fixed).length === selected.length) &&
-                  "hidden",
+                "hidden",
               )}
             >
               <X />
@@ -610,7 +610,7 @@ const MultipleSelector = React.forwardRef<
                               className={cn(
                                 "cursor-pointer",
                                 option.disable &&
-                                  "cursor-default text-muted-foreground",
+                                "cursor-default text-muted-foreground",
                               )}
                             >
                               {option.label}

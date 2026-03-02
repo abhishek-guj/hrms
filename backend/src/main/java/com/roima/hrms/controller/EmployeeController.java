@@ -6,6 +6,9 @@ import java.util.Set;
 import com.roima.hrms.repository.EmployeeProfileRepository;
 import com.roima.hrms.repository.TravelEmployeeRepository;
 import com.roima.hrms.response.ApiResponse;
+import com.roima.hrms.services.EmployeeService;
+
+import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -21,36 +24,36 @@ import com.roima.hrms.enums.ApiResponseType;
 
 @RestController
 @RequestMapping("/api/v1/employees")
+@RequiredArgsConstructor
 public class EmployeeController {
 
-    private final ModelMapper modelMapper;
+        private final ModelMapper modelMapper;
 
-    private final EmployeeProfileRepository employeeProfileRepository;
-    private final TravelEmployeeRepository travelEmployeeRepository;
+        private final EmployeeProfileRepository employeeProfileRepository;
+        private final TravelEmployeeRepository travelEmployeeRepository;
+        private final EmployeeService employeeService;
 
-    EmployeeController(EmployeeProfileRepository employeeProfileRepository,TravelEmployeeRepository travelEmployeeRepository, ModelMapper modelMapper) {
-        this.employeeProfileRepository = employeeProfileRepository;
-        this.travelEmployeeRepository = travelEmployeeRepository;
-        this.modelMapper = modelMapper;
-    }
+        @GetMapping
+        public ResponseEntity<ApiResponse> getEmployees() {
+                List<EmployeeProfileDto> dtos = employeeService.getAllEmployees();
+                return ResponseEntity.ok(ApiResponse.createApiResponse(
+                                ApiResponseType.SUCCESS, "Employess fetched", dtos, null));
 
-    @GetMapping
-    public ResponseEntity<ApiResponse> getEmployees() {
-        List<EmployeeProfile> profiles = employeeProfileRepository.findAll();
-        List<EmployeeProfileDto> dtos = profiles.stream().map(e -> modelMapper.map(e, EmployeeProfileDto.class))
-                .toList();
-        return ResponseEntity.ok(ApiResponse.createApiResponse(
-                ApiResponseType.SUCCESS, "Employess feed fetched", dtos, null));
+        }
 
-    }
+        @GetMapping("travel/{id}")
+        public ResponseEntity<ApiResponse> getEmployeesTravelPlan(@PathVariable Long id) {
+                List<EmployeeProfileDto> dtos = employeeService.getTravelEmployeesTravelPlan(id);
+                return ResponseEntity.ok(ApiResponse.createApiResponse(
+                                ApiResponseType.SUCCESS, "Employess fetched", dtos, null));
+        }
 
-    @GetMapping("travel/{id}")
-    public ResponseEntity<ApiResponse> getEmployeesTravelPlan(@PathVariable Long id) {
-        Set<EmployeeProfile> profiles = travelEmployeeRepository.getAllEmployeeProfilesByTravelPlan_Id(id);
-        List<EmployeeProfileDto> dtos = profiles.stream().map(e -> modelMapper.map(e, EmployeeProfileDto.class))
-                .toList();
-        return ResponseEntity.ok(ApiResponse.createApiResponse(
-                ApiResponseType.SUCCESS, "Employess feed fetched", dtos, null));
-
-    }
+        // @GetMapping("game-slot/{slotId}")
+        // public ResponseEntity<ApiResponse> getEmployeesGameSlot(@PathVariable Long
+        // slotId) {
+        // List<EmployeeProfileDto> dtos =
+        // employeeService.getPlayersForGameSlot(slotId);
+        // return ResponseEntity.ok(ApiResponse.createApiResponse(
+        // ApiResponseType.SUCCESS, "Employess fetched", dtos, null));
+        // }
 }
