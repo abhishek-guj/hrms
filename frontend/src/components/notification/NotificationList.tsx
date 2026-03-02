@@ -17,7 +17,10 @@ const NotificationList = () => {
 	if (isLoading) {
 		return (
 			<div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
-				Loading
+				<div className="flex flex-row justify-start items-center gap-1.5">
+						<Bell className="h-5 w-5 p-0.5" />
+						<div>Notifications</div>
+					</div>
 			</div>
 		);
 	}
@@ -61,17 +64,17 @@ const NotificationList = () => {
 
 export default NotificationList;
 
-function NotficationBox({ notifications }) {
+function NotficationBox({ notifications }: Readonly<{ notifications: any[] }>) {
 	return (
 		<div className="p-4 flex flex-col gap-2 max-h-96 overflow-auto">
 			{notifications?.map((noti) => {
-				return <NotificationItem key={noti.id} notification={noti} />;
+				return <NotificationItem key={noti?.id} notification={noti} />;
 			})}
 		</div>
 	);
 }
 
-function NotificationItem({ notification }) {
+function NotificationItem({ notification } : Readonly<{ notification: any }>) {
 	// tmp
 	const readNotify = useRead();
 	const handleClick = async () => {
