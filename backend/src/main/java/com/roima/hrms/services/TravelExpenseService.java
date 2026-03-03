@@ -35,7 +35,11 @@ public class TravelExpenseService {
     private final ExpenseDocumentRepository expenseDocumentRepository;
 
     @Autowired
-    public TravelExpenseService(TravelExpenseRepository travelExpenseRepository, TravelExpenseMapper travelExpenseMapper, ExpenseTypeRepository expenseTypeRepository, ExpenseTypeMapper expenseTypeMapper, SecurityService securityService, RoleUtil roleUtil, TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository, FileService fileService, ExpenseDocumentRepository expenseDocumentRepository) {
+    public TravelExpenseService(TravelExpenseRepository travelExpenseRepository,
+            TravelExpenseMapper travelExpenseMapper, ExpenseTypeRepository expenseTypeRepository,
+            ExpenseTypeMapper expenseTypeMapper, SecurityService securityService, RoleUtil roleUtil,
+            TravelPlanRepository travelPlanRepository, EmployeeProfileRepository employeeProfileRepository,
+            FileService fileService, ExpenseDocumentRepository expenseDocumentRepository) {
         this.travelExpenseRepository = travelExpenseRepository;
         this.travelExpenseMapper = travelExpenseMapper;
         this.expenseTypeRepository = expenseTypeRepository;
@@ -63,7 +67,8 @@ public class TravelExpenseService {
     }
 
     public TravelExpenseDto getById(Long id) {
-        TravelExpense travelExpense = travelExpenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
+        TravelExpense travelExpense = travelExpenseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
 
         Long curentEmployeeId = roleUtil.getCurrentEmployeeId();
         // check if requester is allowed to see or not
@@ -90,7 +95,8 @@ public class TravelExpenseService {
     @Transactional
     public TravelExpenseDto createTravelExpense(TravelExpenseRequestDto dto) {
 
-        TravelPlan travelPlan = travelPlanRepository.findById(dto.getTravelPlanId()).orElseThrow(TravelPlanNotFoundException::new);
+        TravelPlan travelPlan = travelPlanRepository.findById(dto.getTravelPlanId())
+                .orElseThrow(TravelPlanNotFoundException::new);
 
         EmployeeProfile submittedBy = roleUtil.getCurrentEmployee();
 
@@ -100,12 +106,11 @@ public class TravelExpenseService {
         }
 
         // check amount and submit date
-        if(travelPlan.getLastDateOfExpenseSubmission().isAfter(LocalDate.now())){
+        if (travelPlan.getLastDateOfExpenseSubmission().isBefore(LocalDate.now())) {
             throw new RuntimeException("You can't add expense after last date of submission");
         }
 
         // checking amount for the day
-        
 
         List<String> proofPaths = new ArrayList<String>();
         for (MultipartFile file : dto.getFiles()) {
@@ -120,13 +125,14 @@ public class TravelExpenseService {
 
         // ??? todo: check if employee submitting is allowed to submit or not
 
-        ExpenseType expenseType = expenseTypeRepository.findById(dto.getExpenseTypeId()).orElseThrow(ExpenseTypeNotFoundException::new);
+        ExpenseType expenseType = expenseTypeRepository.findById(dto.getExpenseTypeId())
+                .orElseThrow(ExpenseTypeNotFoundException::new);
 
         // converting to entity
         TravelExpense travelExpense = null;
         try {
 
-//        TravelExpense travelExpense = TravelExpense.builder()
+            // TravelExpense travelExpense = TravelExpense.builder()
             travelExpense = TravelExpense.builder()
                     .travelPlan(travelPlan)
                     .submittedBy(submittedBy)
@@ -169,12 +175,13 @@ public class TravelExpenseService {
         travelExpense = travelExpenseMapper.toUpdateEntity(travelExpense, dto);
 
         // reset other fields in case: it was updated
-        TravelPlan travelPlan = travelPlanRepository.findById(dto.getTravelPlanId()).orElseThrow(TravelPlanNotFoundException::new);
+        TravelPlan travelPlan = travelPlanRepository.findById(dto.getTravelPlanId())
+                .orElseThrow(TravelPlanNotFoundException::new);
         travelExpense.setTravelPlan(travelPlan);
 
-        ExpenseType expenseType = expenseTypeRepository.findById(dto.getExpenseTypeId()).orElseThrow(ExpenseTypeNotFoundException::new);
+        ExpenseType expenseType = expenseTypeRepository.findById(dto.getExpenseTypeId())
+                .orElseThrow(ExpenseTypeNotFoundException::new);
         travelExpense.setExpenseType(expenseType);
-
 
         // todo: check if any new file is uploaded
 
@@ -190,7 +197,8 @@ public class TravelExpenseService {
     }
 
     public void deleteTravelExpense(Long id) {
-        TravelExpense travelExpense = travelExpenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
+        TravelExpense travelExpense = travelExpenseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Travel Expense Not Found!"));
         Long submittedById = travelExpense.getSubmittedBy().getId();
         if (roleUtil.isEmployee() && roleUtil.getCurrentEmployeeId().equals(submittedById)) {
             travelExpenseRepository.delete(travelExpense);
@@ -216,25 +224,30 @@ public class TravelExpenseService {
         return travelExpenseMapper.toTravelExpenseDtoList(travelExpenses);
     }
 
-
-//    public List<TravelExpenseDto> getByIdTravelExpensesByTravelPlanId(Long travelPlanId,Long ExpenseId) {
-//        // if admin or hr then show all expenses
-//        List<TravelExpense> travelExpenses;
-//        if(roleUtil.isAdmin() || roleUtil.isHr()){
-//            travelExpenses = travelExpenseRepository.findAllByTravelId(travelPlanId);
-//        } else if (roleUtil.isManager()) {
-//            Long managerId = roleUtil.getCurrentEmployeeId();
-//            travelExpenses = travelExpenseRepository.findAllByManagerIdAndTravelId(managerId, travelPlanId);
-//        }else {
-//            Long employeeId = roleUtil.getCurrentEmployeeId();
-//            travelExpenses = travelExpenseRepository.findAllByEmployeeIdAndTravelId(employeeId, travelPlanId);
-//        }
-//        return travelExpenseMapper.toTravelExpenseDtoList(travelExpenses);
-//    }
+    // public List<TravelExpenseDto> getByIdTravelExpensesByTravelPlanId(Long
+    // travelPlanId,Long ExpenseId) {
+    // // if admin or hr then show all expenses
+    // List<TravelExpense> travelExpenses;
+    // if(roleUtil.isAdmin() || roleUtil.isHr()){
+    // travelExpenses = travelExpenseRepository.findAllByTravelId(travelPlanId);
+    // } else if (roleUtil.isManager()) {
+    // Long managerId = roleUtil.getCurrentEmployeeId();
+    // travelExpenses =
+    // travelExpenseRepository.findAllByManagerIdAndTravelId(managerId,
+    // travelPlanId);
+    // }else {
+    // Long employeeId = roleUtil.getCurrentEmployeeId();
+    // travelExpenses =
+    // travelExpenseRepository.findAllByEmployeeIdAndTravelId(employeeId,
+    // travelPlanId);
+    // }
+    // return travelExpenseMapper.toTravelExpenseDtoList(travelExpenses);
+    // }
 
     @Transactional
     public void updateStatus(Long id, TravelExpenseStatusUpdateDto statusDto) {
-        TravelExpense travelExpense = travelExpenseRepository.findById(id).orElseThrow(TravelPlanNotFoundException::new);
+        TravelExpense travelExpense = travelExpenseRepository.findById(id)
+                .orElseThrow(TravelPlanNotFoundException::new);
 
         var r = roleUtil.getRole();
 
