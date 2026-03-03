@@ -267,7 +267,7 @@ public class AchievementSeeder implements ApplicationListener<ContextRefreshedEv
 
         private Post buildPost(Long authorId, String title, String description, LocalDate date) {
                 Post post = new Post();
-                post.setAuthorId(authorId);
+                post.setAuthor(employeeProfileRepository.findById(authorId).orElse(null));
                 post.setTitle(title);
                 post.setText(description);
                 post.setCreatedDate(date);
@@ -282,7 +282,7 @@ public class AchievementSeeder implements ApplicationListener<ContextRefreshedEv
 
         private Post buildSystemPost(Long employeeId, String title, String text, LocalDate date) {
                 Post post = new Post();
-                post.setAuthorId(employeeId);
+                post.setAuthor(employeeProfileRepository.findById(employeeId).orElse(null));
                 post.setTitle(title);
                 post.setText(text);
                 post.setCreatedDate(date);
@@ -315,11 +315,11 @@ public class AchievementSeeder implements ApplicationListener<ContextRefreshedEv
         }
 
         private void addLike(Long postId, Long employeeId) {
-                // existsByPostIdAndLikedById defined in the updated PostLikeRepository
-                if (!postLikeRepository.existsByPostIdAndLikedById(postId, employeeId)) {
+                // uses new relationship-based query names
+                if (!postLikeRepository.existsByPost_IdAndLikedBy_Id(postId, employeeId)) {
                         PostLike like = new PostLike();
-                        like.setPostId(postId);
-                        like.setLikedById(employeeId);
+                        like.setPost(postRepository.findById(postId).orElse(null));
+                        like.setLikedBy(employeeProfileRepository.findById(employeeId).orElse(null));
                         like.setUpdateOn(Instant.now());
                         postLikeRepository.save(like);
                 }
@@ -327,8 +327,8 @@ public class AchievementSeeder implements ApplicationListener<ContextRefreshedEv
 
         private void addComment(Long postId, Long employeeId, String text) {
                 Comment comment = new Comment();
-                comment.setPostId(postId);
-                comment.setCommentedById(employeeId);
+                comment.setPost(postRepository.findById(postId).orElse(null));
+                comment.setCommentedBy(employeeProfileRepository.findById(employeeId).orElse(null));
                 comment.setCommentText(text);
                 comment.setCommentedOn(Instant.now());
                 comment.setUpdatedOn(Instant.now());

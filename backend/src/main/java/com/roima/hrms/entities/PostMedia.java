@@ -8,6 +8,8 @@ import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
 
+import com.roima.hrms.entities.Post;
+
 @Getter
 @Setter
 @Entity
@@ -18,8 +20,9 @@ public class PostMedia {
     @Column(name = "pk_post_media_id", nullable = false)
     private Long id;
 
-    @Column(name = "post_id")
-    private Long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @Size(max = 255)
     @Nationalized
@@ -38,6 +41,5 @@ public class PostMedia {
 
     @Column(name = "update_date")
     private Instant updateDate;
-
 
 }

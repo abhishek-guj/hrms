@@ -8,6 +8,9 @@ import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
 
+import com.roima.hrms.entities.EmployeeProfile;
+import com.roima.hrms.entities.Post;
+
 @Getter
 @Setter
 @Entity
@@ -18,19 +21,22 @@ public class Comment {
     @Column(name = "pk_comment_id", nullable = false)
     private Long id;
 
-    @Column(name = "post_id")
-    private Long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
-    @Column(name = "parent_comment_id")
-    private Long parentCommentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_comment_id")
+    private Comment parentComment;
 
     @Size(max = 255)
     @Nationalized
     @Column(name = "comment_text")
     private String commentText;
 
-    @Column(name = "commented_by_id")
-    private Long commentedById;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "commented_by_id", nullable = false)
+    private EmployeeProfile commentedBy;
 
     @Column(name = "commented_on")
     private Instant commentedOn;
@@ -46,6 +52,5 @@ public class Comment {
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
-
 
 }

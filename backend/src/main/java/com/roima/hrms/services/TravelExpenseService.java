@@ -129,7 +129,7 @@ public class TravelExpenseService {
             throw new RuntimeException("Exceeds max amount per day limit");
         }
 
-        List<String> proofPaths = new ArrayList<String>();
+        List<String> proofPaths = new ArrayList<>();
         for (MultipartFile file : dto.getFiles()) {
             if (file.isEmpty()) {
                 continue;

@@ -7,4 +7,4 @@ HRMS PROJECT
 # DB DESIGN
 
 ### DB
-![image](/douments/new_db.svg)
+![image](/douments/db.svg)

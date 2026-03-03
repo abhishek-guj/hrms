@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.roima.hrms.entities.EmployeeProfile; // for author mapping
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,8 +35,10 @@ public class Post {
     @Column(name = "post_type", nullable = false)
     private Long postType;
 
-    @Column(name = "author_id", nullable = false)
-    private Long authorId;
+    // relationship to the employee who authored the post
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private EmployeeProfile author;
 
     // @Lob
     @Column(name = "title", nullable = false)

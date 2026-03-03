@@ -6,6 +6,9 @@ import lombok.Setter;
 
 import java.time.Instant;
 
+import com.roima.hrms.entities.EmployeeProfile;
+import com.roima.hrms.entities.Post;
+
 @Getter
 @Setter
 @Entity
@@ -16,17 +19,19 @@ public class PostLike {
     @Column(name = "pk_post_like_id", nullable = false)
     private Integer id;
 
+    // optionally keep likeId for backwards compatibility but not used
     @Column(name = "like_id")
     private Long likeId;
 
-    @Column(name = "post_id")
-    private Long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
-    @Column(name = "liked_by_id")
-    private Long likedById;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "liked_by_id", nullable = false)
+    private EmployeeProfile likedBy;
 
     @Column(name = "update_on")
     private Instant updateOn;
-
 
 }

@@ -10,10 +10,10 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     /** All non-deleted comments for a post, oldest first */
-    @Query("SELECT c FROM Comment c WHERE c.postId = :postId AND (c.isDeleted = false OR c.isDeleted IS NULL) ORDER BY c.commentedOn ASC")
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND (c.isDeleted = false OR c.isDeleted IS NULL) ORDER BY c.commentedOn ASC")
     List<Comment> findActiveCommentsByPostId(@Param("postId") Long postId);
 
     /** Count of non-deleted comments for a post */
-    @Query("SELECT COUNT(c) FROM Comment c WHERE c.postId = :postId AND (c.isDeleted = false OR c.isDeleted IS NULL)")
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.post.id = :postId AND (c.isDeleted = false OR c.isDeleted IS NULL)")
     Long countActiveCommentsByPostId(@Param("postId") Long postId);
 }

@@ -67,7 +67,7 @@ public class AchievementPostService {
         EmployeeProfile author = roleUtil.getCurrentEmployee();
 
         Post post = new Post();
-        post.setAuthorId(author.getId());
+        post.setAuthor(author); // map relationship instead of id
         post.setTitle(req.getTitle());
         post.setText(req.getDescription());
         post.setCreatedDate(LocalDate.now());
@@ -106,7 +106,7 @@ public class AchievementPostService {
                 .filter(post -> {
                     if (Boolean.TRUE.equals(post.getVisibleToAll()))
                         return true;
-                    if (post.getAuthorId() != null && post.getAuthorId().equals(currentEmployeeId))
+                    if (post.getAuthor() != null && post.getAuthor().getId().equals(currentEmployeeId))
                         return true;
                     if (post.getVisibleRoles() != null && !post.getVisibleRoles().isEmpty()) {
                         return post.getVisibleRoles().stream().anyMatch(r -> r.getRole().name().equals(currentRole));
@@ -144,7 +144,7 @@ public class AchievementPostService {
                 .filter(post -> {
                     if (Boolean.TRUE.equals(post.getVisibleToAll()))
                         return true;
-                    if (post.getAuthorId() != null && post.getAuthorId().equals(currentEmployeeId))
+                    if (post.getAuthor() != null && post.getAuthor().getId().equals(currentEmployeeId))
                         return true;
                     if (post.getVisibleRoles() != null && !post.getVisibleRoles().isEmpty()) {
                         return post.getVisibleRoles().stream().anyMatch(r -> r.getRole().name().equals(currentRole));
@@ -168,7 +168,7 @@ public class AchievementPostService {
         Post post = getActivePost(postId);
         Long currentEmployeeId = roleUtil.getCurrentEmployeeId();
 
-        if (!post.getAuthorId().equals(currentEmployeeId)) {
+        if (!post.getAuthor().getId().equals(currentEmployeeId)) {
             throw new SecurityException("Only the author can edit this post");
         }
 
@@ -213,7 +213,7 @@ public class AchievementPostService {
         Long currentEmployeeId = roleUtil.getCurrentEmployeeId();
         boolean isHr = roleUtil.isHr() || roleUtil.isAdmin();
 
-        if (!isHr && !post.getAuthorId().equals(currentEmployeeId)) {
+        if (!isHr && !post.getAuthor().getId().equals(currentEmployeeId)) {
             throw new SecurityException("You are not authorized to delete this post");
         }
 
@@ -223,9 +223,8 @@ public class AchievementPostService {
         postRepository.save(post);
 
         // If HR deletes someone else's post → send warning email
-        if (isHr && !post.getAuthorId().equals(currentEmployeeId)) {
-            EmployeeProfile author = employeeProfileRepository.findById(post.getAuthorId())
-                    .orElse(null);
+        if (isHr && !post.getAuthor().getId().equals(currentEmployeeId)) {
+            EmployeeProfile author = post.getAuthor();
             if (author != null && author.getUser() != null) {
                 emailService.sendContentWarningEmail(
                         author.getUser().getEmail(),
@@ -247,20 +246,21 @@ public class AchievementPostService {
         getActivePost(postId); // validate exists
         Long currentEmployeeId = roleUtil.getCurrentEmployeeId();
 
-        if (postLikeRepository.existsByPostIdAndLikedById(postId, currentEmployeeId)) {
+        if (postLikeRepository.existsByPost_IdAndLikedBy_Id(postId, currentEmployeeId)) {
             // Unlike
-            PostLike existing = postLikeRepository.findByPostIdAndLikedById(postId, currentEmployeeId)
+            PostLike existing = postLikeRepository.findByPost_IdAndLikedBy_Id(postId, currentEmployeeId)
                     .orElseThrow();
             postLikeRepository.delete(existing);
         } else {
             // Like
             PostLike like = new PostLike();
-            like.setPostId(postId);
-            like.setLikedById(currentEmployeeId);
+            Post p = getActivePost(postId);
+            like.setPost(p);
+            like.setLikedBy(employeeProfileRepository.findById(currentEmployeeId).orElse(null));
             like.setUpdateOn(Instant.now());
             postLikeRepository.save(like);
         }
-        return postLikeRepository.countByPostId(postId);
+        return postLikeRepository.countByPost_Id(postId);
     }
 
     // ─────────────────────────────────────────────
@@ -274,10 +274,14 @@ public class AchievementPostService {
         Long currentEmployeeId = roleUtil.getCurrentEmployeeId();
 
         Comment comment = new Comment();
-        comment.setPostId(postId);
-        comment.setCommentedById(currentEmployeeId);
+        Post p = getActivePost(postId);
+        comment.setPost(p);
+        comment.setCommentedBy(employeeProfileRepository.findById(currentEmployeeId).orElse(null));
         comment.setCommentText(req.getCommentText());
-        comment.setParentCommentId(req.getParentCommentId());
+        if (req.getParentCommentId() != null) {
+            Comment parent = commentRepository.findById(req.getParentCommentId()).orElse(null);
+            comment.setParentComment(parent);
+        }
         comment.setCommentedOn(Instant.now());
         comment.setUpdatedOn(Instant.now());
         comment.setIsDeleted(false);
@@ -292,7 +296,7 @@ public class AchievementPostService {
         Comment comment = getActiveComment(commentId);
         Long currentEmployeeId = roleUtil.getCurrentEmployeeId();
 
-        if (!comment.getCommentedById().equals(currentEmployeeId)) {
+        if (!comment.getCommentedBy().getId().equals(currentEmployeeId)) {
             throw new SecurityException("Only the author can edit this comment");
         }
 
@@ -313,7 +317,7 @@ public class AchievementPostService {
         Long currentEmployeeId = roleUtil.getCurrentEmployeeId();
         boolean isHr = roleUtil.isHr() || roleUtil.isAdmin();
 
-        if (!isHr && !comment.getCommentedById().equals(currentEmployeeId)) {
+        if (!isHr && !comment.getCommentedBy().getId().equals(currentEmployeeId)) {
             throw new SecurityException("You are not authorized to delete this comment");
         }
 
@@ -323,9 +327,8 @@ public class AchievementPostService {
         commentRepository.save(comment);
 
         // Warning email for HR-initiated deletion of another user's comment
-        if (isHr && !comment.getCommentedById().equals(currentEmployeeId)) {
-            EmployeeProfile commenter = employeeProfileRepository.findById(comment.getCommentedById())
-                    .orElse(null);
+        if (isHr && !comment.getCommentedBy().getId().equals(currentEmployeeId)) {
+            EmployeeProfile commenter = comment.getCommentedBy();
             if (commenter != null && commenter.getUser() != null) {
                 emailService.sendContentWarningEmail(
                         commenter.getUser().getEmail(),
@@ -380,7 +383,7 @@ public class AchievementPostService {
 
     private Post buildSystemPost(Long employeeId, String title, String text) {
         Post post = new Post();
-        post.setAuthorId(employeeId);
+        post.setAuthor(employeeProfileRepository.findById(employeeId).orElse(null));
         post.setTitle(title);
         post.setText(text);
         post.setCreatedDate(LocalDate.now());
@@ -417,7 +420,7 @@ public class AchievementPostService {
     private AchievementPostDto toDto(Post post, Long currentEmployeeId) {
         AchievementPostDto dto = new AchievementPostDto();
         dto.setId(post.getId());
-        dto.setAuthorId(post.getAuthorId());
+        dto.setAuthorId(post.getAuthor() != null ? post.getAuthor().getId() : null);
         dto.setTitle(post.getTitle());
         dto.setDescription(post.getText());
         dto.setCreatedDate(post.getCreatedDate());
@@ -426,7 +429,7 @@ public class AchievementPostService {
         dto.setIsSystemGenerated(post.getIsSystemGenerated());
 
         // Author name
-        EmployeeProfile author = employeeProfileRepository.findById(post.getAuthorId()).orElse(null);
+        EmployeeProfile author = post.getAuthor();
         if (author != null) {
             dto.setAuthorName(author.getFirstName() + " " + author.getLastName());
         } else {
@@ -439,9 +442,9 @@ public class AchievementPostService {
                 .collect(Collectors.toList()));
 
         // Likes
-        long likeCount = postLikeRepository.countByPostId(post.getId());
+        long likeCount = postLikeRepository.countByPost_Id(post.getId());
         dto.setLikeCount(likeCount);
-        dto.setLikedByCurrentUser(postLikeRepository.existsByPostIdAndLikedById(post.getId(), currentEmployeeId));
+        dto.setLikedByCurrentUser(postLikeRepository.existsByPost_IdAndLikedBy_Id(post.getId(), currentEmployeeId));
 
         // Recent likers (up to 5)
         List<Long> recentLikerIds = postLikeRepository.findRecentLikerIdsByPostId(post.getId())
@@ -475,15 +478,15 @@ public class AchievementPostService {
     private CommentDto toCommentDto(Comment comment) {
         CommentDto dto = new CommentDto();
         dto.setId(comment.getId());
-        dto.setPostId(comment.getPostId());
-        dto.setParentCommentId(comment.getParentCommentId());
+        dto.setPostId(comment.getPost() != null ? comment.getPost().getId() : null);
+        dto.setParentCommentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null);
         dto.setCommentText(comment.getCommentText());
-        dto.setCommentedById(comment.getCommentedById());
+        dto.setCommentedById(comment.getCommentedBy() != null ? comment.getCommentedBy().getId() : null);
         dto.setCommentedOn(comment.getCommentedOn());
         dto.setUpdatedOn(comment.getUpdatedOn());
         dto.setIsDeleted(comment.getIsDeleted());
 
-        EmployeeProfile commenter = employeeProfileRepository.findById(comment.getCommentedById()).orElse(null);
+        EmployeeProfile commenter = comment.getCommentedBy();
         if (commenter != null) {
             dto.setCommenterName(commenter.getFirstName() + " " + commenter.getLastName());
         }
