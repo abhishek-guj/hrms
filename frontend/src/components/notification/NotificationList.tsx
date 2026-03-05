@@ -10,9 +10,14 @@ import {
 	DialogTrigger,
 } from "../ui/dialog";
 import { useNotificationALL, useRead } from "./notification.quer";
+import Notification from "./Notifications";
+
+
+
 
 const NotificationList = () => {
 	const { data, isLoading, error } = useNotificationALL();
+	console.log(data, typeof data)
 	//   //
 	if (isLoading) {
 		return (
@@ -79,29 +84,14 @@ function NotficationBox({ notifications }: Readonly<{ notifications: any[] }>) {
 	return (
 		<div className="p-4 flex flex-col gap-2 max-h-96 overflow-auto">
 			{notifications?.map((noti) => {
-				return <NotificationItem key={noti?.id} notification={noti} />;
+				return (
+					<Notification key={noti?.id} notification={noti} >
+						<Notification.Content>
+							<Notification.ReadButton />
+						</Notification.Content>
+					</Notification>
+				)
 			})}
-		</div>
-	);
-}
-
-function NotificationItem({ notification }: Readonly<{ notification: any }>) {
-	// tmp
-	const readNotify = useRead();
-	const handleClick = async () => {
-		readNotify.mutateAsync({ id: notification?.id });
-	};
-
-	return (
-		<div className="flex gap-3 px-4 py-3 border-primary font-bold w-max max-w-96 h-fit bg-primary/10 justify-center items-center">
-			<div className="w-full">{notification?.content}</div>
-			<Button
-				onClick={handleClick}
-				className="cursor-pointer flex justify-center items-center w-8 h-8 p-2 bg-primary text-white rounded-full"
-				asChild
-			>
-				<EyeIcon />
-			</Button>
 		</div>
 	);
 }
