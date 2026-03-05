@@ -26,7 +26,7 @@ import java.util.Optional;
 @Component
 public class GameScheduler {
 
-    private final int fixedDelay = 30000;
+    private final int fixedDelay = 1000 * 60 * 10;
     private final int initialDelay = 3000;
     private final long BUFFER_FOR_AUTO_CONFIRM = 60; // using minutes directly
     private final GameTypeRepository gameTypeRepository;

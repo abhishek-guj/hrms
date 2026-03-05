@@ -62,10 +62,8 @@ public class JobSeeder implements ApplicationListener<ContextRefreshedEvent> {
             job1.setJobHrs(Set.of(jobHr1, jobHr2));
 
             JobCvReviewer cvReviewer1 = JobCvReviewer.builder().job(job1).reviewer(emp1).build();
-            JobCvReviewer cvReviewer2 = JobCvReviewer.builder().job(job1).reviewer(emp2).build();
-            JobCvReviewer cvReviewer3 = JobCvReviewer.builder().job(job1).reviewer(emp3).build();
 
-            job1.setJobCvReviewers(Set.of(cvReviewer1, cvReviewer2, cvReviewer3));
+            job1.setJobCvReviewers(Set.of(cvReviewer1));
 
             JobJdFile jobJdFile = JobJdFile.builder().job(job1).filePath("22cd4966-0ced-11f1-9cba-325096b39f47.pdf")
                     .uploadedOn(LocalDateTime.now()).uploadedBy(hr1).build();
@@ -94,11 +92,10 @@ public class JobSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
             job2.setJobHrs(Set.of(jobHr1));
 
-            JobCvReviewer cvReviewer2 = JobCvReviewer.builder().job(job2).reviewer(emp2).build();
-            JobCvReviewer cvReviewer3 = JobCvReviewer.builder().job(job2).reviewer(emp3).build();
-            JobCvReviewer cvReviewer4 = JobCvReviewer.builder().job(job2).reviewer(emp4).build();
+            JobCvReviewer cvReviewer2 = JobCvReviewer.builder().job(job2).reviewer(emp1).build();
+            
 
-            job2.setJobCvReviewers(Set.of(cvReviewer2, cvReviewer3, cvReviewer4));
+            job2.setJobCvReviewers(Set.of(cvReviewer2));
 
             JobJdFile jobJdFile = JobJdFile.builder().job(job2).filePath("fdf5e36e-0cec-11f1-83f1-325096b39f47.pdf")
                     .uploadedOn(LocalDateTime.now()).uploadedBy(hr2).build();

@@ -1,0 +1,65 @@
+import { Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Button } from "../../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
+import { Field, FieldError, FieldGroup, FieldLabel } from "../../ui/field";
+import { Input } from "../../ui/input";
+import { useExpenseTypesCreate } from "../../travelPlans/queries/travelPlans.queries";
+
+export const TravelExpTypeCreate = () => {
+
+    const createTravelExpType = useExpenseTypesCreate();
+
+    const handleSave = async (data: any) => {
+        createTravelExpType.mutateAsync({ payload: data });
+        reset()
+    };
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset
+    } = useForm({
+        mode: "all",
+    })
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button
+                    size="sm"
+                    className="flex items-center gap-1.5 cursor-pointer"
+                    variant={"default"}
+                    asChild
+                >
+                    <span className="w-fit">
+                        <Plus className="h-4 w-4" />
+                        <span className="hidden lg:block">New</span>
+                    </span>
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:min-w-fit sm:max-w-1/2 min-w-fit, max-w-fit">
+                <DialogHeader>
+                    <DialogTitle>Create Travel Expense Type</DialogTitle>
+                    <DialogDescription>Create travel Expense type...</DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit(handleSave)} >
+                    <FieldGroup>
+                        <Field>
+                            <FieldLabel htmlFor="name">Name</FieldLabel>
+                            <Input id="name" type="text"
+                                {...register("name", { required: { value: true, message: "name is required" } })} />
+                            {errors && <FieldError errors={[errors?.name]} />}
+                        </Field>
+                        <Button variant={"default"}
+                            disabled={createTravelExpType.isPending}
+                        >
+                            Save
+                        </Button>
+                    </FieldGroup>
+                </form>
+            </DialogContent>
+        </Dialog >
+    );
+};

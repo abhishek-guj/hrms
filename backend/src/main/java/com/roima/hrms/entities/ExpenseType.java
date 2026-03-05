@@ -21,4 +21,7 @@ public class ExpenseType {
     @Size(max = 255)
     @Column(name = "expense_type")
     private String name;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 }

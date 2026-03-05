@@ -16,12 +16,16 @@ const NotificationList = () => {
 	//   //
 	if (isLoading) {
 		return (
-			<div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
-				<div className="flex flex-row justify-start items-center gap-1.5">
-						<Bell className="h-5 w-5 p-0.5" />
+			<Button
+				variant={"default"}
+				className="w-full flex justify-start flex-row items-center pl-1 m-0 hover:bg-white hover:text-black">
+				<div className="flex flex-row justify-between items-center w-fit p-0 m-0 ">
+					<div className="flex flex-row justify-start items-center gap-1.5 p-0 m-0">
+						<Bell className="h-8 w-8 p-0.5" />
 						<div>Notifications</div>
 					</div>
-			</div>
+				</div>
+			</Button >
 		);
 	}
 
@@ -29,17 +33,24 @@ const NotificationList = () => {
 
 	if (error) {
 		return (
-			<div className="p-4 px-8 flex flex-col min-w-96 min-h-96 justify-center items-center">
-				No Data Found...
-			</div>
+			<Button
+				variant={"default"}
+				className="w-full flex justify-start flex-row items-center pl-1 m-0 hover:bg-white hover:text-black">
+				<div className="flex flex-row justify-between items-center w-fit p-0 m-0 ">
+					<div className="flex flex-row justify-start items-center gap-1.5 p-0 m-0">
+						<Bell className="h-8 w-8 p-0.5" />
+						<div>Notifications</div>
+					</div>
+				</div>
+			</Button >
 		);
 	}
 
 	return (
 		<Dialog>
-			<DialogTrigger className="w-full flex justify-start p-0 m-0">
-				<div className="flex flex-row justify-between items-center w-full">
-					<div className="flex flex-row justify-start items-center gap-1.5">
+			<DialogTrigger className="w-full flex justify-start flex-col items-start p-0 m-0">
+				<div className="flex flex-row justify-between items-center w-fit p-0 m-0 ">
+					<div className="flex flex-row justify-start items-center gap-1.5 p-0 m-0 ">
 						<Bell className="h-5 w-5 p-0.5" />
 						<div>Notifications</div>
 					</div>
@@ -74,7 +85,7 @@ function NotficationBox({ notifications }: Readonly<{ notifications: any[] }>) {
 	);
 }
 
-function NotificationItem({ notification } : Readonly<{ notification: any }>) {
+function NotificationItem({ notification }: Readonly<{ notification: any }>) {
 	// tmp
 	const readNotify = useRead();
 	const handleClick = async () => {

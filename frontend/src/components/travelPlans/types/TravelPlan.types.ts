@@ -1,12 +1,8 @@
 import type { DataTableStatus } from "../../shared/shared.types";
 
-
 export interface DataTabelItem {
 	id: string;
 	name: string;
-	date: string;
-	status: DataTableStatus;
-	amount: string;
 }
 
 export interface TravelTypeDto {
@@ -57,7 +53,6 @@ export interface TravelEmployeeDto {
 	lastName: string;
 }
 
-
 export interface TravelExpenseDto {
 	id: number;
 	travelPlan: ExpenseTravelPlanDto;
@@ -104,8 +99,6 @@ export interface TravelExpenseRequestDto {
 	files: FileList;
 }
 
-
-
 export interface TravelDocumentCreateDto {
 	travelPlanId: string;
 	uploadedForEmployeeId: string;
@@ -114,16 +107,24 @@ export interface TravelDocumentCreateDto {
 }
 
 export interface TravelDocument {
-	id: string,
-	travelPlanId: string,
-	travelPlanPurpose: string,
-	ownerType: string,
-	uploadedById: string,
-	uploadedByName: string,
-	uploadedForId: string,
-	uploadedForName: string,
-	uploadDate: Date,
-	documentTypeId: string,
-	documentTypeName: string,
-	filePath: string
+	id: string;
+	travelPlanId: string;
+	travelPlanPurpose: string;
+	ownerType: string;
+	uploadedById: string;
+	uploadedByName: string;
+	uploadedForId: string;
+	uploadedForName: string;
+	uploadDate: Date;
+	documentTypeId: string;
+	documentTypeName: string;
+	filePath: string;
+}
+
+export interface TravelDocumentTypeRequestDto {
+	name: string;
+}
+
+export interface ExpenseTypeRequestDto {
+	name: string;
 }

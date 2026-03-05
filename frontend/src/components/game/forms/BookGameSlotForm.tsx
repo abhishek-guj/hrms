@@ -148,6 +148,7 @@ export function FieldInput({
   displayName: string;
   errors: { message?: string } | undefined;
   type?: string;
+  props?: any;
 }>) {
   // types
 

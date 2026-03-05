@@ -16,34 +16,41 @@ public class TravelDocumentTypeService {
     private final TravelDocumentTypeRepository travelDocumentTypeRepository;
     private final TravelDocumentTypeMapper travelDocumentTypeMapper;
 
-    @Autowired
-    public TravelDocumentTypeService(TravelDocumentTypeRepository travelDocumentTypeRepository, TravelDocumentTypeMapper travelDocumentTypeMapper) {
+    public TravelDocumentTypeService(TravelDocumentTypeRepository travelDocumentTypeRepository,
+            TravelDocumentTypeMapper travelDocumentTypeMapper) {
         this.travelDocumentTypeRepository = travelDocumentTypeRepository;
         this.travelDocumentTypeMapper = travelDocumentTypeMapper;
     }
 
-    public List<TravelDocumentTypeDto> getAllTravelDocumentTypes(){
+    public List<TravelDocumentTypeDto> getAllTravelDocumentTypes() {
         List<TravelDocumentType> travelDocumentTypes = travelDocumentTypeRepository.findAll();
         return travelDocumentTypeMapper.toTravelDocumentTypeDtoList(travelDocumentTypes);
     }
 
-    public TravelDocumentTypeDto createTravelDocumentType(TravelDocumentTypeRequestDto dto){
+    public TravelDocumentTypeDto createTravelDocumentType(TravelDocumentTypeRequestDto dto) {
+        if (travelDocumentTypeRepository.existsByName(dto.getName())) {
+            throw new RuntimeException("Duplicate Type Can't be added!");
+        }
         TravelDocumentType et = TravelDocumentType.builder().name(dto.getName()).build();
         travelDocumentTypeRepository.save(et);
         return travelDocumentTypeMapper.toTravelDocumentTypeDto(et);
     }
 
-    public TravelDocumentTypeDto getById(Long id){
-        TravelDocumentType et = travelDocumentTypeRepository.findById(id).orElseThrow(TravelDocumentTypeNotFoundException::new);
+    public TravelDocumentTypeDto getById(Long id) {
+        TravelDocumentType et = travelDocumentTypeRepository.findById(id)
+                .orElseThrow(TravelDocumentTypeNotFoundException::new);
         return travelDocumentTypeMapper.toTravelDocumentTypeDto(et);
     }
 
-    public void deleteTravelDocumentType(Long id){
-        TravelDocumentType et = travelDocumentTypeRepository.findById(id).orElseThrow(TravelDocumentTypeNotFoundException::new);
+    public void deleteTravelDocumentType(Long id) {
+        TravelDocumentType et = travelDocumentTypeRepository.findById(id)
+                .orElseThrow(TravelDocumentTypeNotFoundException::new);
         travelDocumentTypeRepository.delete(et);
     }
-    public TravelDocumentTypeDto updateTravelDocumentType(Long id, TravelDocumentTypeRequestDto dto){
-        TravelDocumentType et = travelDocumentTypeRepository.findById(id).orElseThrow(TravelDocumentTypeNotFoundException::new);
+
+    public TravelDocumentTypeDto updateTravelDocumentType(Long id, TravelDocumentTypeRequestDto dto) {
+        TravelDocumentType et = travelDocumentTypeRepository.findById(id)
+                .orElseThrow(TravelDocumentTypeNotFoundException::new);
         et.setName(dto.getName());
         travelDocumentTypeRepository.save(et);
         return travelDocumentTypeMapper.toTravelDocumentTypeDto(et);

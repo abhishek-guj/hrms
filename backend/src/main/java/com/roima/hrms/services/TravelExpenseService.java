@@ -158,8 +158,8 @@ public class TravelExpenseService {
                     .expenseType(expenseType)
                     .expenseAmount(dto.getExpenseAmount())
                     .expenseDate(LocalDate.parse(dto.getExpenseDate().substring(0, 10)))
-                    .status(dto.getStatus() == null ? "Pending" : dto.getStatus())
-                    .remark(dto.getRemark())
+                    .status("Pending")
+                    .remark("")
                     .statusChangedOn(LocalDateTime.now())
                     .statusChangedBy(roleUtil.getCurrentEmployee())
                     .build();

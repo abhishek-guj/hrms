@@ -7,6 +7,8 @@ import com.roima.hrms.enums.ApiResponseType;
 import com.roima.hrms.response.ApiResponse;
 import com.roima.hrms.services.JobService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +41,7 @@ public class JobController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse> createJob(@ModelAttribute JobRequestDto dto) {
+    public ResponseEntity<ApiResponse> createJob(@Valid @ModelAttribute JobRequestDto dto) {
         JobDto jobDto = jobService.createJob(dto);
         ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully created Job.",
                 jobDto, null);
@@ -57,7 +59,7 @@ public class JobController {
 
     //
     @PutMapping(value = "{jobId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse> updateJob(@PathVariable Long jobId, @ModelAttribute JobRequestDto dto) {
+    public ResponseEntity<ApiResponse> updateJob(@PathVariable Long jobId, @Valid @ModelAttribute JobRequestDto dto) {
         JobDto job = jobService.updateJob(jobId, dto);
         ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Successfully updated Job",
                 job, null);
@@ -78,7 +80,8 @@ public class JobController {
     // -----------------------------------------------------------
 
     @PostMapping("{jobId}/share")
-    public ResponseEntity<ApiResponse> shareJobById(@PathVariable Long jobId, @RequestBody EmailShareReqDto email) {
+    public ResponseEntity<ApiResponse> shareJobById(@PathVariable Long jobId,
+            @Valid @RequestBody EmailShareReqDto email) {
         jobService.shareById(jobId, List.of(email));
         ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Shared Job successfully",
                 null, null);
@@ -86,8 +89,11 @@ public class JobController {
     }
 
     @PostMapping(value = "{jobId}/refer", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse> referJobById(@PathVariable Long jobId,
-            @ModelAttribute JobReferralReqDto jobReferralReqDto) {
+    public ResponseEntity<ApiResponse> referJobById(
+            @PathVariable Long jobId,
+            @Valid @ModelAttribute JobReferralReqDto jobReferralReqDto
+
+    ) {
         boolean createReferral = jobService.referById(jobId, jobReferralReqDto);
         ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Referred successfully",
                 createReferral, null);
@@ -104,7 +110,7 @@ public class JobController {
 
     @PutMapping("referrals/{referralId}")
     public ResponseEntity<ApiResponse> updateReferralStatus(@PathVariable Long referralId,
-            @RequestBody ReferralStatusDto status) {
+            @Valid @RequestBody ReferralStatusDto status) {
         jobService.updateReferralStatus(referralId, status);
         ApiResponse<JobDto> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS, "Shared Job successfully",
                 null, null);

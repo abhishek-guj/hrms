@@ -38,26 +38,26 @@ const TravelPlanView = () => {
       <div className="p-2 flex justify-center gap-4">
         <NavLink
           to={"employee"}
-          className="p-2 border bg-secondary rounded-xl text-sm sm:text-base"
+          className={({ isActive }) => `${isActive ? "bg-primary text-white" : "bg-secondary"} p-2 px-4 border rounded-sm text-sm sm:text-base`}
         >
           Employees
         </NavLink>
         <NavLink
           to={"documents"}
-          className="p-2 border bg-secondary rounded-xl text-sm sm:text-base"
+          className={({ isActive }) => `${isActive ? "bg-primary text-white" : "bg-secondary"} p-2 px-4 border rounded-sm text-sm sm:text-base`}
         >
           Documents
         </NavLink>
         <NavLink
           to={"expenses"}
-          className="p-2 border bg-secondary rounded-xl text-sm sm:text-base"
+          className={({ isActive }) => `${isActive ? "bg-primary text-white" : "bg-secondary"} p-2 px-4 border rounded-sm text-sm sm:text-base`}
         >
           Expenses
         </NavLink>
       </div>
       <Separator />
       <Outlet context={{ data: data }} />
-    </main>
+    </main >
   );
 };
 

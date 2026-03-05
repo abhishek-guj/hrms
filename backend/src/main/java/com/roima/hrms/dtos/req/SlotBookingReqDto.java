@@ -2,6 +2,7 @@ package com.roima.hrms.dtos.req;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,5 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class SlotBookingReqDto {
+    @NotNull(message = "player ids cannot be null")
     private List<Long> playerIds;
 }

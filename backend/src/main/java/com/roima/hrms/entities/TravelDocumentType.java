@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Getter
 @Setter
@@ -18,9 +19,10 @@ public class TravelDocumentType {
     @Column(name = "pk_travel_document_type_id", nullable = false)
     private Long id;
 
-    @Size(max = 255)
     @Column(name = "name")
     private String name;
 
-
+    // @Builder.Default
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
 }

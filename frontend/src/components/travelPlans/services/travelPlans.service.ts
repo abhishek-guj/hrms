@@ -3,6 +3,7 @@ import { TRAVEL_PLAN_ENDPOINTS } from "@/api/endpoints";
 import type {
 	DataTabelItem,
 	ExpenseTypeDto,
+	ExpenseTypeRequestDto,
 	TravelEmployeeDto,
 	TravelExpenseDto,
 	TravelExpenseRequestDto,
@@ -90,7 +91,8 @@ export const TravelPlansService = {
 	async deleteTravelEmployees(id: string, employeeId: string) {
 		console.log("deleteTravelEmployees");
 		const res = await api.delete<IApiResponse>(
-			TRAVEL_PLAN_ENDPOINTS.deleteTravelEmployees(id, employeeId));
+			TRAVEL_PLAN_ENDPOINTS.deleteTravelEmployees(id, employeeId),
+		);
 		return res.data.data;
 	},
 
@@ -112,6 +114,29 @@ export const TravelPlansService = {
 		return res.data.data;
 	},
 
+	async createTravelExpenseType(data: ExpenseTypeRequestDto) {
+		const res = await api.post<IApiResponse<TravelExpenseDto>>(
+			EXPENSE_TYPES_ENDPOINTS.create(),
+			data,
+		);
+		return res.data;
+	},
+
+	async updateTravelExpenseType(id: string, data: ExpenseTypeRequestDto) {
+		const res = await api.put<IApiResponse<TravelExpenseDto>>(
+			EXPENSE_TYPES_ENDPOINTS.update(id),
+			data,
+		);
+		return res.data;
+	},
+
+	async deleteTravelExpenseType(id: string) {
+		const res = await api.delete<IApiResponse>(
+			EXPENSE_TYPES_ENDPOINTS.delete(id),
+		);
+		return res.data;
+	},
+
 	// expense
 	async getTravelExpenseById(id: string): Promise<TravelExpenseDto> {
 		const res = await api.get<IApiResponse<TravelExpenseDto>>(
@@ -129,7 +154,7 @@ export const TravelPlansService = {
 					"content-type": "multipart/form-data",
 				},
 			},
-		)
+		);
 		return res.data;
 	},
 

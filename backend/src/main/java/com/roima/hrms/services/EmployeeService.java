@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.roima.hrms.dtos.res.EmployeeProfileDto;
 import com.roima.hrms.entities.EmployeeProfile;
 import com.roima.hrms.entities.GameSlot;
+import com.roima.hrms.exceptions.EmployeeNotFoundException;
 import com.roima.hrms.repository.EmployeeProfileRepository;
 import com.roima.hrms.repository.GameSlotRepository;
 import com.roima.hrms.repository.TravelEmployeeRepository;
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
+
+    private final UserService userService;
 
     private final TravelEmployeeRepository travelEmployeeRepository;
     private final EmployeeProfileRepository employeeProfileRepository;
@@ -38,17 +41,13 @@ public class EmployeeService {
         return dtos;
     }
 
-    // public List<EmployeeProfileDto> getPlayersForGameSlot(Long slotId) {
-    // GameSlot gameSlot = gameSlotRepository.findById(slotId)
-    // .orElseThrow(() -> new RuntimeException("Game Slot not found"));
-    // List<EmployeeProfile> players =
-    // employeeProfileRepository.findAllNotOverlapingGameSlots(slotId,
-    // gameSlot.getSlotStart(), gameSlot.getSlotEnd());
+    public EmployeeProfile getEmployeeProfileById(Long employeeProfileId) {
+        return employeeProfileRepository.findById(employeeProfileId).orElseThrow(EmployeeNotFoundException::new);
+    }
 
-    // List<EmployeeProfileDto> dtos = players.stream().map(e -> modelMapper.map(e,
-    // EmployeeProfileDto.class))
-    // .toList();
-    // return dtos;
-    // }
-
+    public void updateEmployeeRole(Long empId, Long roleId) {
+        EmployeeProfile employeeProfile = employeeProfileRepository.findById(empId)
+                .orElseThrow(EmployeeNotFoundException::new);
+        userService.updateUserRole(employeeProfile, roleId);
+    }
 }

@@ -128,7 +128,6 @@ export const JobUpdateForm = ({ jobId, data }) => {
             />
           )}
         />
-        {console.log(errors)}
       </FieldSet>
       <FieldSet>
         <Field>
@@ -136,7 +135,7 @@ export const JobUpdateForm = ({ jobId, data }) => {
           <Input id="jobJdFile" type="file" {...register("jobJdFile")} />
           {errors.jobJdFile && <FieldError errors={[errors.jobJdFile]} />}
         </Field>
-        <Button variant={"default"}>Save</Button>
+        <Button variant={"default"} disabled={updateJob.isPending}>Save</Button>
       </FieldSet>
     </form>
   );

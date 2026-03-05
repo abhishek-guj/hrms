@@ -9,7 +9,7 @@ import {
 	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
-	SidebarMenuItem
+	SidebarMenuItem,
 } from "../ui/sidebar";
 
 import { LogOut, User, UserCog } from "lucide-react";
@@ -24,14 +24,21 @@ export const AppSidebar = ({
 	...props
 }: React.ComponentProps<typeof Sidebar>) => {
 	return (
-		<Sidebar {...props}
-			collapsible={"icon"}>
+		<Sidebar {...props} collapsible={"icon"}>
 			<SidebarHeader>
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<SidebarMenuButton asChild className="p-0 hover:bg-primary active:bg-primary hover:text-white" disabled >
+						<SidebarMenuButton
+							asChild
+							className="p-0 hover:bg-primary active:bg-primary hover:text-white"
+							disabled
+						>
 							<div className="flex flex-row justify-start items-center px-2 m-0">
-								<img src={Logo} alt="Logo" className="w-5 h-5 px-1 text-white" />
+								<img
+									src={Logo}
+									alt="Logo"
+									className="w-5 h-5 px-1 text-white"
+								/>
 								<div className="ml-0.5 text-lg font-bold">HRMS</div>
 							</div>
 						</SidebarMenuButton>
@@ -62,17 +69,16 @@ export const AppSideBarContent = () => {
 	);
 };
 
-
 export const AppSidebarMenu = ({ item }) => {
 	return (
 		<SidebarMenu>
 			{item.items.map((item) => (
 				<SidebarMenuItem key={item.title}>
 					<SidebarMenuButton asChild isActive={item.isActive}>
-						<div className="flex flex-row justify-start items-center block">
+						<Link to={item.url} className="flex flex-row justify-start items-center block">
 							{item.icon}
-							<a href={item.url}>{item.title}</a>
-						</div>
+							{item.title}
+						</Link>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
 			))}
@@ -111,23 +117,25 @@ export const UserLoginMenu = () => {
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton asChild>
-							<Link to={"/my-profile"} className="flex flex-row items-center px-3 w-full">
+							<Link
+								to={"/my-profile"}
+								className="flex flex-row items-center px-3 w-full"
+							>
 								<User />
 								Profile
 							</Link>
 						</SidebarMenuButton>
-						{/* <> */}
-						{/* {(RoleUtil.isAdmin || RoleUtil.isHr) && */}
-						{/* <SidebarMenuButton asChild> */}
-						{/* <div > */}
-						{/* <Link to={"/admin-panel"} className="flex flex-row items-center px-3 w-full"> */}
-						{/* <UserCog /> */}
-						{/* Admin Panel */}
-						{/* </Link> */}
-						{/* </div> */}
-						{/* </SidebarMenuButton> */}
-						{/* } */}
-						{/* </>  */}
+						{(RoleUtil.isAdmin || RoleUtil.isHr) && (
+							<SidebarMenuButton asChild>
+								<Link
+									to={"/admin-panel"}
+									className="flex flex-row items-center px-3 w-full"
+								>
+									<UserCog />
+									Admin Panel
+								</Link>
+							</SidebarMenuButton>
+						)}
 						<SidebarMenuButton asChild onClick={handleLogout}>
 							<Button asChild className="flex justify-start cursor-pointer">
 								<div className="flex flex-row justify-start items-center">
@@ -138,8 +146,8 @@ export const UserLoginMenu = () => {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
-			</SidebarGroupContent >
-		</SidebarGroup >
+			</SidebarGroupContent>
+		</SidebarGroup>
 	);
 };
 

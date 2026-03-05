@@ -5,6 +5,7 @@ import type {
 	ExpenseTypeDto,
 	TravelDocument,
 	TravelDocumentCreateDto,
+	TravelDocumentTypeRequestDto,
 	TravelEmployeeDto,
 	TravelExpenseDto,
 	TravelExpenseRequestDto,
@@ -26,7 +27,10 @@ export const TravelDocumentService = {
 		);
 		return res.data.data;
 	},
-	async getTravelDocumentByDocId(id: string, docId: string): Promise<TravelDocument> {
+	async getTravelDocumentByDocId(
+		id: string,
+		docId: string,
+	): Promise<TravelDocument> {
 		const res = await api.get<IApiResponse<TravelDocument>>(
 			TRAVEL_DOCUMENTS_ENDPOINTS.getByDocId(id, docId),
 		);
@@ -52,10 +56,37 @@ export const TravelDocumentService = {
 		return res.data.data;
 	},
 
-
 	async deleteTravelDocument(id: string, docId: string) {
 		const res = await api.delete<IApiResponse>(
-			TRAVEL_DOCUMENTS_ENDPOINTS.delete(id, docId));
+			TRAVEL_DOCUMENTS_ENDPOINTS.delete(id, docId),
+		);
+		return res.data.data;
+	},
+
+	async updateTravelDocumentType(
+		id: string,
+		data: TravelDocumentTypeRequestDto,
+	) {
+		const res = await api.put<IApiResponse>(
+			TRAVEL_DOCUMENTS_ENDPOINTS.updateDocumentTypes(id),
+			data,
+		);
+		return res.data.data;
+	},
+
+	async deleteTravelDocumentType(id: string) {
+		const res = await api.delete<IApiResponse>(
+			TRAVEL_DOCUMENTS_ENDPOINTS.deleteDocumentTypes(id),
+		);
+
+		return res.data.data;
+	},
+
+	async createTravelDocumentType(payload: TravelDocumentTypeRequestDto) {
+		const res = await api.post<IApiResponse>(
+			TRAVEL_DOCUMENTS_ENDPOINTS.createDocumentTypes(),
+			payload,
+		);
 		return res.data.data;
 	},
 };

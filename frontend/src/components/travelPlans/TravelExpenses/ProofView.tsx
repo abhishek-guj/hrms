@@ -18,7 +18,7 @@ const ProofView = ({ filePath, docType }) => {
 	const handleDownload = () => {
 		if (data) {
 			const type = getType(data);
-			saveAs(new Blob([data], { type: type }), "example.pdf");
+			saveAs(new Blob([data], { type: type }), `${docType}_${filePath}`);
 		}
 	};
 
@@ -49,7 +49,7 @@ const ProofView = ({ filePath, docType }) => {
 		);
 	} else if (fileType?.startsWith("image")) {
 		const image = URL.createObjectURL(data!);
-		return <img alt="pass image url" src={image}></img>;
+		return <img alt="image" src={image}></img>;
 	}
 };
 

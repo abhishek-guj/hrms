@@ -17,7 +17,6 @@ import {
 import type { ExpenseTypeDto } from "../../types/TravelPlan.types";
 
 const FormSelect = ({ data, name, value, onValueChange, type }) => {
-	console.log(data);
 	return (
 		<Field orientation="responsive">
 			<Select name={name} value={value} onValueChange={onValueChange}>
@@ -41,12 +40,14 @@ const FormSelectItem = ({ type, d }) => {
 		val = d?.jobTitle;
 	} else if (type === "travel") {
 		val = `${d?.firstName} ${d?.lastName}`;
+	} else if (type === "role") {
+		val = d.role;
 	} else {
 		val = d?.name;
 	}
 
-	if(!val) alert(val)
-	if(!d) alert(d)
+	// if(!val) alert(val)
+	// if(!d) alert(d)
 
 	return (
 		<SelectItem key={d?.id} value={`${d?.id}`}>

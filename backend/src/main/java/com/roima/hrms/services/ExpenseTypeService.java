@@ -22,27 +22,31 @@ public class ExpenseTypeService {
         this.expenseTypeMapper = expenseTypeMapper;
     }
 
-    public List<ExpenseTypeDto> getAllExpenseTypes(){
+    public List<ExpenseTypeDto> getAllExpenseTypes() {
         List<ExpenseType> expenseTypes = expenseTypeRepository.findAll();
         return expenseTypeMapper.toExpenseTypeDtoList(expenseTypes);
     }
 
-    public ExpenseTypeDto createExpenseType(ExpenseTypeRequestDto dto){
+    public ExpenseTypeDto createExpenseType(ExpenseTypeRequestDto dto) {
+        if (expenseTypeRepository.existsByName(dto.getName())) {
+            throw new RuntimeException("Expense Type Already Exists");
+        }
         ExpenseType et = ExpenseType.builder().name(dto.getName()).build();
         expenseTypeRepository.save(et);
         return expenseTypeMapper.toExpenseTypeDto(et);
     }
 
-    public ExpenseTypeDto getById(Long id){
+    public ExpenseTypeDto getById(Long id) {
         ExpenseType et = expenseTypeRepository.findById(id).orElseThrow(ExpenseTypeNotFoundException::new);
         return expenseTypeMapper.toExpenseTypeDto(et);
     }
 
-    public void deleteExpenseType(Long id){
+    public void deleteExpenseType(Long id) {
         ExpenseType et = expenseTypeRepository.findById(id).orElseThrow(ExpenseTypeNotFoundException::new);
         expenseTypeRepository.delete(et);
     }
-    public ExpenseTypeDto updateExpenseType(Long id, ExpenseTypeRequestDto dto){
+
+    public ExpenseTypeDto updateExpenseType(Long id, ExpenseTypeRequestDto dto) {
         ExpenseType et = expenseTypeRepository.findById(id).orElseThrow(ExpenseTypeNotFoundException::new);
         et.setName(dto.getName());
         expenseTypeRepository.save(et);

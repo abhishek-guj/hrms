@@ -118,7 +118,7 @@ export const JobCreateForm = () => {
           <Input id="jobJdFile" type="file" {...register("jobJdFile")} />
           {errors.jobJdFile && <FieldError errors={[errors.jobJdFile]} />}
         </Field>
-        <Button variant={"default"}>Save</Button>
+        <Button variant={"default"} disabled={createJob.isPending}>Save</Button>
       </FieldSet>
     </form>
   );

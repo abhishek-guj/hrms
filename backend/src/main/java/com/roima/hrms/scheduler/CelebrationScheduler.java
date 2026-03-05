@@ -37,7 +37,7 @@ public class CelebrationScheduler {
      * Checks all active employees for birthday or work anniversary today.
      */
     // @Scheduled(cron = "0 0 8 * * *")
-    @Scheduled(cron = "0 40 16 * * ?")
+    @Scheduled(cron = "0 0 8 * * ?")
     public void generateDailyCelebrationPosts() {
         LocalDate today = LocalDate.now();
         int todayMonth = today.getMonthValue();

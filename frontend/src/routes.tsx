@@ -35,8 +35,8 @@ import AchievementsPage from "./pages/achievements/AchievementsPage";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import { roles } from "./auth/role.util";
 import GameConfigPage from "./pages/game/GameConfigPage";
-import AdminPanelPage from "./pages/admin/AdminPanelPage";
 import ProfilePage from "./pages/ProfilePage";
+import AdminPanelPage from "./pages/admin/AdminPanelPage";
 
 const { admin, hr, manager, employee } = roles;
 

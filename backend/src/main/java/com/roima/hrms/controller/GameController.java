@@ -59,7 +59,7 @@ public class GameController {
 
         @PostMapping("slots/{slotId}")
         public ResponseEntity<ApiResponse> bookSlot(@PathVariable Long slotId,
-                        @RequestBody SlotBookingReqDto slotBookingReqDto) {
+                        @Valid @RequestBody SlotBookingReqDto slotBookingReqDto) {
                 gameSchedulingService.bookSLotNew(slotId, slotBookingReqDto);
                 ApiResponse<Boolean> res = ApiResponse.createApiResponse(ApiResponseType.SUCCESS,
                                 "Fetched slot details successfully", true, null);

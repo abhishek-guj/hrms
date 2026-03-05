@@ -14,6 +14,7 @@ import type {
 	TravelPlanCreateDto,
 	TravelPlanDto,
 	TravelPlanUpdateDto,
+	ExpenseTypeRequestDto,
 } from "../types/TravelPlan.types";
 import { showError, showSuccess } from "../../ui/toast";
 import { api } from "../../../api/apiClient";
@@ -30,10 +31,9 @@ export const useTravelPlan = (id: string): UseQueryResult<TravelPlanDto> => {
 	return useQuery({
 		queryKey: ["getTravelPlan", id],
 		queryFn: async (): Promise<TravelPlanDto> => {
-			const res = await TravelPlansService.getTravelPlanById(id)
-			return res
+			const res = await TravelPlansService.getTravelPlanById(id);
+			return res;
 		},
-
 	});
 };
 
@@ -72,11 +72,10 @@ export const useUpdateTravelPlan = () => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlan", id] });
 			queryClient.invalidateQueries({ queryKey: ["getTravelPlans"] });
 			showSuccess("travel plan updated successfully");
-
 		},
 		onError: (error) => {
 			showError(error?.message);
-			console.log("error updating travel plan",);
+			console.log("error updating travel plan");
 		},
 	});
 };
@@ -182,19 +181,11 @@ export const useTravelExpenses = (
 export const useTravelExpenseById = (
 	id: string,
 ): UseQueryResult<TravelExpenseDto> => {
-	console.log(id)
+	console.log(id);
 	return useQuery({
 		queryKey: ["getTravelExpensesById", id],
 		queryFn: (): Promise<TravelExpenseDto> =>
 			TravelPlansService.getTravelExpenseById(id),
-	});
-};
-
-export const useExpenseTypes = (): UseQueryResult<ExpenseTypeDto[]> => {
-	return useQuery({
-		queryKey: ["getExpenseTypes"],
-		queryFn: (): Promise<ExpenseTypeDto[]> =>
-			TravelPlansService.getExpenseTypes(),
 	});
 };
 
@@ -207,7 +198,9 @@ export const useCreateTravelExpense = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
-			queryClient.invalidateQueries({ queryKey: ["getTravelExpensesByTravelPlanId"] });
+			queryClient.invalidateQueries({
+				queryKey: ["getTravelExpensesByTravelPlanId"],
+			});
 			// alert("expense created successfull");
 			showSuccess("expense created successfull");
 		},
@@ -222,13 +215,17 @@ export const useCreateTravelExpense = () => {
 export const useChangeStatus = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: async ({ id, payload }: { id: string, payload: boolean }) => {
-			const response = await api.put(`/travel-expense/${id}/status`, { status: payload });
+		mutationFn: async ({ id, payload }: { id: string; payload: boolean }) => {
+			const response = await api.put(`/travel-expense/${id}/status`, {
+				status: payload,
+			});
 			return response.data;
 		},
 		onSuccess: (id) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
-			queryClient.invalidateQueries({ queryKey: ["getTravelExpensesByTravelPlanId"] });
+			queryClient.invalidateQueries({
+				queryKey: ["getTravelExpensesByTravelPlanId"],
+			});
 			showSuccess("status update successfull");
 		},
 		onError: () => {
@@ -236,7 +233,7 @@ export const useChangeStatus = () => {
 			console.log("error creating expense ");
 		},
 	});
-}
+};
 
 export const useDeleteTravelExpense = () => {
 	const queryClient = useQueryClient();
@@ -248,12 +245,86 @@ export const useDeleteTravelExpense = () => {
 		onSuccess: (id) => {
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses", id] });
 			queryClient.invalidateQueries({ queryKey: ["getTravelExpenses"] });
-			queryClient.invalidateQueries({ queryKey: ["getTravelExpensesByTravelPlanId"] });
+			queryClient.invalidateQueries({
+				queryKey: ["getTravelExpensesByTravelPlanId"],
+			});
 			showSuccess("expense deleted successfull");
-
 		},
 		onError: () => {
 			showError("error deleting expense");
+		},
+	});
+};
+
+export const useExpenseTypes = (): UseQueryResult<ExpenseTypeDto[]> => {
+	return useQuery({
+		queryKey: ["getExpenseTypes"],
+		queryFn: (): Promise<ExpenseTypeDto[]> =>
+			TravelPlansService.getExpenseTypes(),
+	});
+};
+
+export const useExpenseTypesCreate = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async ({ payload }: { payload: ExpenseTypeRequestDto }) => {
+			const response =
+				await TravelPlansService.createTravelExpenseType(payload);
+			return response.id;
+		},
+		onSuccess: (id) => {
+			queryClient.invalidateQueries({ queryKey: ["getExpenseTypes"] });
+			showSuccess("travel expense type created successfully");
+		},
+		onError: (err) => {
+			showError("error creating expense type");
+			console.log("error creating expense type", err);
+		},
+	});
+};
+
+export const useExpenseTypesUpdate = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async ({
+			id,
+			payload,
+		}: {
+			id: string;
+			payload: ExpenseTypeRequestDto;
+		}) => {
+			const response = await TravelPlansService.updateTravelExpenseType(
+				id,
+				payload,
+			);
+			return id;
+		},
+		onSuccess: (id) => {
+			queryClient.invalidateQueries({ queryKey: ["getExpenseTypes"] });
+			queryClient.invalidateQueries({ queryKey: ["getExpenseTypes", id] });
+			showSuccess("travel expense type updated successfully");
+		},
+		onError: (err) => {
+			showError("error updating expense type");
+			console.log("error updating expense type", err);
+		},
+	});
+};
+
+export const useDeleteTravelExpenseType = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async ({ id }: { id: string }) => {
+			const response = await TravelPlansService.deleteTravelExpenseType(id);
+			return id;
+		},
+		onSuccess: (id) => {
+			queryClient.invalidateQueries({ queryKey: ["getExpenseTypes"] });
+			showSuccess("travel expense type deleted successfully");
+		},
+		onError: (err) => {
+			showError("error deleting expense type");
+			console.log("error deleting expense type", err);
 		},
 	});
 };
