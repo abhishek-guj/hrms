@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, type PropsWithChildren } from 'react'
 import { Button } from '../ui/button'
 import { EyeIcon } from 'lucide-react'
-import { useRead } from './notification.quer'
+import { useRead } from './notification.queries'
 
 
 

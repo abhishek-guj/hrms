@@ -1,12 +1,7 @@
-import {
-	useMutation,
-	useQuery,
-	useQueryClient,
-	type UseQueryResult,
-} from "@tanstack/react-query";
-import { NotificationService } from "./notification.service";
-import { showInfo } from "../ui/toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../api/apiClient";
+import { showInfo } from "../ui/toast";
+import { NotificationService } from "./notification.service";
 
 export const useNotificationALL = () => {
 	return useQuery({

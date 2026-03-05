@@ -9,7 +9,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
-import { useNotificationALL, useRead } from "./notification.quer";
+import { useNotificationALL, useRead } from "./notification.queries";
 import Notification from "./Notifications";
 
 
@@ -17,8 +17,6 @@ import Notification from "./Notifications";
 
 const NotificationList = () => {
 	const { data, isLoading, error } = useNotificationALL();
-	console.log(data, typeof data)
-	//   //
 	if (isLoading) {
 		return (
 			<Button
