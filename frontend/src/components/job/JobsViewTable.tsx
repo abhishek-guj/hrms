@@ -68,6 +68,7 @@ const JobsViewTable = () => {
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
+        {console.log(RoleUtil.isAdmin, RoleUtil.isHr)}
         {(RoleUtil.isAdmin || RoleUtil.isHr) && <JobCreate />}
       </div>
 

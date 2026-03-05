@@ -145,7 +145,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin-panel",
-        element: <AdminPanelPage />
+        element: (
+          <ProtectedRoute allowedRoles={[admin, hr]}>
+            <AdminPanelPage />
+          </ProtectedRoute>
+        )
       },
 
       // ── Achievements & Celebrations ──────────────────────────────────────

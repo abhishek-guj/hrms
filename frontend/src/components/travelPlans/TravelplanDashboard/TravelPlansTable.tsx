@@ -72,8 +72,7 @@ const TravelPlansTable = () => {
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
-
-        {/* {(RoleUtil.isAdmin || RoleUtil.isHr) && ( */}
+        
         <ProtectedComponent hasRole={["Hr", "Admin"]}>
           <Button asChild>
             <Link to={"new"}>
@@ -81,7 +80,6 @@ const TravelPlansTable = () => {
             </Link>
           </Button>
         </ProtectedComponent>
-        {/* )} */}
       </div>
       <div className="flex w-full rounded-4xl p-1 px-2 pb-4 border ">
         <Table className="w-full">

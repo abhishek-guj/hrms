@@ -3,12 +3,11 @@ import { getAuthState } from './ProtectedRoute'
 import { roles } from './role.util'
 
 
-
 const ProtectedComponent = ({ hasRole, children }: PropsWithChildren<{ hasRole: string[] }>) => {
     const { role } = getAuthState();
 
     if (hasRole && !hasRole.includes(role)) {
-        console.log(hasRole, role, hasRole.includes("Admin"))
+        // console.log(hasRole, role, hasRole.includes("Admin"), ++a)
         return <></>
     }
     return (

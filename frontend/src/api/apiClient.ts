@@ -1,10 +1,7 @@
 import axios from "axios";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
-const PUBLIC_ROUTES = [
-	"/login",
-	"/jobs/public",
-]
-
+const PUBLIC_ROUTES = ["/login", "/jobs/public"];
 
 export const api = axios.create({
 	baseURL: import.meta.env.VITE_API_URL,
@@ -14,9 +11,12 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-	const isPublic = PUBLIC_ROUTES.some(url => config.url?.includes(url))
+	const { getItem: getToken } = useLocalStorage("token");
 
-	const token = localStorage.getItem("token");
+	const isPublic = PUBLIC_ROUTES.some((url) => config.url?.includes(url));
+
+	const token = getToken();
+
 	if (token && !isPublic) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}
@@ -27,26 +27,22 @@ api.interceptors.response.use(
 	(response) => {
 		if (response.data.status == "ERROR") {
 			if (response.data.message?.includes("not found")) {
-				window.location.href = "/error"
+				window.location.href = "/error";
 			}
 		}
 		return response;
-
-
 	},
 	(error) => {
-		let message = "An error occurred."
+		let message = "An error occurred.";
 
 		if (error.response) {
 			const status = error.response.status;
 			const data = error.response.data;
 			message = data?.message || `Request failed with status ${status}`;
-		}
-		else if (error.request) {
-			message = 'No response from server. Please check your network.';
-		}
-		else {
-			message = error.message || 'Request setup error';
+		} else if (error.request) {
+			message = "No response from server. Please check your network.";
+		} else {
+			message = error.message || "Request setup error";
 		}
 		return Promise.reject({
 			message: message,

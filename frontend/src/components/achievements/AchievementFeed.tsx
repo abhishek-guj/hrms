@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { AchievementFilterParams } from "./types/achievements.types";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 interface Props {
   filters: AchievementFilterParams;
@@ -11,6 +12,10 @@ interface Props {
 }
 
 const AchievementFeed = ({ filters, onFiltersChange }: Props) => {
+
+  const { getItem: getEmployeeId } = useLocalStorage("employeeId")
+  const { getItem: getRole } = useLocalStorage("role");
+
   const { data, isLoading, error } = useAchievementFeed(filters);
   const handlePage = (delta: number) => {
     onFiltersChange({ ...filters, page: (filters.page ?? 0) + delta });
@@ -67,10 +72,10 @@ const AchievementFeed = ({ filters, onFiltersChange }: Props) => {
           // If visibleToAll, show to everyone
           if (post.visibleToAll) return true;
           // Always show if current user is the author
-          const employeeId = Number(localStorage.getItem("employeeId"));
+          const employeeId = Number(getEmployeeId());
           if (post.authorId === employeeId) return true;
           // Otherwise, check role-based visibility
-          const role = localStorage.getItem("role") ?? "";
+          const role = getRole() ?? "";
           if (post.visibleRoles && Array.isArray(post.visibleRoles)) {
             return post.visibleRoles.includes(role);
           }

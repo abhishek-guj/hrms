@@ -22,6 +22,7 @@ import EditPostDialog from "./EditPostDialog";
 import DeletePostDialog from "./DeletePostDialog";
 import type { AchievementPostDto } from "./types/achievements.types";
 import { useToggleLike } from "./queries/achievements.queries";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 interface Props {
   post: AchievementPostDto;
@@ -32,10 +33,13 @@ const AchievementPostCard = ({ post }: Props) => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
+  const { getItem: getEmployeeId } = useLocalStorage("employeeId")
+  const { getItem: getRole } = useLocalStorage("role");
+
   const toggleLike = useToggleLike();
 
-  const role = localStorage.getItem("role") ?? "";
-  const employeeId = Number(localStorage.getItem("employeeId"));
+  const role = getRole() ?? "";
+  const employeeId = Number(getEmployeeId);
   const isAuthor = post.authorId === employeeId;
   const isHrOrAdmin = role === "Hr" || role === "Admin";
   const canModify = isAuthor || isHrOrAdmin;
@@ -46,11 +50,10 @@ const AchievementPostCard = ({ post }: Props) => {
 
   return (
     <div
-      className={`rounded-xl border bg-card shadow-sm flex flex-col gap-0 overflow-hidden transition-shadow hover:shadow-md ${
-        post.isSystemGenerated
-          ? "border-amber-200 bg-amber-50/40 dark:border-amber-800 dark:bg-amber-950/20"
-          : ""
-      }`}
+      className={`rounded-xl border bg-card shadow-sm flex flex-col gap-0 overflow-hidden transition-shadow hover:shadow-md ${post.isSystemGenerated
+        ? "border-amber-200 bg-amber-50/40 dark:border-amber-800 dark:bg-amber-950/20"
+        : ""
+        }`}
     >
       {/* System-generated banner */}
       {post.isSystemGenerated && (
@@ -71,11 +74,11 @@ const AchievementPostCard = ({ post }: Props) => {
               {post.isSystemGenerated
                 ? "🤖"
                 : post.authorName
-                    ?.split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase()}
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()}
             </div>
             <div>
               <div className="font-medium text-sm leading-tight">
@@ -151,11 +154,10 @@ const AchievementPostCard = ({ post }: Props) => {
             size="sm"
             onClick={handleLike}
             disabled={toggleLike.isPending}
-            className={`flex items-center gap-1.5 h-8 px-3 ${
-              post.likedByCurrentUser
-                ? "text-red-500 hover:text-red-600"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`flex items-center gap-1.5 h-8 px-3 ${post.likedByCurrentUser
+              ? "text-red-500 hover:text-red-600"
+              : "text-muted-foreground hover:text-foreground"
+              }`}
           >
             <Heart
               className="h-4 w-4"

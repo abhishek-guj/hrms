@@ -11,6 +11,7 @@ import {
 import { Input } from "../ui/input";
 import { useDeleteAchievementPost } from "./queries/achievements.queries";
 import type { AchievementPostDto } from "./types/achievements.types";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 interface Props {
   post: AchievementPostDto;
@@ -23,7 +24,9 @@ const DeletePostDialog = ({ post, open, onOpenChange, isHr }: Props) => {
   const [reason, setReason] = useState("");
   const deletePost = useDeleteAchievementPost();
 
-  const employeeId = Number(localStorage.getItem("employeeId"));
+  const { getItem: getEmployeeId } = useLocalStorage("employeeId")
+
+  const employeeId = Number(getEmployeeId());
   const isDeletingOthersPost = post.authorId !== employeeId;
 
   const handleDelete = async () => {

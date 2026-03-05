@@ -19,6 +19,7 @@ import { navLinksList } from "./NavLinks";
 import { RoleUtil } from "../../auth/role.util";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/R.svg";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 export const AppSidebar = ({
 	...props
@@ -103,10 +104,15 @@ export const NotificationMenu = () => {
 	);
 };
 export const UserLoginMenu = () => {
+	const { removeItem: removeEmployeeId } = useLocalStorage("employeeId")
+	const { removeItem: removeToken } = useLocalStorage("token");
+	const { removeItem: removeRole } = useLocalStorage("role");
+
 	const handleLogout = () => {
-		localStorage.removeItem("token");
-		localStorage.removeItem("role");
-		localStorage.removeItem("employeeId");
+		removeEmployeeId();
+		removeToken();
+		removeRole();
+
 		globalThis.location.href = "/login";
 	};
 
